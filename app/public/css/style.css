@@ -88,6 +88,12 @@ body {
   width: 400px;
   margin: -200px 0 0 -150px;
 }
+#btn-addNew {
+  width: 120px;
+  top: 1px;
+  right: 292px;
+  position: absolute;
+}
 #btn-logout {
   width: 120px;
   top: 1px;

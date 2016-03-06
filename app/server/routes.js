@@ -192,6 +192,19 @@ module.exports = function(app) {
 		});
 	});
 
+// individual galleries
+
+	app.get('/gallery/:user', function(req, res){
+		AM.getAccountByUsername(req.params.user, function(o){
+			if(o){
+				res.render('../gallery/'+req.params.user);
+			}else{
+				res.render('404', { title: 'Page Not Found'});
+			}
+		});
+	});
+
+
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
 
 };

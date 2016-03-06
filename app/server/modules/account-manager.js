@@ -3,10 +3,13 @@ var crypto 		= require('crypto');
 var MongoDB 	= require('mongodb').Db;
 var Server 		= require('mongodb').Server;
 var moment 		= require('moment');
+var fs = require('fs-extra'); //file system
+var path = require('path');
 
 var dbPort 		= 27017;
 var dbHost 		= 'localhost';
-var dbName 		= 'node-login';
+var dbName 		= 'suave';
+
 
 /* establish the database connection */
 
@@ -66,6 +69,8 @@ exports.addNewAccount = function(newData, callback)
 						newData.pass = hash;
 					// append date stamp when record was created //
 						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
+						fs.copySync(path.resolve(__dirname+'/..', 'views/layout.jade'),
+								'./app/server/gallery/'+newData.user+'.jade');
 						accounts.insert(newData, {safe: true}, callback);
 					});
 				}
@@ -121,6 +126,11 @@ exports.deleteAccount = function(id, callback)
 exports.getAccountByEmail = function(email, callback)
 {
 	accounts.findOne({email:email}, function(e, o){ callback(o); });
+}
+
+exports.getAccountByUsername = function(username, callback)
+{
+	accounts.findOne({user: username}, function(e, o){ callback(o); });
 }
 
 exports.validateResetLink = function(email, passHash, callback)
