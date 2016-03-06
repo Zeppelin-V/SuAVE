@@ -4,20 +4,20 @@ $(document).ready(function(){
 
 	$('#new-survey').ajaxForm({
 		beforeSubmit : function(formData, jqForm, options){
-			//var name = document.getElementById('new-file-name').value;
+			var name = document.getElementById('new-file-name').value + ".csv";
+			console.log(name);
 			//return name.endsWith('.csv') == true
 			return true;
 		},
 		success	: function(responseText, status, xhr, $form){
 			console.log("success");
 			//if (status == 'success') $('.modal-alert').modal('show');
+			$(".btn-newSurvey").click();
 		},
 		error : function(e){
-			console.log(e);
-			/*
-			if (e.responseText == 'email-taken'){
-					av.showInvalidEmail();
-			}*/
+			if(e.responseText == "Name is taken"){
+				$("#error-text").text("The name is used!");
+			}
 		}
 	});
 });

@@ -2,6 +2,7 @@ var crypto 		= require('crypto');
 var MongoDB 	= require('mongodb').Db;
 var Server 		= require('mongodb').Server;
 var moment 		= require('moment');
+var fsx = require('fs-extra');
 var fs = require('fs'); //file system
 var path = require('path');
 
@@ -21,41 +22,52 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 
 var surveys = db.collection('surveys');
 
-/*
-exports.addNewAccount = function(newData, callback)
-{
-	accounts.findOne({user:newData.user}, function(e, o) {
-		if (o){
-			callback('username-taken');
-		}	else{
-			accounts.findOne({email:newData.email}, function(e, o) {
-				if (o){
-					callback('email-taken');
-				}	else{
-					saltAndHash(newData.pass, function(hash){
-						newData.pass = hash;
-					// append date stamp when record was created //
-						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
-						fs.copySync(path.resolve(__dirname+'/..', 'views/layout.jade'),
-								'./app/server/gallery/'+newData.user+'.jade');
-						accounts.insert(newData, {safe: true}, callback);
-					});
-				}
-			});
-		}
-	});
-}*/
-
 exports.createNewSurvey = function(files, user, callback){
-  fs.readFile(files.file.path, function(err, data){
-    var newPath = __dirname + "/../surveys/"+user+"_"+files.name;
-    fs.writeFile(newPath, data, function(err){
-      if(err){
-        callback(err);
-      }else{
-        surveys.insert({"name": files.name, "user": user,
-        "csv": newPath, "hidden": 0}, callback);
-      }
-    });
+  surveys.findOne({"name": files.body.name}, function(e, o){
+		if (o){
+      console.log(o);
+			callback("Name is taken");
+		}
+    else{
+      fs.readFile(files.file.path, function(err, data){
+        var newPath = __dirname + "/../../public/surveys/"+user+"_"
+          +files.body.name+".csv";
+        fs.writeFile(newPath, data, function(err){
+          if(err){
+            callback(err);
+          }else{
+            surveys.insert({"name": files.body.name, "user": user,
+            "csv": newPath, "hidden": 0}, callback);
+          }
+        });
+      });
+    }
+	});
+}
+
+
+exports.delAllRecords = function(callback)
+{
+	var tmp = __dirname + "/../surveys/*";
+  var files = __dirname + "/../../public/surveys/*";
+  fsx.remove(tmp, function(err){
+    if(err) return console.error(err);
   });
+  fsx.remove(files, function(err){
+    if(err) return console.error(err);
+  });
+	surveys.remove({}, callback); // reset accounts collection for testing //
+}
+
+exports.deleteSurvey = function(user, callback)
+{
+  var tmp = __dirname + "/../surveys/*";
+  var file = __dirname + "/../../public/surveys/"+user+"_*";
+  fsx.remove(tmp, function(err){
+    if(err) return console.error(err);
+  });
+  fsx.remove(file, function(err){
+    if(err) return console.error(err);
+  });
+	surveys.remove({"user": user}, callback);
 }

@@ -3,7 +3,8 @@ var crypto 		= require('crypto');
 var MongoDB 	= require('mongodb').Db;
 var Server 		= require('mongodb').Server;
 var moment 		= require('moment');
-var fs = require('fs-extra'); //file system
+var fsx = require('fs-extra');
+var fs = require('fs'); //file system
 var path = require('path');
 
 var dbPort 		= 27017;
@@ -67,7 +68,7 @@ exports.addNewAccount = function(newData, callback)
 						newData.pass = hash;
 					// append date stamp when record was created //
 						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
-						fs.copySync(path.resolve(__dirname+'/..', 'views/layout.jade'),
+						fsx.copySync(path.resolve(__dirname+'/..', 'views/layout.jade'),
 								'./app/server/gallery/'+newData.user+'.jade');
 						accounts.insert(newData, {safe: true}, callback);
 					});
@@ -118,6 +119,17 @@ exports.updatePassword = function(email, newPass, callback)
 
 exports.deleteAccount = function(id, callback)
 {
+	//remove public page for the user
+	accounts.findOne({_id: getObjectId(id)},function(e, o){
+		if(e) {
+			callback(e);
+		} else{
+			var file = __dirname + "/../gallery/"+o.user+".jade";
+			fsx.remove(file, function(err){
+				if(err) return console.error(err);
+			});
+		}
+	});
 	accounts.remove({_id: getObjectId(id)}, callback);
 }
 
@@ -149,6 +161,11 @@ exports.getAllRecords = function(callback)
 
 exports.delAllRecords = function(callback)
 {
+	var files = __dirname + "/../gallery/*";
+	fsx.remove(files, function(err){
+		if(err) return console.error(err);
+	});
+	//fs.unlinkSync(files);
 	accounts.remove({}, callback); // reset accounts collection for testing //
 }
 

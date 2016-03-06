@@ -182,8 +182,12 @@ module.exports = function(app) {
 	});
 
 	app.post('/delete', function(req, res){
+		console.log(req.body);
 		AM.deleteAccount(req.body.id, function(e, obj){
 			if (!e){
+				SM.deleteSurvey(req.cookies.user, function(e, obj){
+					if(e) res.status(400).send('record not found');
+				});
 				res.clearCookie('user');
 				res.clearCookie('pass');
 				req.session.destroy(function(e){ res.status(200).send('ok'); });
@@ -194,8 +198,10 @@ module.exports = function(app) {
 	});
 
 	app.get('/reset-hg7234h', function(req, res) {
-		AM.delAllRecords(function(){
-			res.redirect('/accounts');
+		SM.delAllRecords(function(){
+			AM.delAllRecords(function(){
+				res.redirect('/accounts');
+			});
 		});
 	});
 
@@ -214,7 +220,7 @@ module.exports = function(app) {
 	app.post('/uploadCSV', uploading.single('file'), function(req, res){
 		//console.log("debug");
 		//console.log(req);
-		SM.createNewSurvey(req.files, req.cookies.user, function(e){
+		SM.createNewSurvey(req, req.cookies.user, function(e){
 			if (e){
 				res.status(400).send(e);
 			}	else{

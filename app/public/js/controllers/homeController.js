@@ -34,4 +34,8 @@ function HomeController()
 		setTimeout(function(){window.location.href = '/';}, 3000);
 	}
 
+	// redirect to homepage on new survey creation
+		$('.modal-newSurvey #ok').click(function(){ setTimeout(function(){window.location.href = '/';}, 300)});
+
+
 }
