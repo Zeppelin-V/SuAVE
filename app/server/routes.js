@@ -1,8 +1,15 @@
-
+var GL = require('./global');
 var AM = require('./modules/account-manager');
 var EM = require('./modules/email-dispatcher');
+var SM = require('./modules/survey-manager');
+var multer  = require('multer');
+
 
 module.exports = function(app) {
+	var uploading = multer({
+	  dest: __dirname + '/surveys/',
+	  limits: {fileSize: 1000000, files:1},
+	});
 
 // main login page //
 	app.get('/', function(req, res){
@@ -204,6 +211,17 @@ module.exports = function(app) {
 		});
 	});
 
+	app.post('/uploadCSV', uploading.single('file'), function(req, res){
+		//console.log("debug");
+		//console.log(req);
+		SM.createNewSurvey(req.files, req.cookies.user, function(e){
+			if (e){
+				res.status(400).send(e);
+			}	else{
+				res.status(200).send('ok');
+			}
+		});
+	});
 
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
 

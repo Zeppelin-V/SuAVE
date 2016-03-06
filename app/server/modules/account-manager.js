@@ -17,8 +17,6 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 	db.open(function(e, d){
 	if (e) {
 		console.log(e);
-	}	else{
-		console.log('connected to database :: ' + dbName);
 	}
 });
 var accounts = db.collection('accounts');

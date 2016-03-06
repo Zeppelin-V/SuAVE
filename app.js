@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var errorHandler = require('errorhandler');
 var cookieParser = require('cookie-parser');
 var MongoStore = require('connect-mongo')(session);
+var multer  = require('multer');
 
 var app = express();
 
@@ -26,6 +27,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(require('stylus').middleware({ src: __dirname + '/app/public' }));
 app.use(express.static(__dirname + '/app/public'));
 
+/*app.use(multer({
+  dest: __dirname + './app/server/surveys/',
+  limits: {fileSize: 1000000, files:1},
+}).single('file'));
+*/
 require('./app/server/routes')(app);
 
 if (app.get('env') == 'development') app.use(errorHandler());

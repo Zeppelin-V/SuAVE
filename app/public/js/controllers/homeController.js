@@ -8,7 +8,7 @@ function HomeController()
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
 	$('#btn-update').click(function(){ window.open('/update', "_self"); });
 	$('#btn-llc3').click(function(){window.open('http://maxim.ucsd.edu/suave_sid/main.html?file=llc3.csv')});
-
+	$('#btn-addNew').click(function(){$('.modal-new-survey').modal('show') });
 	this.attemptLogout = function()
 	{
 		var that = this;
@@ -33,4 +33,5 @@ function HomeController()
 		$('.modal-alert button').click(function(){window.location.href = '/';})
 		setTimeout(function(){window.location.href = '/';}, 3000);
 	}
+
 }

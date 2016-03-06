@@ -1,9 +1,22 @@
-
-.modal-alert.modal.hide.fade
-    div.modal-header
+html
+  body
+    .modal-new-survey.modal.hide.fade
+      .modal-header
         button.close(data-dismiss='modal') x
         h3
-    div.modal-body
-        p
-    div.modal-footer
-        button(data-dismiss="modal")#ok.btn.btn-warning OK
+      .modal-body
+        label Select a csv file to upload:
+        form#new-survey(action='/uploadCSV', method='POST', enctype='multipart/form-data')
+          hr
+          fieldset
+            .control-group
+              input(type='file', name='file', required='required')
+            hr
+            p.subheading Please name the survey:
+            .control-group
+              input(type='text', id='new-file-name', name='name', required='required')
+            hr
+            .form-buttons
+              button#new-survey-submit.btn(type='submit') submit
+      .modal-footer
+        button#ok.btn.btn-newSurvey(data-dismiss='modal') OK
