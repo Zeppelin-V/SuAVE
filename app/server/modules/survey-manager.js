@@ -45,6 +45,12 @@ exports.createNewSurvey = function(files, user, callback){
 	});
 }
 
+exports.getSurveyByUsername = function(username, callback)
+{
+	surveys.find({user: username}).toArray(function(e, o){
+		callback(null, o);
+	});
+}
 
 exports.delAllRecords = function(callback)
 {
@@ -70,4 +76,18 @@ exports.deleteSurvey = function(user, callback)
     if(err) return console.error(err);
   });
 	surveys.remove({"user": user}, callback);
+}
+
+exports.deleteSurveyByName = function(filename, user, callback)
+{
+	console.log(filename);
+  var tmp = __dirname + "/../surveys/*";
+  var file = __dirname + "/../../public/surveys/"+user+"_"+filename+".csv";
+  fsx.remove(tmp, function(err){
+    if(err) return console.error(err);
+  });
+  fsx.remove(file, function(err){
+    if(err) return console.error(err);
+  });
+	surveys.remove({"name": filename, "user": user}, callback);
 }

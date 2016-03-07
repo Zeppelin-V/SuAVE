@@ -8,7 +8,7 @@ var multer  = require('multer');
 module.exports = function(app) {
 	var uploading = multer({
 	  dest: __dirname + '/surveys/',
-	  limits: {fileSize: 1000000, files:1},
+	  limits: {fileSize: 100000000, files:1},
 	});
 
 // main login page //
@@ -53,7 +53,7 @@ module.exports = function(app) {
 		}	else{
 			res.render('home', {
 				title : 'Gallery',
-				udata : req.session.user}
+				udata : JSON.stringify(req.session.user.user)}
 			);
 		}
 	});
@@ -182,10 +182,9 @@ module.exports = function(app) {
 	});
 
 	app.post('/delete', function(req, res){
-		console.log(req.body);
 		AM.deleteAccount(req.body.id, function(e, obj){
 			if (!e){
-				SM.deleteSurvey(req.cookies.user, function(e, obj){
+				SM.deleteSurvey(req.session.user.user, function(e, obj){
 					if(e) res.status(400).send('record not found');
 				});
 				res.clearCookie('user');
@@ -217,6 +216,7 @@ module.exports = function(app) {
 		});
 	});
 
+//new survey
 	app.post('/uploadCSV', uploading.single('file'), function(req, res){
 		//console.log("debug");
 		//console.log(req);
@@ -227,6 +227,28 @@ module.exports = function(app) {
 				res.status(200).send('ok');
 			}
 		});
+	});
+
+//get and delete surveys
+	app.post('/getSurveys', function(req, res) {
+		SM.getSurveyByUsername(req.body.user, function(e, surveys){
+			if(e) {
+				res.status(400).send(e);
+			}else{
+				res.status(200).send(surveys);
+			}
+		})
+	});
+
+	app.post('/deleteSurvey', function(req, res) {
+		console.log(req.body.name);
+		SM.deleteSurveyByName(req.body.name, req.body.user, function(e){
+			if(e) {
+				res.status(400).send(e);
+			}else{
+				res.status(200).send("ok");
+			}
+		})
 	});
 
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
