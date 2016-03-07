@@ -23,7 +23,7 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 var surveys = db.collection('surveys');
 
 exports.createNewSurvey = function(files, user, callback){
-  surveys.findOne({"name": files.body.name}, function(e, o){
+  surveys.findOne({"name": files.body.name, "user": user}, function(e, o){
 		if (o){
       console.log(o);
 			callback("Name is taken");
