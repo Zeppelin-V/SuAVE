@@ -6,6 +6,10 @@ html
 		link(rel='stylesheet', href='/css/style.css')
 		link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.1.1/gh-fork-ribbon.min.css')
 	body
+		#main-container
 
-	block content
 	block scripts
+		script(src='/vendor/jquery.min.js')
+		script(src='/vendor/jquery.form.js')
+		script(src='/js/controllers/galleryController.js')
+		script(src='/js/views/gallery.js')

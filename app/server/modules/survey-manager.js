@@ -52,6 +52,13 @@ exports.getSurveyByUsername = function(username, callback)
 	});
 }
 
+exports.getPublicSurveyByUsername = function(username, callback)
+{
+	surveys.find({user: username, "hidden": 0}).toArray(function(e, o){
+		callback(null, o);
+	});
+}
+
 exports.delAllRecords = function(callback)
 {
 	var tmp = __dirname + "/../surveys/*";

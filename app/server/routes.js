@@ -240,6 +240,16 @@ module.exports = function(app) {
 		})
 	});
 
+	app.post('/getPublicSurveys', function(req, res) {
+		SM.getPublicSurveyByUsername(req.body.user, function(e, surveys){
+			if(e) {
+				res.status(400).send(e);
+			}else{
+				res.status(200).send(surveys);
+			}
+		})
+	});
+
 	app.post('/deleteSurvey', function(req, res) {
 		console.log(req.body.name);
 		SM.deleteSurveyByName(req.body.name, req.body.user, function(e){
