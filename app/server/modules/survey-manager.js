@@ -87,7 +87,6 @@ exports.deleteSurvey = function(user, callback)
 
 exports.deleteSurveyByName = function(filename, user, callback)
 {
-	console.log(filename);
   var tmp = __dirname + "/../surveys/*";
   var file = __dirname + "/../../public/surveys/"+user+"_"+filename+".csv";
   fsx.remove(tmp, function(err){
@@ -97,4 +96,18 @@ exports.deleteSurveyByName = function(filename, user, callback)
     if(err) return console.error(err);
   });
 	surveys.remove({"name": filename, "user": user}, callback);
+}
+
+
+exports.hideSurveyByNameID = function(filename, user, callback)
+{
+	surveys.findOne({"name":filename, "user": user}, function(e, o){
+		if (e){
+			callback(e);
+		}	else{
+			if(o.hidden == 1) o.hidden = 0;
+			else o.hidden = 1;
+			surveys.save(o, callback);
+		}
+	});
 }

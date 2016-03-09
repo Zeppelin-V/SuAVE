@@ -251,7 +251,6 @@ module.exports = function(app) {
 	});
 
 	app.post('/deleteSurvey', function(req, res) {
-		console.log(req.body.name);
 		SM.deleteSurveyByName(req.body.name, req.body.user, function(e){
 			if(e) {
 				res.status(400).send(e);
@@ -260,6 +259,22 @@ module.exports = function(app) {
 			}
 		})
 	});
+
+	app.post('/hideSurveyByNameID', function(req, res) {
+		SM.hideSurveyByNameID(req.body.name, req.body.user, function(e){
+			if(e) {
+				res.status(400).send(e);
+			}else{
+				res.status(200).send("ok");
+			}
+		})
+	});
+
+	app.get('/getSurveys/:survey', function(req, res){
+		console.log(__dirname + '/surveys/');
+		res.sendfile(req.params.survey, {root: __dirname + '/../public/surveys/'});
+	});
+
 
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
 

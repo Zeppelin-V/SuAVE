@@ -15,9 +15,10 @@ html
             p.subheading Please name the survey:
             .control-group
               input(type='text', id='new-file-name', name='name', required='required')
-              p#error-text(style='color:red;') 
+              p#error-text(style='color:red;')
             hr
             .form-buttons
               button#new-survey-submit.btn(type='submit') submit
       .modal-footer
-        button#ok.btn.btn-newSurvey(data-dismiss='modal') OK
+        p(style="text-align: left; position: absolute;") Please check out the format of uploading file:
+        button#help-button.btn.btn-newSurvey Help

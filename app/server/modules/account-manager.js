@@ -140,7 +140,7 @@ exports.getAccountByEmail = function(email, callback)
 
 exports.getAccountByUsername = function(username, callback)
 {
-	accounts.findOne({user: username}, function(e, o){ callback(o); });
+	accounts.findOne({"user": username}, function(e, o){ callback(o); });
 }
 
 exports.validateResetLink = function(email, passHash, callback)
