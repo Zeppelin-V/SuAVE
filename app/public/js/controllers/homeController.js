@@ -28,11 +28,9 @@ function HomeController()
 	});
 
 	$(document).on('click', '.surveys-click', function(){
-		var file = $(this).text();
-		//TODO: added link to current survey
-		//id+"_"+filename
-		//var file = user+"_"+$(this).text();
-		window.open('http://maxim.ucsd.edu/suave_sid/main.html?file='+file+'.csv');
+		var id = $(this).attr('id');
+		var file = surveys[id.slice(-1)].name;
+		window.open(window.location+'/../main.html?file='+user+"_"+file+'.csv');
 	});
 
 	$(document).on('click', '.surveys-delete', function(){
