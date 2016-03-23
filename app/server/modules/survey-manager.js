@@ -5,6 +5,7 @@ var moment 		= require('moment');
 var fsx = require('fs-extra');
 var fs = require('fs'); //file system
 var path = require('path');
+var loader = require('./csvLoader');
 
 var dbPort 		= 27017;
 var dbHost 		= 'localhost';
@@ -30,6 +31,7 @@ exports.createNewSurvey = function(files, user, callback){
 		}
     else{
       fs.readFile(files.file.path, function(err, data){
+
         var newPath = __dirname + "/../../public/surveys/"+user+"_"
           +files.body.name+".csv";
         fs.writeFile(newPath, data, function(err){
@@ -43,6 +45,21 @@ exports.createNewSurvey = function(files, user, callback){
       });
     }
 	});
+}
+
+exports.changeCollection = function(files, user, collection, column, callback){
+	var filePath = __dirname + "/../../public/surveys/"+user+"_"
+		+files.body.name+".csv";
+
+	var data;
+	loader.loadCSV(filePath, function(o){
+		if(o == "Unable to read file"){
+			callback("Unable to read file");
+		}else{
+			data = o;
+		}
+	});
+	
 }
 
 exports.getSurveyByUsername = function(username, callback)

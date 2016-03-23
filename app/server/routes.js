@@ -4,7 +4,6 @@ var EM = require('./modules/email-dispatcher');
 var SM = require('./modules/survey-manager');
 var multer  = require('multer');
 
-
 module.exports = function(app) {
 	var uploading = multer({
 	  dest: __dirname + '/surveys/',
@@ -218,13 +217,22 @@ module.exports = function(app) {
 
 //new survey
 	app.post('/uploadCSV', uploading.single('file'), function(req, res){
-		//console.log("debug");
-		//console.log(req);
+
 		SM.createNewSurvey(req, req.cookies.user, function(e){
 			if (e){
 				res.status(400).send(e);
 			}	else{
 				res.status(200).send('ok');
+				//Set the default collection for new survey
+				var defaultCol = 1;
+				//TODO: add signtures
+				SM.changeCollection(req, req.cookies.user, GL.getDefaultCol(), defaultCol, function(e){
+					if(e){
+						res.status(400).send(e);
+					}else{
+						res.status(200).send('ok');
+					}
+				});
 			}
 		});
 	});

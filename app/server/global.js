@@ -1,3 +1,6 @@
-var dbPort 		= 27017;
-var dbHost 		= 'localhost';
-var dbName 		= 'suave';
+var exports = module.exports;
+var collections = ["default"];
+
+exports.getDefaultCol = function(){
+  return collections[0];
+};
