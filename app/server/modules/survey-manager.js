@@ -5,7 +5,7 @@ var moment 		= require('moment');
 var fsx = require('fs-extra');
 var fs = require('fs'); //file system
 var path = require('path');
-var loader = require('./csvLoader');
+var loader = require('./collectionLoader');
 
 var dbPort 		= 27017;
 var dbHost 		= 'localhost';
@@ -51,14 +51,21 @@ exports.changeCollection = function(files, user, collection, column, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
 
+	//load csv data
 	var data;
-	loader.loadCSV(filePath, function(o){
-		if(o == "Unable to read file"){
+	loader.setCSV(filePath, collection, function(o){
+		if(o == "err"){
 			callback("Unable to read file");
 		}else{
 			data = o;
+			loader.saveCSV(filePath, data, function(e){
+				if(e){
+					callback("Unable to save file")
+				}
+			});
 		}
 	});
+
 	
 }
 
