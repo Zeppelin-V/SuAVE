@@ -66,7 +66,14 @@ exports.changeCollection = function(files, user, collection, column, callback){
 		}
 	});
 
-	
+	loader.generateDeepZoom(__dirname + "/../../public/surveys/"+user+"_"
+		+files.body.name,
+		collection, user+"_"+files.body.name+".dzc", function(e){
+		if(e){
+			callback(e);
+		}
+	});
+
 }
 
 exports.getSurveyByUsername = function(username, callback)
@@ -93,7 +100,7 @@ exports.delAllRecords = function(callback)
   fsx.remove(files, function(err){
     if(err) return console.error(err);
   });
-	surveys.remove({}, callback); // reset accounts collection for testing //
+	surveys.remove({}, callback);
 }
 
 exports.deleteSurvey = function(user, callback)

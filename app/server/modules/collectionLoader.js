@@ -2,6 +2,7 @@ var exports = module.exports;
 var fs = require('fs'); //file system
 var parse = require('csv-parse');
 var json2csv = require('json2csv');
+var execPhp = require('exec-php');
 
 exports.loadCSV = function(filePath, callback){
   fs.readFile(filePath, 'utf-8', function (err, data) {
@@ -16,7 +17,37 @@ exports.loadCSV = function(filePath, callback){
   });
 };
 
+exports.generateDeepZoom = function(dir, collection, destination, callback){
+  var fs = require('fs');
+  if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+  }
+
+  if(collection == "default"){
+    fs.readFile(__dirname+"/../../public/img/default.jpeg", function(err, data){
+      var newPath = dir + "/default.jpeg";
+      fs.writeFile(newPath, data, function(err){
+        if(err){
+          callback(err);
+        }else{
+          var sources = [];
+          sources.push("default.jpeg");
+
+          //implement deepzoom script
+          execPhp("./Deepzoom/CollectionCreator.php", function(error, php, outprint){
+            php.create(dir, sources, destination);
+          });
+
+        }
+      });
+    });
+  }else{
+    //TODO: copy other collection images
+  }
+};
+
 exports.setImgProperty = function(data, collection, callback){
+  var that = this;
   var categories = data[0];
   var img_column = -1;
   //get the index of image column
@@ -40,14 +71,12 @@ exports.setImgProperty = function(data, collection, callback){
         data[i][img_column] = "default";
       }
     }
-
     callback(data);
 
   }else{
     //TODO: set images for other collection
   }
 };
-
 
 exports.setCSV = function(filePath, collection, callback){
   var that = this;
@@ -65,7 +94,7 @@ exports.setCSV = function(filePath, collection, callback){
 
 exports.saveCSV = function(filePath, data, callback){
   var csv = [];
-  fields = data[0];
+  var fields = data[0];
 
   //jsonify array of data
   for(var i = 1; i < data.length; i++){

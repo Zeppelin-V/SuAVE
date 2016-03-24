@@ -225,8 +225,8 @@ module.exports = function(app) {
 				res.status(200).send('ok');
 				//Set the default collection for new survey
 				var defaultCol = 1;
-				//TODO: add signtures
-				SM.changeCollection(req, req.cookies.user, GL.getDefaultCol(), defaultCol, function(e){
+				SM.changeCollection(req, req.cookies.user, GL.getDefaultCollect(),
+					GL.getDefaultCol(), function(e){
 					if(e){
 						res.status(400).send(e);
 					}else{
