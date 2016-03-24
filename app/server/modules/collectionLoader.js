@@ -34,8 +34,9 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
           sources.push("default.jpeg");
 
           //implement deepzoom script
-          execPhp("./Deepzoom/CollectionCreator.php", function(error, php, outprint){
-            php.create(dir, sources, destination);
+          execPhp("./Deepzoom/CreateNew.php", function(error, php, outprint){
+            console.log(error);
+            php.createDeepZoom(dir, sources, destination);
           });
 
         }
