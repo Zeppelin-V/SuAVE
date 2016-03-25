@@ -2,7 +2,8 @@ var exports = module.exports;
 var fs = require('fs'); //file system
 var parse = require('csv-parse');
 var json2csv = require('json2csv');
-var execPhp = require('exec-php');
+var spawn = require('child_process').spawn;
+var sharp = require('sharp');
 
 exports.loadCSV = function(filePath, callback){
   fs.readFile(filePath, 'utf-8', function (err, data) {
@@ -24,19 +25,16 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
   }
 
   if(collection == "default"){
-    fs.readFile(__dirname+"/../../public/img/default.jpeg", function(err, data){
-      var newPath = dir + "/default.jpeg";
+    fs.readFile(__dirname+"/../../public/img/default.jpg", function(err, data){
+      var newPath = dir + "/default.jpg";
       fs.writeFile(newPath, data, function(err){
         if(err){
           callback(err);
         }else{
           var sources = [];
-          sources.push("default.jpeg");
-
-          //implement deepzoom script
-          execPhp("./Deepzoom/CreateNew.php", function(error, php, outprint){
+          sources.push("default.jpg");
+          sharp(newPath).tile(256).toFile(dir+'/default.dzi', function(error, info){
             console.log(error);
-            php.createDeepZoom(dir, sources, destination);
           });
 
         }

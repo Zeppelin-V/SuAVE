@@ -22,33 +22,33 @@ include "AbstractCreator.php";
  */
 class ImageCreator extends AbstractCreator {
     /**
-     * Tile Overlap 
-     * 
+     * Tile Overlap
+     *
      * @var float
-     */ 
-    protected $_tileOverlap; 
-    
+     */
+    protected $_tileOverlap;
+
     /**
      *
      * @var Deepzoom\StreamWrapper\StreamWrapperInterface
      */
     protected $_streamWrapper;
-    
+
     /**
-     * 
+     *
      * @var Deepzoom\DescriptorInterface
      */
     protected $_descriptor;
 
     /**
-     * 
+     *
      * @var Deepzoom\ImageAdapter\ImageAdapterInterface
      */
     protected $_imageAdapter;
 
     /**
      * Constructor
-     * 
+     *
      * @param Deepzoom\DescriptorInterface $descriptor
      * @param Deepzoom\ImageAdapter\ImageAdapterInterface $adapter
      * @param Deepzoom\StreamWrapper\StreamWrapperInterface $streamWrapper
@@ -65,15 +65,15 @@ class ImageCreator extends AbstractCreator {
         $this->_tileFormat = $tileFormat;
         $this->_tileOverlap = $this->_clamp((int)$tileOverlap,0,1);
     }
-    
+
     /**
      * Returns the bitmap image at the given level
      *
      * @param int $level
-     * 
+     *
      * @return ?
      * @throw Deepzoom\Exception check pyramid level
-     */ 
+     */
     public function getImage($level) {
     	if(0 <= $level && $level < $this->_descriptor->getNumLevels()) {
             $dimension = $this->_descriptor->getDimension($level);
@@ -86,16 +86,16 @@ class ImageCreator extends AbstractCreator {
              	return $image->resizePx($dimension['width'],$dimension['height']);
             }
         } else throw new \InvalidArgumentException('Invalid pyramid level');
-    } 
-     
+    }
+
     /**
      * Iterator for all tiles in the given level. Returns (column, row) of a tile.
      *
      * @param int $level
-     * 
+     *
      * @return array
      * @throw Deepzoom\Exception check pyramid level
-     */ 
+     */
     public function getTiles($level) {
 		$tiles = $this->_descriptor->getNumTiles($level);
 		$yield = array();
@@ -105,15 +105,15 @@ class ImageCreator extends AbstractCreator {
 			}
 		}
 		return $yield;
-    } 
-     
+    }
+
     /**
      * Creates Deep Zoom image from source file and saves it to destination
      *
      * @param string $source
      * @param string $destination
      * @throw Deepzoom\Exception check source existe and destination is writable
-     */ 
+     */
     public function  create($source,$destination) {
     	$this->_imageAdapter->setStreamWrapper($this->_streamWrapper)->setSource($source);
         $dimensions = $this->_imageAdapter->getDimensions();
@@ -129,13 +129,13 @@ class ImageCreator extends AbstractCreator {
         $imageName = $aImage['filename'];
         $dirName = $aImage['dirname'];
         $imageFile = $this->_streamWrapper->ensure($dirName.DIRECTORY_SEPARATOR.$imageName.'_files');
-       
+
         foreach (range(0,$this->_descriptor->getNumLevels() - 1) as $level) {
 	         $levelDir = $this->_streamWrapper->ensure($imageFile.DIRECTORY_SEPARATOR.$level);
-	         
+
 	         $levelImage = $this->getImage($level);
 	         $format = $this->_descriptor->getTileFormat();
-            
+
 	         $tiles = $this->_descriptor->getNumTiles($level);
              foreach (range(0, $tiles['columns'] - 1) as $column) {
                 foreach (range(0, $tiles['rows'] - 1) as $row) {
@@ -152,7 +152,7 @@ class ImageCreator extends AbstractCreator {
         $this->_descriptor->save($destination);
     }
     /**
-     * 
+     *
      */
     public function getDescriptor() {
     	return $this->_descriptor;
