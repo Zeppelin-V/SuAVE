@@ -1632,7 +1632,7 @@ var ruleNums = 0;
         }
 
         //add model view
-        $('.pv-toolbarpanel-viewcontrols').append("<div class='pv-toolbarpanel-view'id='pv-toolbarpanel-view-10' title='Statistical Model'><a href='#pv-open-Model'> <img id='pv-toolbarpanel-view-10-image' src='images/modelView.png'></a></div>");
+        $('.pv-toolbarpanel-viewcontrols').append("<div class='pv-toolbarpanel-view'id='pv-toolbarpanel-view-10' title='Statistical Model'><a href='#pv-open-Model'> <img id='pv-toolbarpanel-view-10-image' src='images/ModelView.png'></a></div>");
         $('.pv-toolbarpanel-viewcontrols').append(
         '<div class="modal fade" id="myModal" role="dialog" style="z-index:100000;"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">'+
         '<h4 class="modal-title">R result</h4></div>'+

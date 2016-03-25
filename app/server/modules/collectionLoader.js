@@ -27,6 +27,7 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
   if(collection == "default"){
     fs.readFile(__dirname+"/../../public/img/default.jpg", function(err, data){
       var newPath = dir + "/default.jpg";
+
       fs.writeFile(newPath, data, function(err){
         if(err){
           callback(err);
@@ -46,13 +47,13 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
                 }
             });
             xml = xml + '<I N="'+0+'" Id="'+id+'" Source="'+id+'.dzi"><Size Width='
-              +'"200" Height="200"/></I>';
+              +'"300" Height="300"/></I>';
           }
           //generate dzc
           xml = '<?xml version="1.0" encoding="utf-8"?><Collection MaxLevel="'+
-            +maxLevel+'" TileSize="256" Format="jpg"><Items>'+xml+'</items></Collection>';
+            +maxLevel+'" TileSize="256" Format="jpg"><Items>'+xml+'</Items></Collection>';
 
-          fs.writeFile(dir + "/" + destination), xml, function(e){
+          fs.writeFile(dir + "/" + destination, xml, function(e){
             if(e){
               callback(e);
             }

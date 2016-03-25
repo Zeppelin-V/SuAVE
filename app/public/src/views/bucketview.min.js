@@ -402,8 +402,8 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
         this._super();
         $('.pv-bucketview-overlay div').fadeOut();
     },
-    getButtonImage: function () {return 'images/bucketview.png';},
-    getButtonImageSelected: function () {return 'images/bucketviewSelected.png';},
+    getButtonImage: function () {return 'images/Bucketview.png';},
+    getButtonImageSelected: function () {return 'images/BucketviewSelected.png';},
     getViewName: function () {return "Bucket View";},
     setTilePositions: function (rowscols, offsetX, offsetY, initTiles, keepColsRows) {
         var columns = (keepColsRows && this.rowscols)  ? this.rowscols.Columns : rowscols.Columns;

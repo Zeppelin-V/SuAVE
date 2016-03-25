@@ -103,7 +103,7 @@ function HomeController()
 		for(i = 0; i < surveys.length; i++){
 			$("#main-container").append('<div class="row carousel-row"><div class="col-xs-8 col-xs-offset-2 slide-row">'+
 			'<div id="carousel-1" class="carousel slide slide-carousel" data-ride="carousel">'+
-			'<div class="carousel-inner"><img src="/../img/blackbl.jpeg" alt="Image"></div></div>'+
+			'<div class="carousel-inner"><img src="/../img/black.jpeg" alt="Image"></div></div>'+
 			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><p>'+'</p></div>'+
 			'<div class="slide-footer"><div class="col-xs-1"><h4>Public: </h4></div>'+
 			'<div class="toggle-button" id="public-'+i+'"><button ></button></div>'+
