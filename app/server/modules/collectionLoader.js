@@ -32,11 +32,31 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
           callback(err);
         }else{
           var sources = [];
+          var maxLevel = 0;
           sources.push("default.jpg");
-          sharp(newPath).tile(256).toFile(dir+'/default.dzi', function(error, info){
-            console.log(error);
-          });
+          var xml = "";
+          //generate dzi
+          for(var i = 0; i < sources.length; i++){
+            var source = sources[i];
+            var id = source.substr(0, source.lastIndexOf('.'));
+            sharp(dir+ '/' + source).tile(256).toFile(dir+'/'+ id +'.dzi',
+              function(error, info){
+                if(error){
+                  callback(error);
+                }
+            });
+            xml = xml + '<I N="'+0+'" Id="'+id+'" Source="'+id+'.dzi"><Size Width='
+              +'"200" Height="200"/></I>';
+          }
+          //generate dzc
+          xml = '<?xml version="1.0" encoding="utf-8"?><Collection MaxLevel="'+
+            +maxLevel+'" TileSize="256" Format="jpg"><Items>'+xml+'</items></Collection>';
 
+          fs.writeFile(dir + "/" + destination), xml, function(e){
+            if(e){
+              callback(e);
+            }
+          });
         }
       });
     });

@@ -32,7 +32,7 @@ function GalleryController()
 		for(i = 0; i < surveys.length; i++){
 			$("#main-container").append('<div class="row carousel-row"><div class="col-xs-8 col-xs-offset-2 slide-row">'+
 			'<div id="carousel-1" class="carousel slide slide-carousel" data-ride="carousel">'+
-			'<div class="carousel-inner"><img src="/../img/default.jpeg" alt="Image"></div></div>'+
+			'<div class="carousel-inner"><img src="/../img/black.jpeg" alt="Image"></div></div>'+
 			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><p>'+'</p></div>'+
 			'<div class="slide-footer"><span class="pull-right buttons">'+
 			'<button id="survey-'+i+'" class="btn btn-sm btn-primary surveys-click"><i class="fa fa-fw fa-eye"></i> Show</button>'+
