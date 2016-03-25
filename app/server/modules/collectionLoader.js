@@ -1,6 +1,6 @@
 var exports = module.exports;
 var fs = require('fs'); //file system
-var fsx = require('fsx');
+var fsx = require('fs-extra');
 var parse = require('csv-parse');
 var json2csv = require('json2csv');
 var spawn = require('child_process').spawn;
