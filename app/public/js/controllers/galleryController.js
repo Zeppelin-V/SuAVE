@@ -8,7 +8,7 @@ function GalleryController()
 	$(document).on('click', '.surveys-click', function(){
 		var id = $(this).attr('id');
 		var file = surveys[id.slice(-1)].name;
-		window.open(window.location+'/../main.html?file='+user+"_"+file+'.csv');
+		window.open(window.location+'/../../main.html?file='+user+"_"+file+'.csv');
 	});
 
 	this.getSurveys = function(callback)

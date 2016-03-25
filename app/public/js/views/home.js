@@ -25,6 +25,7 @@ $(document).ready(function(){
 			console.log(e);
 		}else {
 			surveys = e;
+			console.log(e);
 			hc.displaySurveys(surveys);
 		}
 	});

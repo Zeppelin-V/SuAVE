@@ -1,23 +1,25 @@
 var exports = module.exports;
 var fs = require('fs'); //file system
+var fsx = require('fsx');
 var parse = require('csv-parse');
 var json2csv = require('json2csv');
 var spawn = require('child_process').spawn;
 var sharp = require('sharp');
 
+//load csv file by path
 exports.loadCSV = function(filePath, callback){
   fs.readFile(filePath, 'utf-8', function (err, data) {
     if (err) {
       callback("err");
     } else {
       parse(data, function(err, output){
-        //console.log(output);
         callback(output);
       });
     }
   });
 };
 
+//generate deep zoom files including .dzc and .dzi
 exports.generateDeepZoom = function(dir, collection, destination, callback){
   var fs = require('fs');
   if (!fs.existsSync(dir)){
@@ -40,7 +42,13 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
           for(var i = 0; i < sources.length; i++){
             var source = sources[i];
             var id = source.substr(0, source.lastIndexOf('.'));
-            sharp(dir+ '/' + source).tile(256).toFile(dir+'/'+ id +'.dzi',
+            var desFile = dir+'/'+ id +'.dzi';
+            if(fs.existsSync(desFile)){
+              fsx.remove(desFile, function(e){
+                if(e) callback(e);
+              });
+            }
+            sharp(dir+ '/' + source).tile(256).toFile(desFile,
               function(error, info){
                 if(error){
                   callback(error);
@@ -66,6 +74,7 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
   }
 };
 
+//set #img column for csv files
 exports.setImgProperty = function(data, collection, callback){
   var that = this;
   var categories = data[0];
@@ -86,7 +95,7 @@ exports.setImgProperty = function(data, collection, callback){
         data[i].push("default");
       }
     }else{
-      //if img column already exists
+      //if #img column already exists
       for(var i = 1; i < data.length; i++){
         data[i][img_column] = "default";
       }
@@ -98,6 +107,7 @@ exports.setImgProperty = function(data, collection, callback){
   }
 };
 
+//set csv csv files
 exports.setCSV = function(filePath, collection, callback){
   var that = this;
   that.loadCSV(filePath, function(o){
@@ -112,6 +122,7 @@ exports.setCSV = function(filePath, collection, callback){
   });
 };
 
+//set the changed csv files
 exports.saveCSV = function(filePath, data, callback){
   var csv = [];
   var fields = data[0];

@@ -39,7 +39,8 @@ exports.createNewSurvey = function(files, user, callback){
             callback(err);
           }else{
             surveys.insert({"name": files.body.name, "user": user,
-            "csv": newPath, "hidden": 0}, callback);
+            "csv": newPath, "view": "Grid", "collection": "default",
+						 "hidden": 0}, callback);
           }
         });
       });
@@ -119,7 +120,7 @@ exports.deleteSurvey = function(user, callback)
 exports.deleteSurveyByName = function(filename, user, callback)
 {
   var tmp = __dirname + "/../surveys/*";
-  var file = __dirname + "/../../public/surveys/"+user+"_"+filename+".csv";
+  var file = __dirname + "/../../public/surveys/"+user+"_"+filename+"*";
   fsx.remove(tmp, function(err){
     if(err) return console.error(err);
   });
