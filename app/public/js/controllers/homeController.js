@@ -105,20 +105,21 @@ function HomeController()
 			'<div id="carousel-1" class="carousel slide slide-carousel" data-ride="carousel">'+
 			'<div class="carousel-inner"><img src="/../img/black.jpeg" alt="Image"></div></div>'+
 			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><p>'+'</p>'+
-			'<div class="container"><div class="row"><div class="col-xs-1"><input type="radio" name="radio" id="grid-button" class="radio"/>'+
-'<label class="view-button" for="radio1">Grid</label></div><div class="col-xs-1">'+
-'<input type="radio" name="radio" id="bucket-button" class="radio"/><label class="view-button" for="radio2">Bucket</label>'+
-'</div><div class="col-md-1"><input type="radio" name="radio" id="crosstab-button" class="radio"/>'+
-'<label class="view-button" for="radio3">Crosstab</label></div></div></div>'+
+			'<div class="container"><div class="row"><div class="col-xs-1"><input type="radio" name="radio-'+i+'" id="grid-button-'+i+'" class="radio"/>'+
+			'<label id="grid-'+i+'" class="view-button" for="grid-button-'+i+'">Grid</label></div><div class="col-xs-1">'+
+			'<input type="radio" name="radio-'+i+'" id="bucket-button-'+i+'" class="radio"/><label id="bucket-'+i+'" class="view-button" for="bucket-button-'+i+'">Bucket</label>'+
+			'</div><div class="col-xs-1"> <input type="radio" name="radio-'+i+'" id="crosstab-button-'+i+'" class="radio"/>'+
+			'<label id="grid'+i+'" class="view-button" for="crosstab-button-'+i+'">Crosstab</label></div></div></div>'+
 			'</div>'+
-			'<div class="slide-footer"><div class="col-xs-1"><h4>Public: </h4></div>'+
+			'<div class="slide-footer"><div id="hidden-button" class="col-xs-1"><h4>Public: </h4></div>'+
 			'<div class="toggle-button" id="public-'+i+'"><button ></button></div>'+
 			'<span class="pull-right buttons">'+
 			'<button id="survey-'+i+'" class="btn btn-sm btn-primary surveys-click"><i class="fa fa-fw fa-eye"></i> Show</button>'+
+			'<button id="pattern-'+i+'" class="btn btn-sm btn-primary surveys-pattern"><i class="fa fa-map-o"></i> Pattern</button>'+
 			'<button id="delete-'+i+'" class="btn btn-sm btn-primary surveys-delete"><i class="fa fa-fw fa-warning"></i> Delete</button>'+
 			'</span></div></div></div>'
 			);
-
+			$('#'+surveys[i].view+'-'+i).trigger("click");
 			if(parseInt(surveys[i].hidden) == 0) $("#public-"+i).toggleClass('toggle-button-selected');
 
 		}

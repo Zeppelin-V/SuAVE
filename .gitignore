@@ -1,3 +1,5 @@
 .DS_Store
 node_modules
+upload.out
+suave_2016.pem
 app/server/modules/email-settings-mine.js

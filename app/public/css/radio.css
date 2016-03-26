@@ -1,16 +1,13 @@
-
 .view-button {
-  width: 120px;
+  width: 100px;
   border-radius: 3px;
   border: 1px solid #D1D3D4
 }
 
-/* hide input */
 input.radio:empty {
   margin-left: -999px;
 }
 
-/* style label */
 input.radio:empty ~ .view-button {
   position: relative;
   float: left;
@@ -36,15 +33,12 @@ input.radio:empty ~ label:before {
   border-radius: 3px 0 0 3px;
 }
 
-/* toggle hover */
 input.radio:hover:not(:checked) ~ label:before {
   content:'\2714';
   text-indent: .9em;
   color: #ffffff;
 }
 
-
-/* toggle on */
 input.radio:checked ~ label:before {
   content:'\2714';
   text-indent: .9em;
@@ -52,4 +46,7 @@ input.radio:checked ~ label:before {
   background-color: #0074cc;
 }
 
-
+#hidden-button{
+  margin-left: 10px;
+  padding-top: 10px;
+}
