@@ -9,8 +9,6 @@ $(document).ready(function(){
 			return true;
 		},
 		success	: function(responseText, status, xhr, $form){
-			console.log("success");
-			//$(".btn-newSurvey").click();
 			setTimeout(function(){window.location.href = '/';}, 300);
 		},
 		error : function(e){
@@ -25,7 +23,6 @@ $(document).ready(function(){
 			console.log(e);
 		}else {
 			surveys = e;
-			console.log(e);
 			hc.displaySurveys(surveys);
 		}
 	});

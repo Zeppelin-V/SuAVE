@@ -27,10 +27,33 @@ function HomeController()
 
 	});
 
+	$(document).on('click', '.view-button', function() {
+
+		var id = $(this).attr("id");
+		var survey = surveys[id.slice(-1)];
+		var view = id.substring(0, id.length-1);
+		surveys[id.slice(-1)].view = view;
+
+		$.ajax({
+			url: "/changeViewByNameID",
+			type: "POST",
+			data: {"name" : survey.name, "user": user, "view": view},
+			success: function(data){
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
+
+	});
+
 	$(document).on('click', '.surveys-click', function(){
 		var id = $(this).attr('id');
-		var file = surveys[id.slice(-1)].name;
-		window.open(window.location+'/../main.html?file='+user+"_"+file+'.csv');
+		var survey = surveys[id.slice(-1)];
+		var file = survey.name;
+
+		window.open(window.location+'/../main.html?file='+user+"_"+file+'.csv'+
+			"&view="+survey.view);
 	});
 
 	$(document).on('click', '.surveys-delete', function(){
@@ -109,7 +132,7 @@ function HomeController()
 			'<label id="grid-'+i+'" class="view-button" for="grid-button-'+i+'">Grid</label></div><div class="col-xs-1">'+
 			'<input type="radio" name="radio-'+i+'" id="bucket-button-'+i+'" class="radio"/><label id="bucket-'+i+'" class="view-button" for="bucket-button-'+i+'">Bucket</label>'+
 			'</div><div class="col-xs-1"> <input type="radio" name="radio-'+i+'" id="crosstab-button-'+i+'" class="radio"/>'+
-			'<label id="grid'+i+'" class="view-button" for="crosstab-button-'+i+'">Crosstab</label></div></div></div>'+
+			'<label id="crosstab-'+i+'" class="view-button" for="crosstab-button-'+i+'">Crosstab</label></div></div></div>'+
 			'</div>'+
 			'<div class="slide-footer"><div id="hidden-button" class="col-xs-1"><h4>Public: </h4></div>'+
 			'<div class="toggle-button" id="public-'+i+'"><button ></button></div>'+

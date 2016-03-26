@@ -7,8 +7,11 @@ function GalleryController()
 //set listener on buttons
 	$(document).on('click', '.surveys-click', function(){
 		var id = $(this).attr('id');
-		var file = surveys[id.slice(-1)].name;
-		window.open(window.location+'/../../main.html?file='+user+"_"+file+'.csv');
+		var survey = surveys[id.slice(-1)];
+		var file = survey.name;
+
+		window.open(window.location+'/../main.html?file='+user+"_"+file+'.csv'+
+			"&view="+survey.view);
 	});
 
 	this.getSurveys = function(callback)
