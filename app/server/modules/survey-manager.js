@@ -143,3 +143,15 @@ exports.hideSurveyByNameID = function(filename, user, callback)
 		}
 	});
 }
+
+exports.changeViewByNameID = function(filename, user, view, callback)
+{
+	surveys.findOne({"name":filename, "user": user}, function(e, o){
+		if (e){
+			callback(e);
+		}	else{
+			o.view = view;
+			surveys.save(o, callback);
+		}
+	});
+}

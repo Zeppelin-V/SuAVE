@@ -104,7 +104,13 @@ function HomeController()
 			$("#main-container").append('<div class="row carousel-row"><div class="col-xs-8 col-xs-offset-2 slide-row">'+
 			'<div id="carousel-1" class="carousel slide slide-carousel" data-ride="carousel">'+
 			'<div class="carousel-inner"><img src="/../img/black.jpeg" alt="Image"></div></div>'+
-			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><p>'+'</p></div>'+
+			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><p>'+'</p>'+
+			'<div class="container"><div class="row"><div class="col-xs-1"><input type="radio" name="radio" id="grid-button" class="radio"/>'+
+'<label class="view-button" for="radio1">Grid</label></div><div class="col-xs-1">'+
+'<input type="radio" name="radio" id="bucket-button" class="radio"/><label class="view-button" for="radio2">Bucket</label>'+
+'</div><div class="col-md-1"><input type="radio" name="radio" id="crosstab-button" class="radio"/>'+
+'<label class="view-button" for="radio3">Crosstab</label></div></div></div>'+
+			'</div>'+
 			'<div class="slide-footer"><div class="col-xs-1"><h4>Public: </h4></div>'+
 			'<div class="toggle-button" id="public-'+i+'"><button ></button></div>'+
 			'<span class="pull-right buttons">'+
