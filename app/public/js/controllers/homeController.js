@@ -16,7 +16,7 @@ function HomeController()
 
 		$.ajax({
 			url: "/getSurveyColumnsNCollection",
-			type: "GET",
+			type: "POST",
 			data: {"name" : survey.name, "user": user},
 			success: function(data){
 				var column = data[0];

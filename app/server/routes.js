@@ -239,7 +239,7 @@ module.exports = function(app) {
 	});
 
 //get survey's column name
-	app.get('/getSurveyColumnsNCollection', function(req, res){
+	app.post('/getSurveyColumnsNCollection', function(req, res){
 		CL.getSurveyColumnAndCollect(req.body.name, req.body.user, function(e, o){
 			if(e){
 				res.status(400).send(e);
