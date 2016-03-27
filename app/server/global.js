@@ -9,3 +9,7 @@ exports.getDefaultCollect = function(){
 exports.getDefaultCol = function(){
   return defaultCol;
 }
+
+exports.getCollections = function(){
+  return collections;
+};

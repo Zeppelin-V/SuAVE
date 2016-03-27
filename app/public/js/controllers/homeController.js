@@ -7,7 +7,36 @@ function HomeController()
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
 	$('#btn-update').click(function(){ window.open('/update', "_self"); });
 	$('#btn-addNew').click(function(){$('.modal-new-survey').modal('show') });
+
 //set listener on buttons
+	$(document).on('click', '.surveys-pattern', function(){
+		$('.modal-select-collection').modal('show');
+		var id = $(this).attr("id");
+		var survey = surveys[id.slice(-1)];
+
+		$.ajax({
+			url: "/getSurveyColumnsNCollection",
+			type: "GET",
+			data: {"name" : survey.name, "user": user},
+			success: function(data){
+				var column = data[0];
+				var collection = data[1];
+
+				for(var i = 0; i < column.length; i++){
+					$("#column-select").append($("<option></option>").val(column[i]).html(column[i]));
+				}
+
+				for(var i = 0; i < collection.length; i++){
+					$("#collect-select").append($("<option></option>").val(collection[i]).html(collection[i]));
+				}
+
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
+	});
+
 	$(document).on('click', '.toggle-button', function() {
 		$(this).toggleClass('toggle-button-selected');
 		var id = $(this).attr("id");
@@ -28,10 +57,11 @@ function HomeController()
 	});
 
 	$(document).on('click', '.view-button', function() {
-
 		var id = $(this).attr("id");
 		var survey = surveys[id.slice(-1)];
-		var view = id.substring(0, id.length-1);
+		var view = id.substring(0, id.length-2);
+
+		if(view == survey.view) return;
 		surveys[id.slice(-1)].view = view;
 
 		$.ajax({
@@ -126,8 +156,8 @@ function HomeController()
 		for(i = 0; i < surveys.length; i++){
 			$("#main-container").append('<div class="row carousel-row"><div class="col-xs-8 col-xs-offset-2 slide-row">'+
 			'<div id="carousel-1" class="carousel slide slide-carousel" data-ride="carousel">'+
-			'<div class="carousel-inner"><img src="/../img/black.jpeg" alt="Image"></div></div>'+
-			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><p>'+'</p>'+
+			'<div class="carousel-inner"><img src="/../img/blue.jpg" alt="Image"></div></div>'+
+			'<div class="slide-content"><h2>'+surveys[i].name+'</h2>'+
 			'<div class="container"><div class="row"><div class="col-xs-1"><input type="radio" name="radio-'+i+'" id="grid-button-'+i+'" class="radio"/>'+
 			'<label id="grid-'+i+'" class="view-button" for="grid-button-'+i+'">Grid</label></div><div class="col-xs-1">'+
 			'<input type="radio" name="radio-'+i+'" id="bucket-button-'+i+'" class="radio"/><label id="bucket-'+i+'" class="view-button" for="bucket-button-'+i+'">Bucket</label>'+

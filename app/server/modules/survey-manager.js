@@ -5,7 +5,7 @@ var moment 		= require('moment');
 var fsx = require('fs-extra');
 var fs = require('fs'); //file system
 var path = require('path');
-var loader = require('./collectionLoader');
+var loader = require('./collection-loader');
 
 var dbPort 		= 27017;
 var dbHost 		= 'localhost';

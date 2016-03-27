@@ -2,6 +2,7 @@ var GL = require('./global');
 var AM = require('./modules/account-manager');
 var EM = require('./modules/email-dispatcher');
 var SM = require('./modules/survey-manager');
+var CL = require('./modules/collection-loader');
 var multer  = require('multer');
 
 module.exports = function(app) {
@@ -237,6 +238,18 @@ module.exports = function(app) {
 		});
 	});
 
+//get survey's column name
+	app.get('/getSurveyColumnsNCollection', function(req, res){
+		CL.getSurveyColumnAndCollect(req.body.name, req.body.user, function(e, o){
+			if(e){
+				res.status(400).send(e);
+			}else{
+				var data = [o, GL.getCollections()];
+				res.status(200).send(data);
+			}
+		});
+	});
+
 //get and delete surveys
 	app.post('/getSurveys', function(req, res) {
 		SM.getSurveyByUsername(req.body.user, function(e, surveys){
@@ -287,7 +300,6 @@ module.exports = function(app) {
 			}
 		})
 	});
-
 
 	app.get('/getSurveys/:survey', function(req, res){
 		console.log(__dirname + '/surveys/');
