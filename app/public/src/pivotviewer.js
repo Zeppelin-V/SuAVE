@@ -314,7 +314,6 @@ var ruleNums = 0;
       for (var i = 0; i < _views.length; i++) { _views[i].handleFilter(_tiles, _filterList, _sortCategory); }
       getBucketFilters();
       getRuleFilters();
-      console.log(_sortCategory);
     }
 
 
@@ -328,7 +327,6 @@ var ruleNums = 0;
         type = "nonstring";
       }
       var buckets = _views[1].buckets;
-      console.log(buckets);
       for(var i = 0; i < buckets.length; i++){
         if(type == "string"){
           var value = [buckets[i].startRange, buckets[i].endRange];
@@ -338,7 +336,6 @@ var ruleNums = 0;
           bucketRules.push({name:_sortCategory, type:type, value:value});
         }
       }
-      console.log(bucketRules);
       if(bucketRules != undefined) getBucketsCount();
     }
 
@@ -362,18 +359,12 @@ var ruleNums = 0;
              }
           }
         }
-        console.log(Cs[j]);
-        console.log(Cs[j].length);
       }
-      console.log(Cs);
     }
 
     //get ACs BCs ABCs
     function getAllTable(){
       //Count B filter
-      console.log(Cs.length);
-      console.log(A.length);
-      console.log(B.length);
       for(var j = 0; j < Cs.length; j++){
         ACs[j] = [];
         BCs[j] = [];
@@ -476,7 +467,6 @@ var ruleNums = 0;
             }
           }
         }
-
         //ABDCs
         for(var i = 0; i < ABD.length; i++){
           var facet = ABD[i].getFacetByName(bucketRules[j].name);
@@ -496,15 +486,11 @@ var ruleNums = 0;
           }
         }
       }
-      console.log(ACs);
-      console.log(BCs);
-      console.log(ABCs);
     }
 
     function getRuleFilters(){
       ruleFilters = [];
       ruleNums = 0;
-      console.log(_stringFilters);
       for (var i = 0; i < _stringFilters.length; i++) {
           ruleNums++;
           var name = _stringFilters[i].facet;
@@ -523,8 +509,6 @@ var ruleNums = 0;
           var selectedMin = _numericFilters[i].selectedMin;
           ruleFilters.push({name:name, type: type, value:[selectedMin, selectedMax]});
       }
-      if(_stringFilters[0] != undefined) console.log(_stringFilters[0].value);
-      console.log(ruleFilters);
       ruleCount();
     }
 
@@ -538,12 +522,11 @@ var ruleNums = 0;
       AB = [];
       AD = [];
       BD = [];
+      ABD = [];
       //Count A filter
       for (var i = 0; i < PivotCollection.items.length; i++) {
         if(ruleFilters[0].type == "string"){
           var facet = PivotCollection.items[i].getFacetByName(ruleFilters[0].name);
-          //console.log(facet.values[0].value);
-          //console.log(ruleFilters[0].value);
           if(facet != undefined && $.inArray(facet.values[0].value, ruleFilters[0].value)>-1){
             A.push(PivotCollection.items[i]);
           }
@@ -606,6 +589,7 @@ var ruleNums = 0;
           }
         }
       }
+
       if(ruleNums == 2){
         getAllTable();
         return;
@@ -654,12 +638,12 @@ var ruleNums = 0;
         }
         if(ruleFilters[0].type == "string"){
           if($.inArray(facet.values[0].value, ruleFilters[0].value)>-1){
-            ABD.push(A[i]);
+            ABD.push(BD[i]);
           }
         }else if(ruleFilters[0].type = "nonstring"){
           if(ruleFilters[0].value[0] <= facet.values[0].value
            && ruleFilters[0].value[1] >= facet.values[0].value){
-            ABD.push(A[i]);
+            ABD.push(BD[i]);
           }
         }
       }
@@ -2379,8 +2363,6 @@ var ruleNums = 0;
             clear = false;
         }
         else if (!$(checkbox).prop('checked')) {
-            console.log("debug");
-            console.log(_stringFilters);
             if ($(checkbox).attr('itemvalue') == "CustomRange") PV._hideCustomDateRange($(checkbox).attr('itemfacet'));
             if ($("input[itemfacet|='" + $(checkbox).attr("itemfacet") + "']:checked").length == 0) {
                 enlarge = true;
