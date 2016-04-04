@@ -25,18 +25,18 @@ function HomeController()
 			'<label for="pv-bucket" class="checkbox-custom-label">Buecket</label></div>'+
 			'<div class="col-xs-1"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div></div><div class="row">'+
-			'<div class="col-xs-1"> <input id="pv-qga" class="checkbox-custom" type="checkbox">'+
-			'<label for="pv-qga" class="checkbox-custom-label">QGA</label></div>'+
+			'<div class="col-xs-1"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
+			'<label for="pv-qca" class="checkbox-custom-label">QCA</label></div>'+
 			'<div class="col-xs-1"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-map" class="checkbox-custom-label">Map</label> </div>'+
 			'<div class="col-xs-1"><input id="pv-r" class="checkbox-custom" type="checkbox" disabled="disabled" checked>'+
 			'<label for="pv-r" class="checkbox-custom-label">R</label></div></div>'
 		);
-		var views = survey.views;
+		var views = survey.views.toString();
 		if(views[0] == '1') $("#pv-grid").prop("checked", true);
     if(views[1] == '1') $("#pv-bucket").prop("checked", true);
     if(views[2] == '1') $("#pv-crosstab").prop("checked", true);
-    if(views[3] == '1') $("#pv-qga").prop("checked", true);
+    if(views[3] == '1') $("#pv-qca").prop("checked", true);
     if(views[4] == '1') $("#pv-map").prop("checked", true);
 
 		//get Columns
@@ -84,7 +84,7 @@ function HomeController()
 		}else{
 			views += 0;
 		}
-		if($("#pv-qga").is(':checked')){
+		if($("#pv-qca").is(':checked')){
 			views += 1;
 		}else{
 			views += 0;
@@ -101,7 +101,6 @@ function HomeController()
 			data: {"name" : surveys[SID].name, "user": user, "views": parseInt(views)},
 			success: function(data){
 				surveys[SID].views = parseInt(views);
-
 				setTimeout(function(){window.location.href = '/';}, 3000);
 			},
 			error: function(jqXHR){
@@ -231,17 +230,26 @@ function HomeController()
 
 	this.displaySurveys = function(surveys){
 		for(i = 0; i < surveys.length; i++){
-			//TODO: dynamically change default view options
 			$("#main-container").append('<div class="row carousel-row"><div class="col-xs-8 col-xs-offset-2 slide-row">'+
 			'<div id="carousel-1" class="carousel slide slide-carousel" data-ride="carousel">'+
 			'<div class="carousel-inner"><img src="/../img/blue.jpg" alt="Image"></div></div>'+
-			'<div class="slide-content"><h2>'+surveys[i].name+'</h2>'+
-			'<div class="container"><div class="row"><div class="col-xs-1"><input type="radio" name="radio-'+i+'" id="grid-button-'+i+'" class="radio"/>'+
-			'<label id="grid-'+i+'" class="view-button" for="grid-button-'+i+'">Grid</label></div><div class="col-xs-1">'+
-			'<input type="radio" name="radio-'+i+'" id="bucket-button-'+i+'" class="radio"/><label id="bucket-'+i+'" class="view-button" for="bucket-button-'+i+'">Bucket</label>'+
-			'</div><div class="col-xs-1"> <input type="radio" name="radio-'+i+'" id="crosstab-button-'+i+'" class="radio"/>'+
-			'<label id="crosstab-'+i+'" class="view-button" for="crosstab-button-'+i+'">Crosstab</label></div></div></div>'+
-			'</div>'+
+			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><div class="container"><div class="row">');
+
+			var views = surveys[i].views.toString();
+			if(views[0] == '1') $("#main-container").append(
+				'<div class="col-xs-1"><input type="radio" name="radio-'+i+'" id="grid-button-'+i+'" class="radio"/>'+
+				'<label id="grid-'+i+'" class="view-button" for="grid-button-'+i+'">Grid</label></div>');
+	    if(views[1] == '1') $("#main-container").append('<div class="col-xs-1">'+
+				'<input type="radio" name="radio-'+i+'" id="bucket-button-'+i+'" class="radio"/><label id="bucket-'+
+				i+'" class="view-button" for="bucket-button-'+i+'">Bucket</label></div>');
+	    if(views[2] == '1') $("#main-container").append('<div class="col-xs-1"> <input type="radio" name="radio-'
+			+i+'" id="crosstab-button-'+i+'" class="radio"/>'+
+			'<label id="crosstab-'+i+'" class="view-button" for="crosstab-button-'+i+'">Crosstab</label></div>');
+	    if(views[4] == '1') $("#main-container").append(
+				'<div class="col-xs-1"><input type="radio" name="radio-'+i+'" id="map-button-'+i+'" class="radio"/>'+
+				'<label id="map-'+i+'" class="view-button" for="map-button-'+i+'">Map</label></div>');
+
+			$("#main-container").append('</div></div></div>'+
 			'<div class="slide-footer"><div id="hidden-button" class="col-xs-1"><h4>Public: </h4></div>'+
 			'<div class="toggle-button" id="public-'+i+'"><button ></button></div>'+
 			'<span class="pull-right buttons">'+
@@ -250,7 +258,11 @@ function HomeController()
 			'<button id="delete-'+i+'" class="btn btn-sm btn-primary surveys-delete"><i class="fa fa-fw fa-warning"></i> Delete</button>'+
 			'</span></div></div></div>'
 			);
-			$('#'+surveys[i].view+'-'+i).trigger("click");
+			if($('#'+surveys[i].view+'-'+i).length == 0){
+				$('#'+'grid-'+i).trigger('click');
+			}else{
+				$('#'+surveys[i].view+'-'+i).trigger("click");
+			}
 			if(parseInt(surveys[i].hidden) == 0) $("#public-"+i).toggleClass('toggle-button-selected');
 
 		}
