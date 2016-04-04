@@ -62,6 +62,7 @@ var ruleNums = 0;
         _mouseMove = null,
         _self = null,
         _nameMapping = [],
+        _enabledView = [],
         _options = {};
 
     var methods = {
@@ -88,6 +89,9 @@ var ruleNums = 0;
                 else if (options.ImageController instanceof PivotViewer.Views.IImageController)
                     _imageController = options.ImageController;
                 else throw "Image Controller does not inherit from PivotViewer.Views.IImageController.";
+
+                //set enabled Views
+                _enabledView = options.Views;
 
                 if (options.Loader == undefined) {
                     $('.pv-wrapper').append("<div id='pv-file-selection' class='pv-modal-dialog modal-lg'><div><div id='pv-modal-text'><p>Use Existing Project:<br><select id='pv-server-file' class='pv-server-file'><option>Select a file</option></select><p>Create New Project:<br><input id='pv-load-file' class='pv-load-file' type=file accept='.csv'></div></div></div>");
@@ -1596,7 +1600,8 @@ var ruleNums = 0;
         var offsetY = 4;
 
         if (PivotCollection.config == undefined) PivotCollection.config = [];
-        if (PivotCollection.config.views == undefined) PivotCollection.config.views = ["grid", "bucket", "crosstab"];
+        if (PivotCollection.config.views == undefined) PivotCollection.config.views = _enabledView;
+        //if (PivotCollection.config.views == undefined) PivotCollection.config.views = ["grid", "bucket"];
         if (_options.View != undefined && PivotCollection.config.views.indexOf(_options.View) < 0) PivotCollection.config.views.push(_options.View)
         for (var i = 0; i < PivotCollection.config.views.length; i++) {
             var viewName = PivotCollection.config.views[i];
@@ -1768,7 +1773,7 @@ var ruleNums = 0;
           if(iv == undefined || dv == undefined){
             alert("Please select at least one dependent variable, and one independent variable");
           }
-          var formulaStr = "V"+dv+"~"
+          var formulaStr = "V"+(parseInt(dv)+1)+"~"
           var length = iv.length;
           for(var i = 0; i < length; i++){
               if(i != 0){

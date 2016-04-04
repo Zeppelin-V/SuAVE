@@ -301,6 +301,17 @@ module.exports = function(app) {
 		})
 	});
 
+	app.post('/changeViewOptions', function(req, res) {
+		SM.changeViewOptionsByNameID(req.body.name, req.body.user, req.body.views, function(e){
+			if(e) {
+				res.status(400).send(e);
+			}else{
+				res.status(200).send("ok");
+			}
+		})
+	});
+
+
 	app.get('/getSurveys/:survey', function(req, res){
 		console.log(__dirname + '/surveys/');
 		res.sendFile(req.params.survey, {root: __dirname + '/../public/surveys/'});

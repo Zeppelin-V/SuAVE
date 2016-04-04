@@ -3,17 +3,43 @@ function HomeController()
 {
 // bind event listeners to button clicks //
 	var that = this;
+	var SID;
 // handle user logout //
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
 	$('#btn-update').click(function(){ window.open('/update', "_self"); });
 	$('#btn-addNew').click(function(){$('.modal-new-survey').modal('show') });
 
 //set listener on buttons
-	$(document).on('click', '.surveys-pattern', function(){
+	$(document).on('click', '.surveys-edit', function(){
 		$('.modal-select-collection').modal('show');
 		var id = $(this).attr("id");
-		var survey = surveys[id.slice(-1)];
+		var i = id.slide(-1);
+		SID = i;
+		var survey = surveys[i];
+		//insert views checkboxes
+		$('#pv-views').empty();
+		$('#pv-views').append(
+			'<div class="row" ><div class="col-xs-1"><input id="pv-grid" class="checkbox-custom"  type="checkbox">'+
+			'<label for="pv-grid" class="checkbox-custom-label">Grid</label></div>'+
+			'<div class="col-xs-1"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
+			'<label for="pv-bucket" class="checkbox-custom-label">Buecket</label></div>'+
+			'<div class="col-xs-1"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
+			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div>'+
+			'<div class="col-xs-1"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
+			'<label for="pv-qca" class="checkbox-custom-label">QCA</label></div>'+
+			'<div class="col-xs-1"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
+			'<label for="pv-map" class="checkbox-custom-label">Map</label> </div></div>'+
+			'<div class="col-xs-1"><input id="pv-r" class="checkbox-custom" type="checkbox" disabled="disabled" checked>'+
+			'<label for="pv-r" class="checkbox-custom-label">R</label></div>'
+		);
 
+		if(query.views[0] == 1) $("#pv-grid").prop("checked", true);
+    if(query.views[1] == 1) $("#pv-bucket").prop("checked", true);
+    if(query.views[2] == 1) $("#pv-crosstab").prop("checked", true);
+    if(query.views[3] == 1) $("#pv-qca").prop("checked", true);
+    if(query.views[4] == 1) $("#pv-map").prop("checked", true);
+
+		//get Columns
 		$.ajax({
 			url: "/getSurveyColumnsNCollection",
 			type: "POST",
@@ -36,6 +62,55 @@ function HomeController()
 			}
 		});
 	});
+
+
+	$(document).on('click', '#select-collection-submit', function(){
+		//TODO: change collection
+
+		var views = "";
+		//change view options
+		if($("#pv-grid").is(':checked')){
+			views += 1;
+		}else{
+			views += 0;
+		}
+		if($("#pv-bucket").is(':checked')){
+			views += 1;
+		}else{
+			views += 0;
+		}
+		if($("#pv-crosstab").is(':checked')){
+			views += 1;
+		}else{
+			views += 0;
+		}
+		if($("#pv-qca").is(':checked')){
+			views += 1;
+		}else{
+			views += 0;
+		}
+		if($("#pv-map").is(':checked')){
+			views += 1;
+		}else{
+			views += 0;
+		}
+
+		$.ajax({
+			url: "/changeViewOptions",
+			type: "POST",
+			data: {"name" : surveys[SID].name, "user": user, "views": parseInt(views)},
+			success: function(data){
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
+
+		surveys[SID].views = parseInt(views);
+
+	});
+
+
 
 	$(document).on('click', '.toggle-button', function() {
 		$(this).toggleClass('toggle-button-selected');
@@ -77,13 +152,14 @@ function HomeController()
 
 	});
 
+	//when "show" button is clicked
 	$(document).on('click', '.surveys-click', function(){
 		var id = $(this).attr('id');
 		var survey = surveys[id.slice(-1)];
 		var file = survey.name;
-
+		//Grid, bucket, crosstab, QCA, map
 		window.open(window.location+'/../main.html?file='+user+"_"+file+'.csv'+
-			"&view="+survey.view);
+			"&views="+surveys.views+"&view="+survey.view);
 	});
 
 	$(document).on('click', '.surveys-delete', function(){
@@ -154,6 +230,7 @@ function HomeController()
 
 	this.displaySurveys = function(surveys){
 		for(i = 0; i < surveys.length; i++){
+			//TODO: dynamically change default view options
 			$("#main-container").append('<div class="row carousel-row"><div class="col-xs-8 col-xs-offset-2 slide-row">'+
 			'<div id="carousel-1" class="carousel slide slide-carousel" data-ride="carousel">'+
 			'<div class="carousel-inner"><img src="/../img/blue.jpg" alt="Image"></div></div>'+
@@ -168,7 +245,7 @@ function HomeController()
 			'<div class="toggle-button" id="public-'+i+'"><button ></button></div>'+
 			'<span class="pull-right buttons">'+
 			'<button id="survey-'+i+'" class="btn btn-sm btn-primary surveys-click"><i class="fa fa-fw fa-eye"></i> Show</button>'+
-			'<button id="pattern-'+i+'" class="btn btn-sm btn-primary surveys-pattern"><i class="fa fa-map-o"></i> Pattern</button>'+
+			'<button id="edit-'+i+'" class="btn btn-sm btn-primary surveys-edit"><i class="fa fa-map-o"></i> Edit</button>'+
 			'<button id="delete-'+i+'" class="btn btn-sm btn-primary surveys-delete"><i class="fa fa-fw fa-warning"></i> Delete</button>'+
 			'</span></div></div></div>'
 			);

@@ -41,7 +41,7 @@ exports.createNewSurvey = function(files, user, callback){
             callback(err);
           }else{
             surveys.insert({"name": files.body.name, "user": user,
-            "csv": newPath, "view": "grid", "collection": "default",
+            "csv": newPath, "view": "grid", "views": 11100, "collection": "default",
 						 "hidden": 0}, callback);
           }
         });
@@ -153,6 +153,18 @@ exports.changeViewByNameID = function(filename, user, view, callback)
 			callback(e);
 		}	else{
 			o.view = view;
+			surveys.save(o, callback);
+		}
+	});
+}
+
+exports.changeViewOptionsByNameID = function(filename, user, views, callback)
+{
+	surveys.findOne({"name":filename, "user": user}, function(e, o){
+		if (e){
+			callback(e);
+		}	else{
+			o.views = views;
 			surveys.save(o, callback);
 		}
 	});

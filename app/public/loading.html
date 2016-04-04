@@ -56,13 +56,25 @@
         if (url.query != null) {
             var query = URI.parseQuery(url.query);
             if (query.file != undefined) {
-                console.log(query.file);
+
                 if (query.file.endsWith(".csv") || query.type == "csv") options.Loader = new PivotViewer.Models.Loaders.CSVLoader("surveys/"+query.file);
                 else options.Loader = new PivotViewer.Models.Loaders.CXMLLoader("surveys/" + query.file);
             }
             options.View = query.view;
+            //Grid, bucket, crosstab, QCA, map
+            //if all exists, views=11111
+            if(query.views != undefined){
+                options.Views = [];
+                if(query.views[0] == 1) options.Views.push("grid");
+                if(query.views[1] == 1) options.Views.push("bucket");
+                if(query.views[2] == 1) options.Views.push("crosstab");
+                if(query.views[3] == 1) options.Views.push("QCA");
+                if(query.views[4] == 1) options.Views.push("map");
+            }
         }
-        //initRSession("http://132.249.238.135/projects/"+query.file);
+
+        console.log(options.Views);
+
         initRSession("http://132.249.238.135:3000/surveys/"+query.file);
         $(document).ready(function () { $('#pivotviewer').PivotViewer(options); });
     </script>
