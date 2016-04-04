@@ -13,7 +13,7 @@ function HomeController()
 	$(document).on('click', '.surveys-edit', function(){
 		$('.modal-select-collection').modal('show');
 		var id = $(this).attr("id");
-		var i = id.slide(-1);
+		var i = id.slice(-1);
 		SID = i;
 		var survey = surveys[i];
 		//insert views checkboxes
@@ -24,20 +24,20 @@ function HomeController()
 			'<div class="col-xs-1"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-bucket" class="checkbox-custom-label">Buecket</label></div>'+
 			'<div class="col-xs-1"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
-			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div>'+
-			'<div class="col-xs-1"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
-			'<label for="pv-qca" class="checkbox-custom-label">QCA</label></div>'+
+			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div></div><div class="row">'+
+			'<div class="col-xs-1"> <input id="pv-qga" class="checkbox-custom" type="checkbox">'+
+			'<label for="pv-qga" class="checkbox-custom-label">QGA</label></div>'+
 			'<div class="col-xs-1"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
-			'<label for="pv-map" class="checkbox-custom-label">Map</label> </div></div>'+
+			'<label for="pv-map" class="checkbox-custom-label">Map</label> </div>'+
 			'<div class="col-xs-1"><input id="pv-r" class="checkbox-custom" type="checkbox" disabled="disabled" checked>'+
-			'<label for="pv-r" class="checkbox-custom-label">R</label></div>'
+			'<label for="pv-r" class="checkbox-custom-label">R</label></div></div>'
 		);
-
-		if(query.views[0] == 1) $("#pv-grid").prop("checked", true);
-    if(query.views[1] == 1) $("#pv-bucket").prop("checked", true);
-    if(query.views[2] == 1) $("#pv-crosstab").prop("checked", true);
-    if(query.views[3] == 1) $("#pv-qca").prop("checked", true);
-    if(query.views[4] == 1) $("#pv-map").prop("checked", true);
+		var views = survey.views;
+		if(views[0] == '1') $("#pv-grid").prop("checked", true);
+    if(views[1] == '1') $("#pv-bucket").prop("checked", true);
+    if(views[2] == '1') $("#pv-crosstab").prop("checked", true);
+    if(views[3] == '1') $("#pv-qga").prop("checked", true);
+    if(views[4] == '1') $("#pv-map").prop("checked", true);
 
 		//get Columns
 		$.ajax({
@@ -84,7 +84,7 @@ function HomeController()
 		}else{
 			views += 0;
 		}
-		if($("#pv-qca").is(':checked')){
+		if($("#pv-qga").is(':checked')){
 			views += 1;
 		}else{
 			views += 0;
@@ -100,13 +100,14 @@ function HomeController()
 			type: "POST",
 			data: {"name" : surveys[SID].name, "user": user, "views": parseInt(views)},
 			success: function(data){
+				surveys[SID].views = parseInt(views);
+
+				setTimeout(function(){window.location.href = '/';}, 3000);
 			},
 			error: function(jqXHR){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
 			}
 		});
-
-		surveys[SID].views = parseInt(views);
 
 	});
 
@@ -157,9 +158,9 @@ function HomeController()
 		var id = $(this).attr('id');
 		var survey = surveys[id.slice(-1)];
 		var file = survey.name;
-		//Grid, bucket, crosstab, QCA, map
+		//Grid, bucket, crosstab, QGA, map
 		window.open(window.location+'/../main.html?file='+user+"_"+file+'.csv'+
-			"&views="+surveys.views+"&view="+survey.view);
+			"&views="+survey.views+"&view="+survey.view);
 	});
 
 	$(document).on('click', '.surveys-delete', function(){
