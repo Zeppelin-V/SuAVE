@@ -19,17 +19,17 @@ function HomeController()
 		//insert views checkboxes
 		$('#pv-views').empty();
 		$('#pv-views').append(
-			'<div class="row" ><div class="col-xs-1"><input id="pv-grid" class="checkbox-custom"  type="checkbox">'+
+			'<div class="row" ><div class="col-xs-2"><input id="pv-grid" class="checkbox-custom"  type="checkbox">'+
 			'<label for="pv-grid" class="checkbox-custom-label">Grid</label></div>'+
-			'<div class="col-xs-1"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-2"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-bucket" class="checkbox-custom-label">Buecket</label></div>'+
-			'<div class="col-xs-1"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-2"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div></div><div class="row">'+
-			'<div class="col-xs-1"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-2"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-qca" class="checkbox-custom-label">QCA</label></div>'+
-			'<div class="col-xs-1"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-2"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-map" class="checkbox-custom-label">Map</label> </div>'+
-			'<div class="col-xs-1"><input id="pv-r" class="checkbox-custom" type="checkbox" disabled="disabled" checked>'+
+			'<div class="col-xs-2"><input id="pv-r" class="checkbox-custom" type="checkbox" disabled="disabled" checked>'+
 			'<label for="pv-r" class="checkbox-custom-label">R</label></div></div>'
 		);
 		var views = survey.views.toString();
@@ -39,6 +39,7 @@ function HomeController()
     if(views[3] == '1') $("#pv-qca").prop("checked", true);
     if(views[4] == '1') $("#pv-map").prop("checked", true);
 
+		$('#column-select').empty();
 		//get Columns
 		$.ajax({
 			url: "/getSurveyColumnsNCollection",
@@ -47,7 +48,7 @@ function HomeController()
 			success: function(data){
 				var column = data[0];
 				var collection = data[1];
-
+				$("#column-select").append($("<option selected disabled hidden></option>").html(""));
 				for(var i = 0; i < column.length; i++){
 					$("#column-select").append($("<option></option>").val(column[i]).html(column[i]));
 				}
@@ -63,6 +64,24 @@ function HomeController()
 		});
 	});
 
+	$("#collect-select").change(function() {
+    var collectVal = $(this).find(':selected').val();
+    var columnVal = $('#column-select').find(':selected').val();
+
+    if(columnVal.length > 0){
+      that.fetchColVal(columnVal, collectVal);
+    }
+
+	});
+
+	$("#column-select").change(function() {
+    var columnVal = $(this).find(':selected').val();
+    var collectVal = $('#collect-select').find(':selected').val();
+
+    if(collectVal.length > 0){
+    	that.fetchColVal(columnVal, collectVal);
+    }
+	});
 
 	$(document).on('click', '#select-collection-submit', function(){
 		//TODO: change collection
@@ -185,6 +204,10 @@ function HomeController()
 		});
 	});
 
+	this.fetchColVal = function(columnVal, collectVal){
+
+	}
+
 	this.attemptLogout = function()
 	{
 		var that = this;
@@ -230,26 +253,28 @@ function HomeController()
 
 	this.displaySurveys = function(surveys){
 		for(i = 0; i < surveys.length; i++){
-			$("#main-container").append('<div class="row carousel-row"><div class="col-xs-8 col-xs-offset-2 slide-row">'+
-			'<div id="carousel-1" class="carousel slide slide-carousel" data-ride="carousel">'+
+			$("#main-container").append('<div class="row carousel-row"><div id="carousel-'+i+'" class="col-xs-8 col-xs-offset-2 slide-row">'+
+			'<div class="carousel slide slide-carousel" data-ride="carousel">'+
 			'<div class="carousel-inner"><img src="/../img/blue.jpg" alt="Image"></div></div>'+
-			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><div class="container"><div class="row">');
+			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><div class="container"><div class="row" id="row-"'+i+'>'
+		  +'</div></div></div>');
 
 			var views = surveys[i].views.toString();
-			if(views[0] == '1') $("#main-container").append(
+
+			if(views[0] == '1') $('#row-'+i).append(
 				'<div class="col-xs-1"><input type="radio" name="radio-'+i+'" id="grid-button-'+i+'" class="radio"/>'+
 				'<label id="grid-'+i+'" class="view-button" for="grid-button-'+i+'">Grid</label></div>');
-	    if(views[1] == '1') $("#main-container").append('<div class="col-xs-1">'+
+	    if(views[1] == '1') $('#row-'+i).append('<div class="col-xs-1">'+
 				'<input type="radio" name="radio-'+i+'" id="bucket-button-'+i+'" class="radio"/><label id="bucket-'+
 				i+'" class="view-button" for="bucket-button-'+i+'">Bucket</label></div>');
-	    if(views[2] == '1') $("#main-container").append('<div class="col-xs-1"> <input type="radio" name="radio-'
+	    if(views[2] == '1') $('#row-'+i).append('<div class="col-xs-1"> <input type="radio" name="radio-'
 			+i+'" id="crosstab-button-'+i+'" class="radio"/>'+
 			'<label id="crosstab-'+i+'" class="view-button" for="crosstab-button-'+i+'">Crosstab</label></div>');
-	    if(views[4] == '1') $("#main-container").append(
+	    if(views[4] == '1') $('#row-'+i).append(
 				'<div class="col-xs-1"><input type="radio" name="radio-'+i+'" id="map-button-'+i+'" class="radio"/>'+
 				'<label id="map-'+i+'" class="view-button" for="map-button-'+i+'">Map</label></div>');
 
-			$("#main-container").append('</div></div></div>'+
+			$("#carousel-"+i).append(
 			'<div class="slide-footer"><div id="hidden-button" class="col-xs-1"><h4>Public: </h4></div>'+
 			'<div class="toggle-button" id="public-'+i+'"><button ></button></div>'+
 			'<span class="pull-right buttons">'+

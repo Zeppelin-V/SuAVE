@@ -315,6 +315,7 @@ var ruleNums = 0;
     PV.getCurrentView = function () { return _views[_currentView]; }
 
     PV.filterViews = function () {
+      if(_views[1]==undefined) return;
       for (var i = 0; i < _views.length; i++) { _views[i].handleFilter(_tiles, _filterList, _sortCategory); }
       getBucketFilters();
       getRuleFilters();

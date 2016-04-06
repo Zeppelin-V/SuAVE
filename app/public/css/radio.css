@@ -99,3 +99,16 @@ input.radio:checked ~ label:before {
 .checkbox-custom:focus + .checkbox-custom-label, .radio-custom:focus + .radio-custom-label {
   outline: 1px solid #ddd; /* focus style */
 }
+
+.dd-options  {
+    max-height: 300px;
+}
+
+.dd-option {
+    max-height: 60px;
+}
+
+
+.dd-selected{
+  max-height: 60px;
+}
