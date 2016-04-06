@@ -55,14 +55,15 @@ exports.getColumnsOptions = function(name, user, column, callback){
         }else{
           var name = output[0];
           var colIndex = -1;
-          for (var i = 0; i < result.length; i++) {
+          for (var i = 0; i < name.length; i++) {
             if (name[i] == column) {
               colIndex = -1;
+            }
           }
           var hash = {};
           for (var i = 0; i < output.length; i++) {
             var tmp = output[i][colIndex];
-            if(tmp] != undefined){
+            if(tmp != undefined){
               hash[tmp] = tmp;
             }
           }

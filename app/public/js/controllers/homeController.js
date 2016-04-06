@@ -4,6 +4,7 @@ function HomeController()
 // bind event listeners to button clicks //
 	var that = this;
 	var SID;
+	var DLength;
 // handle user logout //
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
 	$('#btn-update').click(function(){ window.open('/update', "_self"); });
@@ -205,21 +206,9 @@ function HomeController()
 	});
 
 	this.fetchColVal = function(columnVal, collectVal){
+		$('#column-select').empty();
+
 		var columnImg;
-
-		$.ajax({
-			url: "/getColumnsOptions",
-			type: "POST",
-			data: {"name" : survey.name, "user": user, "column": columnVal},
-			success: function(data){
-				columnImg = generateImgJson(data);
-			},
-			error: function(jqXHR){
-				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
-			}
-		});
-
-
 		var collect;
 		if(collectVal == "default" ){
 			collect = defaultImg;
@@ -230,17 +219,52 @@ function HomeController()
 		}else if(collectVal == "shape"){
 
 		}
-		//inflate collection dropdown
-		$('#collect-drop').ddslick({
-			data:collect,
-			width:250,
-			imagePosition:"right",
-			onSelected: function(selectedData){
-				if(selectedData.selectedData.value != 0){
-					console.log(selectedData.selectedData.value);
+
+		$.ajax({
+			url: "/getColumnsOptions",
+			type: "POST",
+			data: {"name" : surveys[SID].name, "user": user, "column": columnVal},
+			success: function(data){
+				columnImg = generateImgJson(data);
+				Dlength = data.length;
+
+				for(var i = 0; i < data.length; i++){
+					$('#column-select').append(
+						'<div class="row"><div class="col-xs-3"><div id="column-drop-'+i+'"></div></div>'+
+						'<div class="col-xs-3"><div id="collect-drop-'+i+'" class="col-xs-3"></div></div></div>');
 				}
+
+				for(var i = 0; i < data.length; i++){
+					//inflate collection dropdown
+					$('#collect-drop-'+i).ddslick({
+						data:collect,
+						width:250,
+						imagePosition:"right",
+						onSelected: function(selectedData){
+							if(selectedData.selectedData.value != 0){
+								console.log(selectedData.selectedData.value);
+							}
+						}
+					});
+
+					$('#column-drop-'+i).ddslick({
+						data:columnImg,
+						width:250,
+						imagePosition:"right",
+						onSelected: function(selectedData){
+							if(selectedData.selectedData.value != 0){
+								console.log(selectedData.selectedData.value);
+							}
+						}
+					});
+				}
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
 			}
 		});
+
+
 
 
 
