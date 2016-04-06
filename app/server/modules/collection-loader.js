@@ -43,6 +43,40 @@ exports.getSurveyColumnAndCollect = function(name, user, callback){
   });
 };
 
+exports.getColumnsOptions = function(name, user, column, callback){
+  var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+".csv";
+  fs.readFile(filePath, 'utf-8', function (err, data) {
+    if (err) {
+      callback("Unable to read survey info", null);
+    } else {
+      parse(data, function(err, output){
+        if(err){
+          callback(err, null);
+        }else{
+          var name = output[0];
+          var colIndex = -1;
+          for (var i = 0; i < result.length; i++) {
+            if (name[i] == column) {
+              colIndex = -1;
+          }
+          var hash = {};
+          for (var i = 0; i < output.length; i++) {
+            var tmp = output[i][colIndex];
+            if(tmp] != undefined){
+              hash[tmp] = tmp;
+            }
+          }
+          var result = [];
+          for(var key in hash){
+            result.push(key);
+          }
+          callback(null, result);
+        }
+      });
+    }
+  });
+};
+
 //generate deep zoom files including .dzc and .dzi
 exports.generateDeepZoom = function(dir, collection, destination, callback){
   var fs = require('fs');

@@ -250,6 +250,18 @@ module.exports = function(app) {
 		});
 	});
 
+	//get survey's column name
+		app.post('/getColumnsOptions', function(req, res){
+			CL.getColumnsOptions(req.body.name, req.body.user,
+				req.body.column, function(e, o){
+				if(e){
+					res.status(400).send(e);
+				}else{
+					res.status(200).send(o);
+				}
+			});
+		});
+
 //get and delete surveys
 	app.post('/getSurveys', function(req, res) {
 		SM.getSurveyByUsername(req.body.user, function(e, surveys){

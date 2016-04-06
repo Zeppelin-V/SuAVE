@@ -205,6 +205,44 @@ function HomeController()
 	});
 
 	this.fetchColVal = function(columnVal, collectVal){
+		var columnImg;
+
+		$.ajax({
+			url: "/getColumnsOptions",
+			type: "POST",
+			data: {"name" : survey.name, "user": user, "column": columnVal},
+			success: function(data){
+				columnImg = generateImgJson(data);
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
+
+
+		var collect;
+		if(collectVal == "default" ){
+			collect = defaultImg;
+		}else if(collectVal == "color"){
+			collect = colorImg;
+		}else if(collectVal == "gender"){
+
+		}else if(collectVal == "shape"){
+
+		}
+		//inflate collection dropdown
+		$('#collect-drop').ddslick({
+			data:collect,
+			width:250,
+			imagePosition:"right",
+			onSelected: function(selectedData){
+				if(selectedData.selectedData.value != 0){
+					console.log(selectedData.selectedData.value);
+				}
+			}
+		});
+
+
 
 	}
 
@@ -256,7 +294,7 @@ function HomeController()
 			$("#main-container").append('<div class="row carousel-row"><div id="carousel-'+i+'" class="col-xs-8 col-xs-offset-2 slide-row">'+
 			'<div class="carousel slide slide-carousel" data-ride="carousel">'+
 			'<div class="carousel-inner"><img src="/../img/blue.jpg" alt="Image"></div></div>'+
-			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><div class="container"><div class="row" id="row-"'+i+'>'
+			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><div class="container"><div class="row" id="row-'+i+'">'
 		  +'</div></div></div>');
 
 			var views = surveys[i].views.toString();

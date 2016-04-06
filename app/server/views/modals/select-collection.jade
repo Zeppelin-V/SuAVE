@@ -6,11 +6,24 @@ html
         h3
       .modal-body
         #pv-views.container
-        p.subheading Please select a column to be labeled:
-        select#column-select
-        hr
-        p.subheading Please select a collection:
-        select#collect-select
-        hr
+        .container
+          .row
+            .col-xs-3
+              p.subheading Please select a column to be labeled:
+              select#column-select
+            .col-xs-3
+              p.subheading Please select a collection:
+              select#collect-select
+                option(selected='', disabled='', hidden='')
+                option(value='default') Default
+                option(value='color') Color
+                option(value='gender') Gender
+                option(value='shape') Shape
+        .container
+          .row
+            .col-xs-3
+              #column-drop
+            .col-xs-3
+              #collect-drop.col-xs-3
         .form-buttons
           button#select-collection-submit.btn submit
