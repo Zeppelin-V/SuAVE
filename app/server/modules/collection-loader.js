@@ -57,7 +57,7 @@ exports.getColumnsOptions = function(name, user, column, callback){
           var colIndex = -1;
           for (var i = 0; i < name.length; i++) {
             if (name[i] == column) {
-              colIndex = -1;
+              colIndex = i;
             }
           }
           var hash = {};
@@ -69,7 +69,7 @@ exports.getColumnsOptions = function(name, user, column, callback){
           }
           var result = [];
           for(var key in hash){
-            result.push(key);
+            if(key != column) result.push(key);
           }
           callback(null, result);
         }

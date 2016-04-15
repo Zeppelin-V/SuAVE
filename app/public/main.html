@@ -10,7 +10,7 @@
 <body>
 <header id="earthcube-header">
  				<h1><a href="http://besuave.azurewebsites.net/" target="_blank" class="logo"><img src="./carnivora_files/suavelogo3-small-copy-e1438196105588.png"></a></h1>
-                <h2 class="tagline">EarthCube Stakeholder Alignment project</h2>
+                <h2 class="tagline"></h2>
 				<a href="https://youtu.be/IqiSf0eWtxQ?list=PLvVijDnlg_tXJJRJlEbRld0IOJCi5-vTD" target="_blank" id="video">Tutorial Videos</a>
 				<a href="#" target="_blank" id="help"></a>
 
@@ -21,30 +21,33 @@
 </iframe>
 -->
 <script>
+    var url = URI.parse(window.location.href);
+    var query = URI.parseQuery(url.query);
+    var suave_ifr = document.createElement('iframe')
+    suave_ifr.src = '/suave/loading.html?'+url.query;
+    suave_ifr.style.width="100%"
+    suave_ifr.style.height="95%"
+    suave_ifr.style.margin="0"
+    suave_ifr.style.padding="0"
+    suave_ifr.style.border="0"
+    suave_ifr.frameborder ='0'
+    document.body.appendChild(suave_ifr);
 
-        var url = URI.parse(window.location.href);
-        var query = URI.parseQuery(url.query);
-				var suave_ifr = document.createElement('iframe')
-				suave_ifr.src = '/loading.html?'+url.query;
-				suave_ifr.style.width="100%"
-				suave_ifr.style.height="95%"
-				suave_ifr.style.margin="0"
-				suave_ifr.style.padding="0"
-				suave_ifr.style.border="0"
-				suave_ifr.frameborder ='0'
-				document.body.appendChild(suave_ifr);
-        console.log("url: ");
-        console.log(url);
-        console.log("query:");
-        console.log(query);
-		var aboutTitle;
-		var aboutPath = "projects/" + (query.file).replace('.csv', '')+ "about.html";
-		$("#help").attr("href", aboutPath);
-		$("<header>").load(aboutPath + " #about-title", function(){
-			aboutTitle = "About " + $(this).text() + " Survey";
-  			$('#help').text(aboutTitle);
-		});
+    var aboutTitle;
+    var aboutPath = "surveys/";
 
+    if(query.file.endsWith(".csv")){
+      aboutPath = aboutPath + (query.file).replace('.csv', '')+ "about.html";
+    }else if(query.file.endsWith(".zip")){
+      aboutPath = aboutPath + (query.file).replace('.zip', '')+ "about.html";
+    }else if(query.file.endsWith(".cxml")){
+      aboutPath = aboutPath + (query.file).replace('.cxml', '')+ "about.html";
+    }
+    $("#help").attr("href", aboutPath);
+    $("<header>").load(aboutPath + " #about-title", function(){
+      aboutTitle = "About " + $(this).text() + " Survey";
+      $('.tagline').text($(this).text());
+    });
 </script>
 
 </body>

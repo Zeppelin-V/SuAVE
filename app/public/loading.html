@@ -54,28 +54,27 @@
         var debug = false, url = URI.parse(window.location.href);
         var options = {};
         if (url.query != null) {
-            var query = URI.parseQuery(url.query);
-            if (query.file != undefined) {
-
-                if (query.file.endsWith(".csv") || query.type == "csv") options.Loader = new PivotViewer.Models.Loaders.CSVLoader("surveys/"+query.file);
-                else options.Loader = new PivotViewer.Models.Loaders.CXMLLoader("surveys/" + query.file);
-            }
-            options.View = query.view;
-            //Grid, bucket, crosstab, QCA, map
-            //if all exists, views=11111
-            if(query.views != undefined){
-                options.Views = [];
-                if(query.views[0] == 1) options.Views.push("grid");
-                if(query.views[1] == 1) options.Views.push("bucket");
-                if(query.views[2] == 1) options.Views.push("crosstab");
-                if(query.views[3] == 1) options.Views.push("qca");
-                if(query.views[4] == 1) options.Views.push("map");
-            }
+          var query = URI.parseQuery(url.query);
+          if (query.file != undefined) {
+            if (query.file.endsWith(".csv") || query.type == "csv") options.Loader = new PivotViewer.Models.Loaders.CSVLoader("surveys/"+query.file);
+            else options.Loader = new PivotViewer.Models.Loaders.CXMLLoader("surveys/" + query.file);
+          }
+          options.View = query.view;
+          //Grid, bucket, crosstab, QCA, map, r
+          //if all exists, views=111111
+          if(query.views != undefined){
+            options.Views = [];
+            if(query.views[0] == 1) options.Views.push("grid");
+            if(query.views[1] == 1) options.Views.push("bucket");
+            if(query.views[2] == 1) options.Views.push("crosstab");
+            if(query.views[3] == 1) options.Views.push("qca");
+            if(query.views[4] == 1) options.Views.push("map");
+            if(query.views[5] == 1) options.Views.push("r");
+          }
         }
 
-        console.log(options.Views);
-
-        initRSession("http://132.249.238.135:3000/surveys/"+query.file);
+        if(query.views != undefined)
+        if(query.views[5] == 1) initRSession("http://132.249.238.135:3000/surveys/"+query.file);
         $(document).ready(function () { $('#pivotviewer').PivotViewer(options); });
     </script>
 </body>

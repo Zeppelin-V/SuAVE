@@ -44,16 +44,14 @@ var shapeImg = [
 
 function generateImgJson(options){
   var result = [];
-  result.push({'text': "Please select a value",
-                'value': 0,
-                'selected': false,
-                imageSrc: "/../../img/default.jpg"}
-  );
-  for(var i = 0; i < options; i++){
-    result.push({'text': options[i],
-                  'value': options[i],
+  for(var i = 0; i < options.length; i++){
+    data = options[i];
+    if(data.length == 0) data = "Null";
+    result.push({'text': data,
+                  'value': data,
                   'selected': false,
-                  imageSrc: "/../../img/default.jpg"}
+                  'imageSrc': "/../../img/blue.jpg"}
     );
   }
+  return result;
 }

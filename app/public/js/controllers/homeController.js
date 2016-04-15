@@ -206,7 +206,7 @@ function HomeController()
 	});
 
 	this.fetchColVal = function(columnVal, collectVal){
-		$('#column-select').empty();
+		$('#column-collect').empty();
 
 		var columnImg;
 		var collect;
@@ -227,9 +227,10 @@ function HomeController()
 			success: function(data){
 				columnImg = generateImgJson(data);
 				Dlength = data.length;
+				$('#column-collect').append('<p>Please assign an image to each value:</p>');
 
 				for(var i = 0; i < data.length; i++){
-					$('#column-select').append(
+					$('#column-collect').append(
 						'<div class="row"><div class="col-xs-3"><div id="column-drop-'+i+'"></div></div>'+
 						'<div class="col-xs-3"><div id="collect-drop-'+i+'" class="col-xs-3"></div></div></div>');
 				}
@@ -248,7 +249,7 @@ function HomeController()
 					});
 
 					$('#column-drop-'+i).ddslick({
-						data:columnImg,
+						data:[columnImg[i]],
 						width:250,
 						imagePosition:"right",
 						onSelected: function(selectedData){

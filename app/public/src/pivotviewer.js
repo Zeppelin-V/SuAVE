@@ -63,7 +63,8 @@ var ruleNums = 0;
         _self = null,
         _nameMapping = [],
         _enabledView = [],
-        _options = {};
+        _options = {},
+        _rEnable = false;
 
     var methods = {
         // PivotViewer can be initialized with these options:
@@ -1601,10 +1602,19 @@ var ruleNums = 0;
         var offsetY = 4;
 
         if (PivotCollection.config == undefined) PivotCollection.config = [];
-        if (PivotCollection.config.views == undefined) PivotCollection.config.views = _enabledView;
-        //if (PivotCollection.config.views == undefined) PivotCollection.config.views = ["grid", "bucket"];
+        if (PivotCollection.config.views == undefined) {
+            if (_enabledView == undefined){
+                PivotCollection.config.views = ["grid", "bucket", "crosstab"];
+            }else{
+                PivotCollection.config.views = _enabledView;
+            }
+        }
         if (_options.View != undefined && PivotCollection.config.views.indexOf(_options.View) < 0) PivotCollection.config.views.push(_options.View)
         for (var i = 0; i < PivotCollection.config.views.length; i++) {
+            if(PivotCollection.config.views[i] == "r"){
+                _rEnable = true;
+                continue;
+            }
             var viewName = PivotCollection.config.views[i];
             PivotViewer.Utils.loadScript("src/views/" + viewName.toLowerCase() + "view.min.js");
             eval("var view = new PivotViewer.Views." + viewName.charAt(0).toUpperCase() + viewName.substring(1) + "View()");
@@ -1620,16 +1630,18 @@ var ruleNums = 0;
                 $('.pv-toolbarpanel-viewcontrols').append("<div class='pv-toolbarpanel-view' id='pv-toolbarpanel-view-" + i + "' title='" + _views[i].getViewName() + "'><img id='pv-viewpanel-view-" + i + "-image' src='" + _views[i].getButtonImage() + "' alt='" + _views[i].getViewName() + "' /></div>");
             }
         }
+        if (_rEnable == true) { 
+            //add model view
+            $('.pv-toolbarpanel-viewcontrols').append("<div class='pv-toolbarpanel-view'id='pv-toolbarpanel-view-10' title='Statistical Model'><a href='#pv-open-Model'> <img id='pv-toolbarpanel-view-10-image' src='images/ModelView.png'></a></div>");
+            $('.pv-toolbarpanel-viewcontrols').append(
+            '<div class="modal fade" id="myModal" role="dialog" style="z-index:100000;"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">'+
+            '<h4 class="modal-title">R result</h4></div>'+
+            '<div class="modal-body" ><code><pre id="pv-model-result" style="position: relative; \
+            "></pre></code></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div></div></div></div>');
+            //loading completed
+            $('.pv-toolbarpanel-viewcontrols').append("<div id='pv-open-Model' class='pv-modal-dialog modal-xl'><div><h2>Statistical Model</h2><div id='pv-model-text'>&nbsp;</div></div></div>");
 
-        //add model view
-        $('.pv-toolbarpanel-viewcontrols').append("<div class='pv-toolbarpanel-view'id='pv-toolbarpanel-view-10' title='Statistical Model'><a href='#pv-open-Model'> <img id='pv-toolbarpanel-view-10-image' src='images/ModelView.png'></a></div>");
-        $('.pv-toolbarpanel-viewcontrols').append(
-        '<div class="modal fade" id="myModal" role="dialog" style="z-index:100000;"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">'+
-        '<h4 class="modal-title">R result</h4></div>'+
-        '<div class="modal-body" ><code><pre id="pv-model-result" style="position: relative; \
-        "></pre></code></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div></div></div></div>');
-        //loading completed
-        $('.pv-toolbarpanel-viewcontrols').append("<div id='pv-open-Model' class='pv-modal-dialog modal-xl'><div><h2>Statistical Model</h2><div id='pv-model-text'>&nbsp;</div></div></div>");
+        }
 
         $('.pv-loading').remove();
 
