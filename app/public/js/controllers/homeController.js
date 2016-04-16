@@ -30,7 +30,7 @@ function HomeController()
 			'<label for="pv-qca" class="checkbox-custom-label">QCA</label></div>'+
 			'<div class="col-xs-2"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-map" class="checkbox-custom-label">Map</label> </div>'+
-			'<div class="col-xs-2"><input id="pv-r" class="checkbox-custom" type="checkbox" disabled="disabled" checked>'+
+			'<div class="col-xs-2"><input id="pv-r" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-r" class="checkbox-custom-label">R</label></div></div>'
 		);
 		var views = survey.views.toString();
@@ -39,6 +39,7 @@ function HomeController()
     if(views[2] == '1') $("#pv-crosstab").prop("checked", true);
     if(views[3] == '1') $("#pv-qca").prop("checked", true);
     if(views[4] == '1') $("#pv-map").prop("checked", true);
+		if(views[5] == '1') $("#pv-r").prop("checked", true);
 
 		$('#column-select').empty();
 		//get Columns
@@ -85,7 +86,25 @@ function HomeController()
 	});
 
 	$(document).on('click', '#select-collection-submit', function(){
-		//TODO: change collection
+		if($('#collect-select').find(':selected').val() != undefined &&
+	 				$('#column-select').find(':selected').val() != undefined){
+			var collection = {};
+			collection['column'] = ('#collect-select').find(':selected').val()
+
+		}
+
+
+		$.ajax({
+			url: "/changeCollection",
+			type: "POST",
+			data: {"name" : surveys[SID].name, "user": user, "collection": collection},
+			success: function(data){
+				setTimeout(function(){window.location.href = '/';}, 3000);
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
 
 		var views = "";
 		//change view options
@@ -110,6 +129,11 @@ function HomeController()
 			views += 0;
 		}
 		if($("#pv-map").is(':checked')){
+			views += 1;
+		}else{
+			views += 0;
+		}
+		if($("#pv-r").is(':checked')){
 			views += 1;
 		}else{
 			views += 0;

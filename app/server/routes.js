@@ -218,7 +218,6 @@ module.exports = function(app) {
 
 //new survey
 	app.post('/uploadCSV', uploading.single('file'), function(req, res){
-
 		SM.createNewSurvey(req, req.cookies.user, function(e){
 			if (e){
 				res.status(400).send(e);
@@ -227,13 +226,25 @@ module.exports = function(app) {
 				//Set the default collection for new survey
 				var defaultCol = 1;
 				SM.changeCollection(req, req.cookies.user, GL.getDefaultCollect(),
-					GL.getDefaultCol(), function(e){
+					function(e){
 					if(e){
 						res.status(400).send(e);
 					}else{
 						res.status(200).send('ok');
 					}
 				});
+			}
+		});
+	});
+
+//changeCollection
+	app.post('/changeCollection', function(req, res){
+		SM.changeCollection(req, req.cookies.user, req.body.collection,
+			function(e){
+			if(e){
+				res.status(400).send(e);
+			}else{
+				res.status(200).send('ok');
 			}
 		});
 	});

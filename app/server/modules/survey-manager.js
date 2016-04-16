@@ -41,7 +41,7 @@ exports.createNewSurvey = function(files, user, callback){
             callback(err);
           }else{
             surveys.insert({"name": files.body.name, "user": user,
-            "csv": newPath, "view": "grid", "views": 11100, "collection": "default",
+            "csv": newPath, "view": "grid", "views": 111001, "collection": "default",
 						 "hidden": 0}, callback);
           }
         });

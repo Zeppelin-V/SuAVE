@@ -80,12 +80,57 @@ exports.getColumnsOptions = function(name, user, column, callback){
 
 //generate deep zoom files including .dzc and .dzi
 exports.generateDeepZoom = function(dir, collection, destination, callback){
+
+  //TODO: remove all files before generating new collection.
+
   var fs = require('fs');
   if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
   }
 
-  if(collection == "default"){
+  var xml = "";
+  var maxLevel = 8;
+  var sources = [];
+
+  if(collection['name'] == "default"){
+    sources.push("default.jpg");
+  }else{
+    for(var key in collection.values) {
+      sources.push(collection.values[key] + ".jpg");
+    }
+  }
+
+  //generate dzi
+  for(var i = 0; i < sources.length; i++){
+    var source = sources[i];
+    var id = source.substr(0, source.lastIndexOf('.'));
+    var desFile = dir+'/'+ id +'.dzi';
+
+    if(fs.existsSync(desFile)){
+      continue;
+    }
+
+    sharp(__dirname+"/../../public/img/"+collection.name+"/"+source).tile(256).toFile(desFile,
+      function(error, info){
+        if(error){
+          callback(error);
+        }
+    });
+    xml = xml + '<I N="'+i+'" Id="'+id+'" Source="'+id+'.dzi"><Size Width='
+      +'"300" Height="300"/></I>';
+  }
+
+  //generate dzc
+  xml = '<?xml version="1.0" encoding="utf-8"?><Collection MaxLevel="'+
+    +maxLevel+'" TileSize="256" Format="jpg"><Items>'+xml+'</Items></Collection>';
+
+  fs.writeFile(dir + "/" + destination, xml, function(e){
+    if(e){
+      callback(e);
+    }
+  });
+  /*
+  if(collection['name'] == "default"){
     fs.readFile(__dirname+"/../../public/img/default.jpg", function(err, data){
       var newPath = dir + "/default.jpg";
 
@@ -93,15 +138,15 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
         if(err){
           callback(err);
         }else{
-          var sources = [];
-          var maxLevel = 0;
           sources.push("default.jpg");
-          var xml = "";
+
           //generate dzi
           for(var i = 0; i < sources.length; i++){
             var source = sources[i];
             var id = source.substr(0, source.lastIndexOf('.'));
             var desFile = dir+'/'+ id +'.dzi';
+
+
             if(fs.existsSync(desFile)){
               fsx.remove(desFile, function(e){
                 if(e) callback(e);
@@ -116,27 +161,43 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
             xml = xml + '<I N="'+0+'" Id="'+id+'" Source="'+id+'.dzi"><Size Width='
               +'"300" Height="300"/></I>';
           }
-          //generate dzc
-          xml = '<?xml version="1.0" encoding="utf-8"?><Collection MaxLevel="'+
-            +maxLevel+'" TileSize="256" Format="jpg"><Items>'+xml+'</Items></Collection>';
-
-          fs.writeFile(dir + "/" + destination, xml, function(e){
-            if(e){
-              callback(e);
-            }
-          });
         }
       });
     });
   }else{
-    //TODO: copy other collection images
-  }
+
+    for(var index in collection.values) {
+      sources.push(collection.values[index] + ".jpg");
+    }
+
+    //generate dzi
+    for(var i = 0; i < sources.length; i++){
+      var source = sources[i];
+      var id = source.substr(0, source.lastIndexOf('.'));
+      var desFile = dir+'/'+ id +'.dzi';
+      if(fs.existsSync(desFile)){
+        fsx.remove(desFile, function(e){
+          if(e) callback(e);
+        });
+      }
+      sharp(__dirname+"/../../public/img/"+collection.name+"/"+source).tile(256).toFile(desFile,
+        function(error, info){
+          if(error){
+            callback(error);
+          }
+      });
+      xml = xml + '<I N="'+i+'" Id="'+id+'" Source="'+id+'.dzi"><Size Width='
+        +'"300" Height="300"/></I>';
+    }
+  }*/
+
 };
 
 //set #img column for csv files
 exports.setImgProperty = function(data, collection, callback){
   var that = this;
   var categories = data[0];
+  var valCol = collection['column'];
   var img_column = -1;
   //get the index of image column
   for (var i = 0; i < categories.length; i++) {
@@ -162,7 +223,20 @@ exports.setImgProperty = function(data, collection, callback){
     callback(data);
 
   }else{
-    //TODO: set images for other collection
+    if(img_column == -1){
+      data[0].push("#img");
+      for(var i = 1; i < data.length; i++){
+        var img = data[i][valCol];
+        data[i].push(collection.values[img]);
+      }
+    }else{
+      //if #img column already exists
+      for(var i = 1; i < data.length; i++){
+        var imgInd = data[i][valCol];
+        data[i][img_column] = collection.values[img];
+      }
+    }
+    callback(data);
   }
 };
 
