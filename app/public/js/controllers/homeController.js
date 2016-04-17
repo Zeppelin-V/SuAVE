@@ -3,8 +3,10 @@ function HomeController()
 {
 // bind event listeners to button clicks //
 	var that = this;
-	var SID;
 	var DLength;
+	var collection = {};
+	var SID;
+
 // handle user logout //
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
 	$('#btn-update').click(function(){ window.open('/update', "_self"); });
@@ -52,7 +54,7 @@ function HomeController()
 				var collection = data[1];
 				$("#column-select").append($("<option selected disabled hidden></option>").html(""));
 				for(var i = 0; i < column.length; i++){
-					$("#column-select").append($("<option></option>").val(column[i]).html(column[i]));
+					$("#column-select").append($("<option></option>").val(i).html(column[i]));
 				}
 
 				for(var i = 0; i < collection.length; i++){
@@ -68,43 +70,41 @@ function HomeController()
 
 	$("#collect-select").change(function() {
     var collectVal = $(this).find(':selected').val();
-    var columnVal = $('#column-select').find(':selected').val();
+    var columnVal = $('#column-select').find(':selected').text();
 
     if(columnVal.length > 0){
+			collection['column'] = parseInt($('#column-select').find(':selected').val());
       that.fetchColVal(columnVal, collectVal);
     }
 
 	});
 
 	$("#column-select").change(function() {
-    var columnVal = $(this).find(':selected').val();
+    var columnVal = $(this).find(':selected').text();
     var collectVal = $('#collect-select').find(':selected').val();
 
     if(collectVal.length > 0){
+			collection['column'] = parseInt($('#column-select').find(':selected').val());
     	that.fetchColVal(columnVal, collectVal);
     }
 	});
 
 	$(document).on('click', '#select-collection-submit', function(){
+
 		if($('#collect-select').find(':selected').val() != undefined &&
 	 				$('#column-select').find(':selected').val() != undefined){
-			var collection = {};
-			collection['column'] = ('#collect-select').find(':selected').val()
-
+			$.ajax({
+				url: "/changeCollection",
+				type: "POST",
+				data: {"name" : surveys[SID].name, "user": user, "collection": collection},
+				success: function(data){
+					setTimeout(function(){window.location.href = '/';}, 3000);
+				},
+				error: function(jqXHR){
+					console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+				}
+			});
 		}
-
-
-		$.ajax({
-			url: "/changeCollection",
-			type: "POST",
-			data: {"name" : surveys[SID].name, "user": user, "collection": collection},
-			success: function(data){
-				setTimeout(function(){window.location.href = '/';}, 3000);
-			},
-			error: function(jqXHR){
-				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
-			}
-		});
 
 		var views = "";
 		//change view options
@@ -231,6 +231,7 @@ function HomeController()
 
 	this.fetchColVal = function(columnVal, collectVal){
 		$('#column-collect').empty();
+		collection['name'] = collectVal;
 
 		var columnImg;
 		var collect;
@@ -249,6 +250,12 @@ function HomeController()
 			type: "POST",
 			data: {"name" : surveys[SID].name, "user": user, "column": columnVal},
 			success: function(data){
+				//generate initial collect json
+				collection['values'] = {};
+				for(var i = 0; i < data.length; i++){
+					collection.values[data[i]] = 'default';
+				}
+
 				columnImg = generateImgJson(data);
 				Dlength = data.length;
 				$('#column-collect').append('<p>Please assign an image to each value:</p>');
@@ -260,14 +267,16 @@ function HomeController()
 				}
 
 				for(var i = 0; i < data.length; i++){
+
 					//inflate collection dropdown
 					$('#collect-drop-'+i).ddslick({
 						data:collect,
 						width:250,
 						imagePosition:"right",
 						onSelected: function(selectedData){
+
 							if(selectedData.selectedData.value != 0){
-								console.log(selectedData.selectedData.value);
+								collection.values[data[i]] = selectedData.selectedData.value;
 							}
 						}
 					});
