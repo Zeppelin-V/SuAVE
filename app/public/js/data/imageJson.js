@@ -97,9 +97,9 @@ var colorImg = [
     },
     {
         text: "Forest Green",
-        value: "forest_gree",
+        value: "forest_green",
         selected: false,
-        imageSrc: "/../../img/color/forest_gree.jpg"
+        imageSrc: "/../../img/color/forest_green.jpg"
     },
     {
         text: "Olive",

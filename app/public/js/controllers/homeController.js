@@ -94,6 +94,14 @@ function HomeController()
 
 		if($('#collect-select').find(':selected').val() != undefined &&
 	 				$('#column-select').find(':selected').val() != undefined){
+			for(var i = 0; i < gData.length; i++){
+				var val = $('#collect-drop-'+i+' .dd-selected-value').val();
+				if(val == '0'){
+					collection.values[gData[i]] = 'default';
+				}else{
+					collection.values[gData[i]] = val;
+				}
+			}
 			$.ajax({
 				url: "/changeCollection",
 				type: "POST",
@@ -273,23 +281,13 @@ function HomeController()
 					$('#collect-drop-'+i).ddslick({
 						data:collect,
 						width:250,
-						imagePosition:"right",
-						onSelected: function(selectedData){
-							if(selectedData.selectedData.value != 0){
-								collection.values[gData[selectedData.selectedIndex-1]] = selectedData.selectedData.value;
-							}
-						}
+						imagePosition:"right"
 					});
 
 					$('#column-drop-'+i).ddslick({
 						data:[columnImg[i]],
 						width:250,
-						imagePosition:"right",
-						onSelected: function(selectedData){
-							if(selectedData.selectedData.value != 0){
-								console.log(selectedData.selectedData.value);
-							}
-						}
+						imagePosition:"right"
 					});
 				}
 			},

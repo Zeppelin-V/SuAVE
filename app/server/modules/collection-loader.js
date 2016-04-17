@@ -133,7 +133,6 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
 exports.setImgProperty = function(data, collection, callback){
   var that = this;
   var categories = data[0];
-  var valCol = collection['column'];
   var img_column = -1;
   //get the index of image column
   for (var i = 0; i < categories.length; i++) {
@@ -159,6 +158,7 @@ exports.setImgProperty = function(data, collection, callback){
     callback(data);
 
   }else{
+    var valCol = collection['column'];
     if(img_column == -1){
       data[0].push("#img");
       for(var i = 1; i < data.length; i++){
