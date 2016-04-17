@@ -225,7 +225,7 @@ module.exports = function(app) {
 				res.status(200).send('ok');
 				//Set the default collection for new survey
 				var defaultCol = 1;
-				SM.changeCollection(req, req.cookies.user, GL.getDefaultCollect(),
+				SM.changeCollection(req, req.cookies.user, {"name": "default"},
 					function(e){
 					if(e){
 						res.status(400).send(e);

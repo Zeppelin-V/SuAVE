@@ -6,6 +6,7 @@ function HomeController()
 	var DLength;
 	var collection = {};
 	var SID;
+	var gData;
 
 // handle user logout //
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
@@ -98,7 +99,6 @@ function HomeController()
 				type: "POST",
 				data: {"name" : surveys[SID].name, "user": user, "collection": collection},
 				success: function(data){
-					setTimeout(function(){window.location.href = '/';}, 3000);
 				},
 				error: function(jqXHR){
 					console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
@@ -250,6 +250,7 @@ function HomeController()
 			type: "POST",
 			data: {"name" : surveys[SID].name, "user": user, "column": columnVal},
 			success: function(data){
+				gData = data;
 				//generate initial collect json
 				collection['values'] = {};
 				for(var i = 0; i < data.length; i++){
@@ -274,9 +275,8 @@ function HomeController()
 						width:250,
 						imagePosition:"right",
 						onSelected: function(selectedData){
-
 							if(selectedData.selectedData.value != 0){
-								collection.values[data[i]] = selectedData.selectedData.value;
+								collection.values[gData[selectedData.selectedIndex-1]] = selectedData.selectedData.value;
 							}
 						}
 					});

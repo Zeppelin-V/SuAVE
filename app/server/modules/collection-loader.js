@@ -81,8 +81,6 @@ exports.getColumnsOptions = function(name, user, column, callback){
 //generate deep zoom files including .dzc and .dzi
 exports.generateDeepZoom = function(dir, collection, destination, callback){
 
-  //TODO: remove all files before generating new collection.
-
   var fs = require('fs');
   if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
@@ -105,7 +103,8 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
     var source = sources[i];
     var id = source.substr(0, source.lastIndexOf('.'));
     var desFile = dir+'/'+ id +'.dzi';
-
+    xml = xml + '<I N="'+i+'" Id="'+id+'" Source="'+id+'.dzi"><Size Width='
+      +'"300" Height="300"/></I>';
     if(fs.existsSync(desFile)){
       continue;
     }
@@ -116,8 +115,6 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
           callback(error);
         }
     });
-    xml = xml + '<I N="'+i+'" Id="'+id+'" Source="'+id+'.dzi"><Size Width='
-      +'"300" Height="300"/></I>';
   }
 
   //generate dzc
@@ -129,67 +126,6 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
       callback(e);
     }
   });
-  /*
-  if(collection['name'] == "default"){
-    fs.readFile(__dirname+"/../../public/img/default.jpg", function(err, data){
-      var newPath = dir + "/default.jpg";
-
-      fs.writeFile(newPath, data, function(err){
-        if(err){
-          callback(err);
-        }else{
-          sources.push("default.jpg");
-
-          //generate dzi
-          for(var i = 0; i < sources.length; i++){
-            var source = sources[i];
-            var id = source.substr(0, source.lastIndexOf('.'));
-            var desFile = dir+'/'+ id +'.dzi';
-
-
-            if(fs.existsSync(desFile)){
-              fsx.remove(desFile, function(e){
-                if(e) callback(e);
-              });
-            }
-            sharp(dir+ '/' + source).tile(256).toFile(desFile,
-              function(error, info){
-                if(error){
-                  callback(error);
-                }
-            });
-            xml = xml + '<I N="'+0+'" Id="'+id+'" Source="'+id+'.dzi"><Size Width='
-              +'"300" Height="300"/></I>';
-          }
-        }
-      });
-    });
-  }else{
-
-    for(var index in collection.values) {
-      sources.push(collection.values[index] + ".jpg");
-    }
-
-    //generate dzi
-    for(var i = 0; i < sources.length; i++){
-      var source = sources[i];
-      var id = source.substr(0, source.lastIndexOf('.'));
-      var desFile = dir+'/'+ id +'.dzi';
-      if(fs.existsSync(desFile)){
-        fsx.remove(desFile, function(e){
-          if(e) callback(e);
-        });
-      }
-      sharp(__dirname+"/../../public/img/"+collection.name+"/"+source).tile(256).toFile(desFile,
-        function(error, info){
-          if(error){
-            callback(error);
-          }
-      });
-      xml = xml + '<I N="'+i+'" Id="'+id+'" Source="'+id+'.dzi"><Size Width='
-        +'"300" Height="300"/></I>';
-    }
-  }*/
 
 };
 
@@ -207,7 +143,7 @@ exports.setImgProperty = function(data, collection, callback){
       }
   }
 
-  if(collection == "default"){
+  if(collection.name == "default"){
     //if there is no column named #img
     if(img_column == -1){
       data[0].push("#img");
@@ -232,8 +168,12 @@ exports.setImgProperty = function(data, collection, callback){
     }else{
       //if #img column already exists
       for(var i = 1; i < data.length; i++){
-        var imgInd = data[i][valCol];
-        data[i][img_column] = collection.values[img];
+        var img = data[i][valCol];
+        if(img == ''){
+          data[i][img_column] = collection.values['0'];
+        }else{
+          data[i][img_column] = collection.values[img];
+        }
       }
     }
     callback(data);

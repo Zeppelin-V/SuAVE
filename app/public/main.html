@@ -24,7 +24,7 @@
     var url = URI.parse(window.location.href);
     var query = URI.parseQuery(url.query);
     var suave_ifr = document.createElement('iframe')
-    suave_ifr.src = '/suave/loading.html?'+url.query;
+    suave_ifr.src = '/loading.html?'+url.query;
     suave_ifr.style.width="100%"
     suave_ifr.style.height="95%"
     suave_ifr.style.margin="0"
