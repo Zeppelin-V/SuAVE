@@ -255,8 +255,7 @@ module.exports = function(app) {
 			if(e){
 				res.status(400).send(e);
 			}else{
-				var data = [o, GL.getCollections()];
-				res.status(200).send(data);
+				res.status(200).send(o);
 			}
 		});
 	});

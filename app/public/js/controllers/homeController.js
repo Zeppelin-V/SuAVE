@@ -51,17 +51,11 @@ function HomeController()
 			type: "POST",
 			data: {"name" : survey.name, "user": user},
 			success: function(data){
-				var column = data[0];
-				var collection = data[1];
+				var column = data;
 				$("#column-select").append($("<option selected disabled hidden></option>").html(""));
 				for(var i = 0; i < column.length; i++){
 					$("#column-select").append($("<option></option>").val(i).html(column[i]));
 				}
-
-				for(var i = 0; i < collection.length; i++){
-					$("#collect-select").append($("<option></option>").val(collection[i]).html(collection[i]));
-				}
-
 			},
 			error: function(jqXHR){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
