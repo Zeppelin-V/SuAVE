@@ -1,3 +1,8 @@
+.modal-loading {
+  width: 400px;
+  margin: -200px 0 0 -150px;
+}
+
 .view-button {
   width: 100px;
   border-radius: 3px;

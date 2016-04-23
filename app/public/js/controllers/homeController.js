@@ -161,7 +161,7 @@ function HomeController()
 		});
 
 		$('.modal-loading').modal({ show : false, keyboard : false, backdrop : 'static' });
-		$('.modal-loading .modal-body p').html('Loading....');
+		$('.modal-loading .modal-body h3').html('Loading....');
 		$('.modal-loading').modal('show');
 
 	});
