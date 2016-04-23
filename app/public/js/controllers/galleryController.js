@@ -11,7 +11,7 @@ function GalleryController()
 		var file = survey.name;
 
 		window.open(window.location+'/../../main.html?file='+user+"_"+file+'.csv'+
-			"&view="+survey.view);
+			"&views="+survey.views+"&view="+survey.view);
 	});
 
 	this.getSurveys = function(callback)

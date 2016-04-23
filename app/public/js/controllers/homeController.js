@@ -248,9 +248,9 @@ function HomeController()
 		}else if(collectVal == "color"){
 			collect = colorImg;
 		}else if(collectVal == "gender"){
-
-		}else if(collectVal == "shape"){
-
+			collect = genderImg;
+		}else if(collectVal == "science"){
+			collect = scienceImg;
 		}
 
 		$.ajax({
