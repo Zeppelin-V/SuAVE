@@ -5,7 +5,9 @@ $(document).ready(function(){
 	$('#new-survey').ajaxForm({
 		beforeSubmit : function(formData, jqForm, options){
 			var name = document.getElementById('new-file-name').value + ".csv";
-			//return name.endsWith('.csv') == true
+			$('.modal-loading').modal({ show : false, keyboard : false, backdrop : 'static' });
+			$('.modal-loading .modal-body p').html('Loading....');
+			$('.modal-loading').modal('show');
 			return true;
 		},
 		success	: function(responseText, status, xhr, $form){

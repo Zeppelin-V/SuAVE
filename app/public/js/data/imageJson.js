@@ -210,12 +210,6 @@ var defaultImg = [
 
 var genderImg = [
   {
-      text: "Please select a pattern",
-      value: 0,
-      selected: false,
-      imageSrc: "/../../img/default.jpg"
-  },
-  {
       text: "Blue",
       value: "blue_",
       selected: true,
@@ -448,16 +442,16 @@ var genderImg = [
       value: "yellow_Male",
       selected: true,
       imageSrc: "/../../img/gender/yellow_Male.jpg"
-  }
-];
-
-var scienceImg = [
+  },
   {
       text: "Please select a pattern",
       value: 0,
       selected: false,
       imageSrc: "/../../img/default.jpg"
-  },
+  }
+];
+
+var scienceImg = [
   {
       text: "Airplane I",
       value: "airplane47",
@@ -548,6 +542,12 @@ var scienceImg = [
       selected: true,
       imageSrc: "/../../img/science/battery84.jpg"
   },
+  {
+      text: "Please select a pattern",
+      value: 0,
+      selected: false,
+      imageSrc: "/../../img/default.jpg"
+  }
 ];
 
 function generateImgJson(options){
