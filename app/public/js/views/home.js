@@ -1,6 +1,7 @@
 var surveys;
 
 $(document).ready(function(){
+	$('.brand').text(name);
 	var hc = new HomeController();
 	$('#new-survey').ajaxForm({
 		beforeSubmit : function(formData, jqForm, options){

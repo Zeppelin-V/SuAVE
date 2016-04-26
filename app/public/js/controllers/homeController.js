@@ -45,7 +45,7 @@ function HomeController()
 		if(views[5] == '1') $("#pv-r").prop("checked", true);
 
 		$('#column-select').empty();
-		$('#collect-select').empty();
+		$('#collect-select').removeAttr("selected");
 		$('#column-collect').empty();
 		//get Columns
 		$.ajax({
@@ -149,7 +149,7 @@ function HomeController()
 			data: {"name" : surveys[SID].name, "user": user, "views": parseInt(views)},
 			success: function(data){
 				surveys[SID].views = parseInt(views);
-				setTimeout(function(){window.location.href = '/';}, 3000);
+				setTimeout(function(){window.location.href = '/';}, 300);
 			},
 			error: function(jqXHR){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);

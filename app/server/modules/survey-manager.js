@@ -34,13 +34,14 @@ exports.createNewSurvey = function(files, user, callback){
 				if (!fs.existsSync(__dirname + "/../../public/surveys")){
 			    fs.mkdirSync(__dirname + "/../../public/surveys");
 			  }
+				var name = files.body.name.replace(/ /g,"-");
         var newPath = __dirname + "/../../public/surveys/"+user+"_"
-          +files.body.name+".csv";
+          +name+".csv";
         fs.writeFile(newPath, data, function(err){
           if(err){
             callback(err);
           }else{
-            surveys.insert({"name": files.body.name, "user": user,
+            surveys.insert({"name": name, "user": user,
             "csv": newPath, "view": "grid", "views": 111001, "collection": "default",
 						 "hidden": 0}, callback);
           }

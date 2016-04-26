@@ -65,7 +65,9 @@ module.exports = function(app) {
 		}	else{
 			res.render('update', {
 				title : 'Account Setting',
-				udata : req.session.user}
+				udata : req.session.user,
+				name : req.session.name
+				}
 			);
 		}
 	});
