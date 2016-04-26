@@ -6,6 +6,7 @@ var fsx = require('fs-extra');
 var fs = require('fs'); //file system
 var path = require('path');
 var loader = require('./collection-loader');
+var GL = require('../global');
 
 var dbPort 		= 27017;
 var dbHost 		= 'localhost';
@@ -44,6 +45,15 @@ exports.createNewSurvey = function(files, user, callback){
             surveys.insert({"name": name, "user": user,
             "csv": newPath, "view": "grid", "views": 111001, "collection": "default",
 						 "hidden": 0}, callback);
+          }
+        });
+
+				var aboutPath = __dirname + "/../../public/surveys/"+user+"_"
+          +name+"about.html"
+				var aboutContent = GL.aboutOne + 'name' + GL.aboutTwo;
+				fs.writeFile(aboutPath, aboutContent, function(err){
+          if(err){
+            callback(err);
           }
         });
       });

@@ -124,5 +124,5 @@ input.radio:checked ~ label:before {
 }
 
 .modal-select-collection .modal-body{
-  overflow: hidden;
+  overflow-x: hidden;
 }
