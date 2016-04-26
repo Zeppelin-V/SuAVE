@@ -122,3 +122,7 @@ input.radio:checked ~ label:before {
   height: auto;
   max-height: 1000px;
 }
+
+.modal-select-collection .modal-body{
+  overflow: hidden;
+}

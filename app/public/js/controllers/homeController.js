@@ -45,6 +45,8 @@ function HomeController()
 		if(views[5] == '1') $("#pv-r").prop("checked", true);
 
 		$('#column-select').empty();
+		$('#collect-select').empty();
+		$('#column-collect').empty();
 		//get Columns
 		$.ajax({
 			url: "/getSurveyColumnsNCollection",
@@ -270,7 +272,7 @@ function HomeController()
 				for(var i = 0; i < data.length; i++){
 					$('#column-collect').append(
 						'<div class="row"><div class="col-xs-3"><div id="column-drop-'+i+'"></div></div>'+
-						'<div class="col-xs-3"><div id="collect-drop-'+i+'" class="col-xs-3"></div></div></div>');
+						'<div class="col-xs-3"><div id="collect-drop-'+i+'" class="col-xs-3"></div></div></div></br>');
 				}
 
 				for(var i = 0; i < data.length; i++){

@@ -36,8 +36,8 @@ module.exports = function(app) {
 			}	else{
 				req.session.user = o;
 				if (req.body['remember-me'] == 'true'){
-					res.cookie('user', o.user, { maxAge: 900000 });
-					res.cookie('pass', o.pass, { maxAge: 900000 });
+					res.cookie('user', o.user, { maxAge: 90000000 });
+					res.cookie('pass', o.pass, { maxAge: 90000000 });
 				}
 				res.status(200).send(o);
 			}
