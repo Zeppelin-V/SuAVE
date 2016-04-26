@@ -271,8 +271,8 @@ function HomeController()
 
 				for(var i = 0; i < data.length; i++){
 					$('#column-collect').append(
-						'<div class="row"><div class="col-xs-3"><div id="column-drop-'+i+'"></div></div>'+
-						'<div class="col-xs-3"><div id="collect-drop-'+i+'" class="col-xs-3"></div></div></div></br>');
+						'<div class="row"><div class="col-xs-3"><div id="collect-drop-'+i+'"></div></div>'+
+						'<div class="col-xs-3"><div id="column-drop-'+i+'" class="col-xs-3"></div></div></div></br>');
 				}
 
 				for(var i = 0; i < data.length; i++){

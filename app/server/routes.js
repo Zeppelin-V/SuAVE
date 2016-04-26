@@ -53,7 +53,9 @@ module.exports = function(app) {
 		}	else{
 			res.render('home', {
 				title : 'Gallery',
-				udata : JSON.stringify(req.session.user.user)}
+				udata : JSON.stringify(req.session.user.user),
+				name : JSON.stringify(req.session.user.name)
+				}
 			);
 		}
 	});
@@ -65,8 +67,7 @@ module.exports = function(app) {
 		}	else{
 			res.render('update', {
 				title : 'Account Setting',
-				udata : req.session.user,
-				name : req.session.name
+				udata : req.session.user
 				}
 			);
 		}
@@ -227,6 +228,7 @@ module.exports = function(app) {
 				res.status(200).send('ok');
 				//Set the default collection for new survey
 				var defaultCol = 1;
+				req.body.name = req.body.name.replace(/ /g,"-");
 				SM.changeCollection(req, req.cookies.user, {"name": "default"},
 					function(e){
 					if(e){

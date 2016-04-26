@@ -10,9 +10,6 @@ html
         .container
           .row
             .col-xs-3
-              p.subheading Select a field to associate with survey icons:
-              select#column-select
-            .col-xs-3
               p.subheading Select a collection:
               br
               select#collect-select
@@ -21,6 +18,9 @@ html
                 option(value='color') Color
                 option(value='gender') Gender
                 option(value='science') Science
+            .col-xs-3
+              p.subheading Select a field to associate with survey icons:
+              select#column-select
         #column-collect.container
         .form-buttons
           button#select-collection-submit.btn(data-dismiss='modal') submit
