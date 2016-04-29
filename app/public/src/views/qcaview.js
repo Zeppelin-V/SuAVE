@@ -112,7 +112,7 @@ PivotViewer.Views.QcaView = PivotViewer.Views.CrosstabView.subClass({
 
                 var dvalue = dvalues.values[0].value;
                 combos[bkt][tile.bits]++;
-                
+
                 if (iv.categories.length == 0) { this.contribn[bkt]["a"]++; this.contribd["a"]++;}
                 else for (j = 0; j < iv.categories.length; j++) {
                     var k = "";
@@ -218,6 +218,8 @@ PivotViewer.Views.QcaView = PivotViewer.Views.CrosstabView.subClass({
         this.filtered = true;
     },
     getViewName: function () { return "QCA View"; },
+    getButtonImage: function () {return 'images/QCAView.png';},
+    getButtonImageSelected: function () {return 'images/QCAViewSelected.png';},
     getStatsBox: function() {
         return "<div style='position:absolute; width: " + (this.columnWidth - 4) + "px; height: 50px; top: " +
             (i * this.rowHeight) + "px;'><div style='text-align:center'>Equations</div><div style='position:absolute; right:2px;'>" +

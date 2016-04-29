@@ -88,8 +88,8 @@ function HomeController()
 
 	$(document).on('click', '#select-collection-submit', function(){
 
-		if($('#collect-select').find(':selected').val() != undefined &&
-	 				$('#column-select').find(':selected').val() != undefined){
+		if($('#collect-select').find(':selected').val() != '' &&
+	 				$('#column-select').find(':selected').val() != ''){
 			for(var i = 0; i < gData.length; i++){
 				var val = $('#collect-drop-'+i+' .dd-selected-value').val();
 				if(val == '0'){
