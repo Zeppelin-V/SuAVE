@@ -108,21 +108,21 @@ var ruleNums = 0;
                         if ($pv_server_file.val().endsWith(".cxml"))
                             Loader = new PivotViewer.Models.Loaders.CXMLLoader("projects/" + $pv_server_file.val());
                         else Loader = new PivotViewer.Models.Loaders.CSVLoader("projects/" + $pv_server_file.val());
-                        _initCollectionLoader(options);
+                        PV._initCollectionLoader(options);
                         window.open("#pv-modal-dialog-close", "_self");
                     });
 
                     $('.pv-load-file').on('change', function (e) {
                         var fileInput = $("#pv-load-file")[0];
                         Loader = new PivotViewer.Models.Loaders.LocalCSVLoader(fileInput.files[0]);
-                        _initCollectionLoader(options);
+                        PV._initCollectionLoader(options);
                     });
 
                     window.open("#pv-file-selection", "_self");
                 }
                 else {
                     Loader = options.Loader;
-                    _initCollectionLoader(options);
+                    PV._initCollectionLoader(options);
                 }
 
             }).fail (function (jqxhr, textStatus, error) {
@@ -134,7 +134,7 @@ var ruleNums = 0;
 
 
 
-     var _initCollectionLoader = function (options) {
+     PV._initCollectionLoader = function (options) {
         //PV = this;
         _self.append("<div class='pv-loading'><img src='images/loading.gif' alt='Loading' /><span>Loading...</span></div>");
         $('.pv-loading').css('top', ($('.pv-wrapper').height() / 2) - 33 + 'px');
@@ -146,7 +146,7 @@ var ruleNums = 0;
     };
 
     /// Create the individual controls for the facet
-    var _bucketizeDateTimeFacet = function (facetName, array1, array2) {
+    PV._bucketizeDateTimeFacet = function (facetName, array1, array2) {
         var facetControls = ["<ul class='pv-filterpanel-accordion-facet-list'>"];
 
         // deal with array1
@@ -180,7 +180,7 @@ var ruleNums = 0;
         return facetControls.join('');
     };
 
-    var _createCustomRange = function (facetName) {
+    PV._createCustomRange = function (facetName) {
         var facetControls = ["<ul class='pv-filterpanel-accordion-facet-list'>"];
         facetControls[1] = "<li class='pv-filterpanel-accordion-facet-list-item'  id='pv-facet-value-" + PV.cleanName(facetName) + "__CustomRange'>";
         facetControls[1] += "<input itemvalue='CustomRange' itemfacet='" + PV.cleanName(facetName) + "' class='pv-facet-value' type='checkbox' />"
@@ -199,7 +199,7 @@ var ruleNums = 0;
         return facetControls.join('');
     };
 
-    var _createDatetimeNoInfoFacet = function (facetName) {
+    PV._createDatetimeNoInfoFacet = function (facetName) {
         var values = _itemTotals[facetName];
         if (values == undefined) return "";
         var total = values["(no info)"];
@@ -216,7 +216,7 @@ var ruleNums = 0;
         return facetControls;
     };
 
-    var _createStringFilters = function (facetName) {
+    PV._createStringFilters = function (facetName) {
         var facetControls = ["<ul class='pv-filterpanel-accordion-facet-list'>"];
         var values = _itemTotals[facetName];
         var i = 1;
@@ -274,8 +274,8 @@ var ruleNums = 0;
         }
     }
 
-    var _refreshNumberWidget = function (category, values) {_refreshSliderWidget(category, values, PivotViewer.Utils.getHistogram);}
-    var _refreshOrdinalWidget = function (category, values) {_refreshSliderWidget(category, values, PivotViewer.Utils.getOrdinalHistogram);}
+    PV._refreshNumberWidget = function (category, values) {_refreshSliderWidget(category, values, PivotViewer.Utils.getHistogram);}
+    PV._refreshOrdinalWidget = function (category, values) {_refreshSliderWidget(category, values, PivotViewer.Utils.getOrdinalHistogram);}
 
     PV._stopSlider = function (s, category, event, ui) {
         var s = $('#pv-facet-numericslider-' + PV.cleanName(category.name));
@@ -310,7 +310,7 @@ var ruleNums = 0;
         _views[number].activate();
 
         _currentView = number;
-        if(_currentView == 1) getBucketFilters();
+        if(_currentView == 1) PV.getBucketFilters();
     };
 
     PV.getCurrentView = function () { return _views[_currentView]; }
@@ -318,13 +318,13 @@ var ruleNums = 0;
     PV.filterViews = function () {
       if(_views[1]==undefined) return;
       for (var i = 0; i < _views.length; i++) { _views[i].handleFilter(_tiles, _filterList, _sortCategory); }
-      getBucketFilters();
-      getRuleFilters();
+      PV.getBucketFilters();
+      PV.getRuleFilters();
     }
 
 
     //get C intervals
-    function getBucketFilters(){
+    PV.getBucketFilters = function(){
       bucketRules = []
       var type;
       if(PivotCollection.getCategoryByName(_sortCategory).type == PivotViewer.Models.FacetType.String){
@@ -342,11 +342,11 @@ var ruleNums = 0;
           bucketRules.push({name:_sortCategory, type:type, value:value});
         }
       }
-      if(bucketRules != undefined) getBucketsCount();
+      if(bucketRules != undefined) PV.getBucketsCount();
     }
 
     //get C
-    function getBucketsCount(){
+    PV.getBucketsCount = function(){
       Cs = [];
       for(var j = 0; j < bucketRules.length; j++){
         Cs[j] = [];
@@ -494,7 +494,7 @@ var ruleNums = 0;
       }
     }
 
-    function getRuleFilters(){
+    PV.getRuleFilters = function (){
       ruleFilters = [];
       ruleNums = 0;
       for (var i = 0; i < _stringFilters.length; i++) {
@@ -515,10 +515,10 @@ var ruleNums = 0;
           var selectedMin = _numericFilters[i].selectedMin;
           ruleFilters.push({name:name, type: type, value:[selectedMin, selectedMax]});
       }
-      ruleCount();
+      PV.ruleCount();
     }
 
-    function ruleCount(){
+    PV.ruleCount = function(){
       if(ruleNums == 0 || ruleNums > 3){
         return;
       }
@@ -659,7 +659,7 @@ var ruleNums = 0;
 
 
     //Sorts the facet values based on a specific sort type
-    var _sortStringValues = function (facetName) {
+    PV._sortStringValues = function (facetName) {
         if (PivotCollection.getCategoryByName(facetName).type == PivotViewer.Models.FacetType.DateTime) return;
         //get facets
         var facetList = $("#pv-cat-" + PivotViewer.Utils.escapeMetaChars(PV.cleanName(facetName)) + " ul");
@@ -756,7 +756,7 @@ var ruleNums = 0;
                     var datetimeFilter = datetimeFilters[name];
                     if (datetimeFilter != undefined) datetimeFilter.value.push(datetimeValue);
                     else {
-                        datetimeFilter = { facet: name, value: [datetimeValue]};
+                        datetimeFilter = { facet: name, value: [datetimeValue], index: i };
                         datetimeFilters.push(datetimeFilter);
                         datetimeFilters[name] = datetimeFilter;
                         selectedFilters[name] = true;
@@ -840,7 +840,8 @@ var ruleNums = 0;
                         stringFilter.value.push(filterChange.value);
                     }
                     else {
-                        stringFilter = { facet: category.name, value: [filterChange.value], index: i };
+                        stringFilter = { facet: category.name, value: [filterChange.value], index: stringFilters.length };
+
                         stringFilter.value[filterChange.value + "a"] = true;
                         stringFilters.push(stringFilter);
                         stringFilters[category.name] = stringFilter;
@@ -851,7 +852,8 @@ var ruleNums = 0;
                     var datetimeFilter = datetimeFilters[category.name];
                     if (datetimeFilter != undefined) datetimeFilter.value.push(datetimeValue);
                     else {
-                        datetimeFilter = { facet: category.name, value: [datetimeValue] };
+                        datetimeFilter = { facet: category.name, value: [datetimeValue], index: datetimeFilters.length };
+
                         datetimeFilters.push(datetimeFilter);
                         datetimeFilters[category.name] = datetimeFilter;
                     }
@@ -1007,11 +1009,19 @@ var ruleNums = 0;
 	    if (_longstringFilters !=null || _numericFilters.length != 0 || _stringFilters.length != 0 || _datetimeFilters.length != 0) $('.pv-filterpanel-clearall').css('visibility', 'visible');
 	    else $('.pv-filterpanel-clearall').css('visibility', 'hidden');
 
-	    for (var i = 0; i < PivotCollection.categories.length; i++)
-	        PivotCollection.categories[i].recount = true;
+      var activeCat = PivotCollection.getCategoryByName(_nameMapping[$(".pv-facet").eq($(".pv-filterpanel-accordion").accordion("option", "active")).attr("facet")]);
+	    if (filterChange && filterChange.category == activeCat) {
+	        for (var i = 0; i < activeCat.index; i++) PivotCollection.categories[i].recount = true;
+	        for (var i = activeCat.index + 1; i < PivotCollection.categories.length; i++) PivotCollection.categories[i].recount = true;
+	    }
+	    else {
+	        for (var i = 0; i < PivotCollection.categories.length; i++) PivotCollection.categories[i].recount = true;
 
-      //Filter the facet counts and remove empty facets
-	    _filterCategory($(".pv-facet").eq($(".pv-filterpanel-accordion").accordion("option", "active")));
+	        //Filter the facet counts and remove empty facets
+
+	        PV._filterCategory($(".pv-facet").eq($(".pv-filterpanel-accordion").accordion("option", "active")));
+
+	    }
 
 	    $("#pv-toolbarpanel-countbox").html(_filterList.length);
 
@@ -1070,11 +1080,16 @@ var ruleNums = 0;
         LoadSem.acquire(function (release) {
             var uiFacet = $("#pv-cat-" + PV.cleanName(category.name));
             if (category.isDateTime()) {
-                _createDatetimeBuckets(category);
-                uiFacet.append(_bucketizeDateTimeFacet(category.name, category.datetimeBuckets[0], category.datetimeBuckets[1]));
-                uiFacet.append(_createDatetimeNoInfoFacet(category.name));
-                uiFacet.append(_createCustomRange(category.name));
-                $("#pv-cat-" + PV.cleanName(category.name) + " .pv-facet-customrange").on("change", function (e) { _changeCustomRange(this); });
+                PV._createDatetimeBuckets(category);
+
+                uiFacet.append(PV._bucketizeDateTimeFacet(category.name, category.datetimeBuckets[0], category.datetimeBuckets[1]));
+
+                uiFacet.append(PV._createDatetimeNoInfoFacet(category.name));
+
+                uiFacet.append(PV._createCustomRange(category.name));
+
+                $("#pv-cat-" + PV.cleanName(category.name) + " .pv-facet-customrange").on("change", function (e) { PV._changeCustomRange(this); });
+
                 $("#pv-cat-" + PV.cleanName(category.name) + " .pv-facet-value").on("click.pv", function (e) { PV.clickValue(this); });
                 $("#pv-cat-" + PV.cleanName(category.name) + " .pv-facet-value-label").on("click.pv", function (e) {
                     var cb = $(this).prev();
@@ -1111,7 +1126,7 @@ var ruleNums = 0;
                 if (category.customSort != undefined || category.customSort != null)
                     uiFacet.append("<span class='pv-filterpanel-accordion-facet-sort' customSort='" + category.customSort.name + "'>Sort: " + category.customSort.name + "</span>");
                 else uiFacet.append("<span class='pv-filterpanel-accordion-facet-sort'>Sort: A-Z</span>");
-                uiFacet.append(_createStringFilters(category.name));
+                uiFacet.append(PV._createStringFilters(category.name));
 
                 var item = _itemTotals[category.name];
                 for (value in item.values) {
@@ -1126,7 +1141,7 @@ var ruleNums = 0;
                         search = $('.pv-filterpanel-accordion-facet-list-item[id^="pv-facet-value-' + clean + '"]');
                         search.hide();
                         search.filter(function () {
-                            return PV.cleanName($(this).children().eq(0).attr('itemvalue').toLowerCase()).indexOf(input) >= 0 && $(this).children().eq(2).html() > 0;
+                          return $(this).children().eq(0).attr('itemvalue').toLowerCase().indexOf(input) >= 0 && $(this).children().eq(2).html() > 0;
                         }).show();
                         $("#pv-value-search-clear-" + clean).css("visibility", "visible");
                     }
@@ -1157,7 +1172,7 @@ var ruleNums = 0;
                     else if (sortText == "Sort: Quantity" && customSort == undefined) $(this).text("Sort: A-Z");
                     else if (sortText == "Sort: Quantity") $(this).text("Sort: " + customSort);
                     else $(this).text("Sort: A-Z");
-                    _sortStringValues(facetName);
+                    PV._sortStringValues(facetName);
                 });
             }
             else if (category.isNumber()) {
@@ -1211,7 +1226,7 @@ var ruleNums = 0;
     }
 
     // Filters the facet panel items and updates the counts
-    var _filterCategory = function (name) {
+    PV._filterCategory = function (name) {
         var category = PivotCollection.getCategoryByName(_nameMapping[name.attr("facet")]);
         if (!category.isFilterVisible || !category.recount) return;
 
@@ -1276,7 +1291,7 @@ var ruleNums = 0;
                         }
                     }
                 }
-                _sortStringValues(category.name);
+                PV._sortStringValues(category.name);
             }
             else if (category.isDateTime()) {
                 var filterList = [];
@@ -1340,7 +1355,7 @@ var ruleNums = 0;
             else if (category.isNumber()) {
                 if (!_selectedFilters[category.name]) {
                     if (_filterList.length == _tiles.length)
-                        _refreshNumberWidget(category, _numericItemTotals[category.name].values);
+                        PV._refreshNumberWidget(category, _numericItemTotals[category.name].values);
                     else {
                         var values = [];
                         for (var i = 0; i < _filterList.length; i++) {
@@ -1350,14 +1365,14 @@ var ruleNums = 0;
                                 values.push(facet.values[v].value);
                             }
                         }
-                        _refreshNumberWidget(category, values);
+                        PV._refreshNumberWidget(category, values);
                     }
                 }
             }
             else if (category.isOrdinal()) {
                 if (!_selectedFilters[category.name]) {
                     if (_filterList.length == _tiles.length)
-                        _refreshOrdinalWidget(category, _ordinalItemTotals[category.name].values);
+                        PV._refreshOrdinalWidget(category, _ordinalItemTotals[category.name].values);
                     else {
                         var values = [];
                         for (var i = 0; i < _filterList.length; i++) {
@@ -1367,7 +1382,7 @@ var ruleNums = 0;
                                 values.push(facet.values[v].value);
                             }
                         }
-                        _refreshOrdinalWidget(category, values);
+                        PV._refreshOrdinalWidget(category, values);
                     }
                 }
             }
@@ -1516,7 +1531,7 @@ var ruleNums = 0;
                 longSearchSelect.show();
                 $("#pv-long-search").show();
             }
-            _filterCategory(facetSelect.eq(selCategory.visIndex));
+            PV._filterCategory(facetSelect.eq(selCategory.visIndex));
             $('.pv-filterpanel-accordion').accordion('option', 'active', selCategory.visIndex);
             $("#pv-primsort").trigger("change");
             release();
@@ -1630,7 +1645,7 @@ var ruleNums = 0;
                 $('.pv-toolbarpanel-viewcontrols').append("<div class='pv-toolbarpanel-view' id='pv-toolbarpanel-view-" + i + "' title='" + _views[i].getViewName() + "'><img id='pv-viewpanel-view-" + i + "-image' src='" + _views[i].getButtonImage() + "' alt='" + _views[i].getViewName() + "' /></div>");
             }
         }
-        if (_rEnable == true) { 
+        if (_rEnable == true) {
             //add model view
             $('.pv-toolbarpanel-viewcontrols').append("<div class='pv-toolbarpanel-view'id='pv-toolbarpanel-view-10' title='Statistical Model'><a href='#pv-open-Model'> <img id='pv-toolbarpanel-view-10-image' src='images/ModelView.png'></a></div>");
             $('.pv-toolbarpanel-viewcontrols').append(
@@ -1772,9 +1787,9 @@ var ruleNums = 0;
             window.open("#pv-modal-dialog-close", "_self");
             $("#show-missing").prop("checked", Settings.showMissing);
             if ($("#pv-all-columns option").eq(0).val() == -1) $("#pv-all-columns option").remove();
-            _initAllSelect("#pv-all-columns");
+            PV._initAllSelect("#pv-all-columns");
             if ($("#pv-column-select option").eq(0).val() == -1) $("#pv-column-select option").remove();
-            _initVisibleSelect("#pv-column-select", true);
+            PV._initVisibleSelect("#pv-column-select", true);
             $("#pv-column-search").val("");
             $('#pv-column-search-clear').css("visibility", "hidden");
         });
@@ -1806,9 +1821,9 @@ var ruleNums = 0;
             window.open("#pv-modal-dialog-close", "_self");
             //$("#show-missing").prop("checked", settings.showMissing);
             if ($("#pv-all-variables1 option").eq(0).val() == -1) $("#pv-all-variables1 option").remove();
-            _initAllSelect("#pv-all-variables1");
+            PV._initAllSelect("#pv-all-variables1");
             if ($("#pv-all-variables2 option").eq(0).val() == -1) $("#pv-all-variables2 option").remove();
-            _initAllSelect("#pv-all-variables2");
+            PV._initAllSelect("#pv-all-variables2");
             $("#pv-variables-search").val("");
             $('#pv-variables-search-clear').css("visibility", "hidden");
         });
@@ -1817,14 +1832,14 @@ var ruleNums = 0;
             var input = this.value.toLowerCase();
             if (input != "") {
                 if ($("#pv-all-columns option").eq(0).val() == -1) $("#pv-all-columns option").remove();
-                _initAllSelect("#pv-all-columns", input);
+                PV._initAllSelect("#pv-all-columns", input);
                 $("#pv-column-search-clear").css("visibility", "visible");
                 if ($("#pv-all-columns option").length == 0)
                     $("#pv-all-columns").append("<option value='-1' css:'display: block'>No matching variables.</option>");
             }
             else {
                 $("#pv-column-search-clear").css("visibility", "hidden");
-                _initAllSelect("#pv-all-columns");
+                PV._initAllSelect("#pv-all-columns");
             }
         });
 
@@ -1832,7 +1847,7 @@ var ruleNums = 0;
             $("#pv-column-search").val("");
             $('#pv-column-search-clear').css("visibility", "hidden");
             if ($("#pv-all-columns option").eq(0).val() == -1) $("#pv-all-columns option").remove();
-            _initAllSelect("#pv-all-columns");
+            PV._initAllSelect("#pv-all-columns");
         });
 
         //Statistical model search
@@ -1841,9 +1856,9 @@ var ruleNums = 0;
             var input = e.target.value.toLowerCase();
             if (input != "") {
                 if ($("#pv-all-variables1 option").eq(0).val() == -1) $("#pv-all-variables1 option").remove();
-                _initAllSelect("#pv-all-variables1", input);
+                PV._initAllSelect("#pv-all-variables1", input);
                 if ($("#pv-all-variables2 option").eq(0).val() == -1) $("#pv-all-variables2 option").remove();
-                _initAllSelect("#pv-all-variables2", input);
+                PV._initAllSelect("#pv-all-variables2", input);
                 $("#pv-variables-search-clear").css("visibility", "visible");
                 if ($("#pv-all-variables1 option").length == 0)
                     $("#pv-all-variables1").append("<option value='-1' css:'display: block'>No matching variables.</option>");
@@ -1852,8 +1867,8 @@ var ruleNums = 0;
             }
             else {
                 $("#pv-variables-search-clear").css("visibility", "hidden");
-                _initAllSelect("#pv-all-variables1");
-                _initAllSelect("#pv-all-variables2");
+                PV._initAllSelect("#pv-all-variables1");
+                PV._initAllSelect("#pv-all-variables2");
             }
         });
 
@@ -1861,9 +1876,9 @@ var ruleNums = 0;
             $("#pv-variables-search").val("");
             $('#pv-variables-search-clear').css("visibility", "hidden");
             if ($("#pv-all-variables1 option").eq(0).val() == -1) $("#pv-all-variables1 option").remove();
-            _initAllSelect("#pv-all-variables1");
+            PV._initAllSelect("#pv-all-variables1");
             if ($("#pv-all-variables2 option").eq(0).val() == -1) $("#pv-all-variables2 option").remove();
-            _initAllSelect("#pv-all-variables2");
+            PV._initAllSelect("#pv-all-variables2");
         });
 
 
@@ -1893,7 +1908,7 @@ var ruleNums = 0;
             });
         });
 
-        $(".pv-facet").click(function (e) { _filterCategory($(this)); });
+        $(".pv-facet").click(function (e) { PV._filterCategory($(this)); });
 
         $(".pv-filterpanel-clearall").click(function (e) {
             //deselect all String Facets
@@ -1901,7 +1916,7 @@ var ruleNums = 0;
             checked.prop("checked", false);
             for (var i = 0; i < checked.length; i++) {
                 if (checked.eq(i).attr('itemvalue') == "CustomRange")
-                    _hideCustomDateRange($(checked[i]).attr('itemfacet'));
+                    PV._hideCustomDateRange($(checked[i]).attr('itemfacet'));
             }
             //Reset all Numeric Facets
             var sliders = $(".pv-facet-numericslider");
@@ -1916,12 +1931,15 @@ var ruleNums = 0;
         });
 
         $('.pv-filterpanel-accordion-heading-clear').click( function (e) {
+          $(this).parent().next().find(".pv-value-search").val("");
+          $(this).parent().next().find(".pv-search-clear").css("visibility", "hidden");
+
             var facetType = this.attributes['facetType'].value;
             if (facetType == "DateTime") {
                 //get selected items in current group
                 var checked = $(this).parent().next().find('.pv-facet-value:checked');
                 checked.prop('checked', false);
-                for (var i = 0; i < checked.length; i++) _hideCustomDateRange($(checked[i]).attr('itemfacet'));
+                for (var i = 0; i < checked.length; i++) PV._hideCustomDateRange($(checked[i]).attr('itemfacet'));
             }
             else if (facetType == "String") $(this).parent().next().find('.pv-facet-value:checked').prop("checked", false);
             else if (facetType == "Number" || facetType == "Ordinal") {
@@ -1934,7 +1952,7 @@ var ruleNums = 0;
             $(this).css('visibility', 'hidden');
         });
 
-        $('.pv-facet-customrange').on('change', function (e) { _changeCustomRange(this); });
+        $('.pv-facet-customrange').on('change', function (e) { PV._changeCustomRange(this); });
         $('.pv-infopanel-details').on("click", '.detail-item-value-filter', function (e) {
             $.publish("/PivotViewer/Views/Item/Filtered", [{category: $(this).parent().children().attr('pv-detail-item-title'), min: $(this).attr('pv-detail-item-value'), values: null}]);
             return false;
@@ -1967,7 +1985,7 @@ var ruleNums = 0;
         });
 
         $(".pv-toolbarpanel-sort").on("mousedown", function (e) {
-            if ($(this).attr("dirty") == 1) _initVisibleSelect("#" + $(this).attr("id"), false, PV.cleanName($('.pv-filterpanel-search').val().toLowerCase()));
+            if ($(this).attr("dirty") == 1) PV._initVisibleSelect("#" + $(this).attr("id"), false, PV.cleanName($('.pv-filterpanel-search').val().toLowerCase()));
             $(this).attr("dirty", 0);
         });
 
@@ -1979,7 +1997,7 @@ var ruleNums = 0;
                     search = $('.pv-filterpanel-accordion-facet-list-item[id^="pv-facet-value-' + PV.cleanName(category.name) + '"]');
                     search.hide();
                     search = search.filter(function () {
-                        return PV.cleanName($(this).children().eq(0).attr('itemvalue').toLowerCase()).indexOf(input) >= 0 && $(this).children().eq(2).html() > 0;
+                      return $(this).children().eq(0).attr('itemvalue').toLowerCase().indexOf(input) >= 0 && $(this).children().eq(2).html() > 0;
                     });
                     search.show();
 
@@ -2012,7 +2030,7 @@ var ruleNums = 0;
                     LoadSem.acquire(function (release) {
                         $(".pv-filterpanel-accordion").accordion("option", "collapsible", false);
                         $('.pv-filterpanel-accordion').accordion('option', 'active', category.visIndex);
-                        _filterCategory(search.eq(0));
+                        PV._filterCategory(search.eq(0));
                         release();
                     });
                 }
@@ -2177,7 +2195,7 @@ var ruleNums = 0;
         oldValue = value;
     }
 
-    var _initAllSelect = function (id, search) { //hack to avoid .hide() in IE
+    PV._initAllSelect = function (id, search) { //hack to avoid .hide() in IE
         if (search == undefined) search = "";
         var select = $(id);
         for (var i = 0; i < select.length; i++) {
@@ -2192,7 +2210,7 @@ var ruleNums = 0;
         }
     }
 
-    var _initAllVisible = function (id, search) {
+    PV._initAllVisible = function (id, search) {
         if (search == undefined) search = "";
         var select = $(id);
         for (var i = 0; i < select.length; i++) {
@@ -2207,7 +2225,7 @@ var ruleNums = 0;
         }
     }
 
-    var _initVisibleSelect = function (id, showFilterInvisible, search) { //hack to avoid .hide() in IE
+    PV._initVisibleSelect = function (id, showFilterInvisible, search) { //hack to avoid .hide() in IE
         if (search == undefined) search = "";
         if (showFilterInvisible == undefined) showFilterInvisible = false;
         var select = $(id);
@@ -2312,8 +2330,8 @@ var ruleNums = 0;
             var category = PivotCollection.getCategoryByName(filter.category);
             if (!category.uiInit) {
                 PV.initUICategory(category);
-                if (category.isNumber()) _refreshNumberWidget(category, _numericItemTotals[category.name].values);
-                else if(category.isOrdinal()) _refreshOrdinalWidget(category, _ordinalItemTotals[category.name].values);
+                if (category.isNumber()) PV._refreshNumberWidget(category, _numericItemTotals[category.name].values);
+                else if(category.isOrdinal()) PV._refreshOrdinalWidget(category, _ordinalItemTotals[category.name].values);
             }
             LoadSem.acquire(function (release) {
                 if (category.isString()) {
@@ -2346,7 +2364,7 @@ var ruleNums = 0;
                 else if (category.isDateTime()) {
                     var name = PV.cleanName(category.name);
                     $('#pv-facet-value-' + name + '__CustomRange:first-child').prop("checked", true);
-                    _getCustomDateRange(name);
+                    PV._getCustomDateRange(name);
                     var textbox1 = $('#pv-custom-range-' + name + '__StartDate'),
                         textbox2 = $('#pv-custom-range-' + name + '__FinishDate');
                     var minDate = new Date(filter.min), maxDate = new Date(filter.max);
@@ -2418,7 +2436,7 @@ var ruleNums = 0;
         if(doFilter != false) PV.filterCollection();
     }
 
-    var _bucketize = function (bucketGroups, index, bucketName, id, date) {
+    PV._bucketize = function (bucketGroups, index, bucketName, id, date) {
         if (bucketGroups[index] == undefined) bucketGroups[index] = [];
         var group = bucketGroups[index], bucket = group[bucketName + "a"];
         if (bucket != undefined) {
@@ -2436,7 +2454,7 @@ var ruleNums = 0;
         }
     };
 
-    var _createDatetimeBuckets = function (category) {
+    PV._createDatetimeBuckets = function (category) {
         var min = new Date(8640000000000000), max = new Date(-8640000000000000);
 
         var hasHours = false, hasMinutes = false, hasSeconds = false;
@@ -2462,18 +2480,18 @@ var ruleNums = 0;
 
             var k = 0, year = date.getFullYear(), decade = year - (year % 10);
 
-            if (hasDecades) _bucketize(category.datetimeBuckets, k++, decade + "s", item.id, date);
-            if (hasYears) _bucketize(category.datetimeBuckets, k++, year, item.id, date);
+            if (hasDecades) PV._bucketize(category.datetimeBuckets, k++, decade + "s", item.id, date);
+            if (hasYears) PV._bucketize(category.datetimeBuckets, k++, year, item.id, date);
             var month = PivotViewer.Utils.getMonthName(date);
-            if (hasMonths) _bucketize(category.datetimeBuckets, k++, month + ", " + year, item.id, date);
+            if (hasMonths) PV._bucketize(category.datetimeBuckets, k++, month + ", " + year, item.id, date);
             var day = date.getDate();
-            if (hasDays) _bucketize(category.datetimeBuckets, k++, month + " " + day + ", " + year, item.id, date);
+            if (hasDays) PV._bucketize(category.datetimeBuckets, k++, month + " " + day + ", " + year, item.id, date);
             var hours = PivotViewer.Utils.getHour(date), meridian = PivotViewer.Utils.getMeridian(date);
-            if (hasHours) _bucketize(category.datetimeBuckets, k++, month + " " + day + ", " + year + " " + hours + " " + meridian, item.id, date);
+            if (hasHours) PV._bucketize(category.datetimeBuckets, k++, month + " " + day + ", " + year + " " + hours + " " + meridian, item.id, date);
             var mins = PivotViewer.Utils.getMinutes(date);
-            if (hasMinutes) _bucketize(category.datetimeBuckets, k++, month + " " + day + ", " + year + " " + hours + ":" + mins + " " + meridian, item.id, date);
+            if (hasMinutes) PV._bucketize(category.datetimeBuckets, k++, month + " " + day + ", " + year + " " + hours + ":" + mins + " " + meridian, item.id, date);
             var secs = PivotViewer.Utils.getSeconds(date);
-            if (hasSeconds) _bucketize(category.datetimeBuckets, k, month + " " + day + ", " + year + " " + hours + ":" + mins + ":" + secs + " " + meridian, item.id, date);
+            if (hasSeconds) PV._bucketize(category.datetimeBuckets, k, month + " " + day + ", " + year + " " + hours + ":" + mins + ":" + secs + " " + meridian, item.id, date);
         }
         for (var j = 0; j < category.datetimeBuckets.length; j++) {
             category.datetimeBuckets[j].sort(function (a, b) { return a.start - b.start });
@@ -2489,7 +2507,7 @@ var ruleNums = 0;
 
     };
 
-    var _hideCustomDateRange = function (facetName) {
+    PV._hideCustomDateRange = function (facetName) {
         $('#pv-custom-range-' + facetName + '__Start').css('visibility', 'hidden');
         $('#pv-custom-range-' + facetName + '__Finish').css('visibility', 'hidden');
         $('#pv-custom-range-' + facetName + '__StartDate').datepicker("setDate", null);
@@ -2500,7 +2518,7 @@ var ruleNums = 0;
         $('#pv-custom-range-' + facetName + '__StartDate').datepicker("option", "maxDate", null);
     };
 
-    var _getCustomDateRange = function (facetName) {
+    PV._getCustomDateRange = function (facetName) {
         var facet = _nameMapping[facetName];
         var category = PivotCollection.getCategoryByName(facet);
         var maxYear, minYear, maxDate, minDate;
@@ -2536,7 +2554,7 @@ var ruleNums = 0;
         }
     };
 
-    var _changeCustomRange = function (textbox) {
+    PV._changeCustomRange = function (textbox) {
         var start;
         var end;
         if ($(textbox).attr('itemvalue') == "CustomRangeStart") {
