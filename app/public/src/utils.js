@@ -100,8 +100,8 @@ PivotViewer.Utils.getHistogram = function (values) {
         },
         addValue: function (val) {
             val = Math.floor(val / this.options.step) * this.options.step;
-            this.options.values.push(val);
-            this.options.values.sort();
+            for (var i = 0; i < this.options.values.length; i++) if (this.options.values[i] > val) break;
+            this.options.values.splice(i, 0, val);
             this._refresh();
         },
         removeValue: function (index) {
@@ -322,10 +322,23 @@ PivotViewer.Utils.fillBuckets = function (bkts, filterList, category, valueFn) {
             if (tile.missing) continue;
             
             var value = facet.values[0];
-            if (valueFn(value) >= bkts[j].endRange && j < bkts.length - 1) j++;
+            while (valueFn(value) >= bkts[j].endRange && j < bkts.length - 1) j++;
             bkts[j].addTile(tile);
             bkts.ids[tile.item.id] = j;
         }
+
+        var epsilon = Infinity;
+        for (var b = 0; b < bkts.length - 1; b++) {
+            var bkt = bkts[b], tiles = bkt.tiles;
+            if (tiles.length > 0) {
+                var newEp = bkt.endRange - valueFn(tiles[tiles.length - 1].item.getFacetByName(category.name).values[0]);
+                if (newEp < epsilon) epsilon = newEp;
+            }
+        }
+        epsilon = Math.pow(10, Math.floor(Math.log(epsilon) / Math.log(10)));
+        if (epsilon > 1) epsilon = 1;
+        for (var b = 0; b < bkts.length - 1; b++) bkts[b].endLabel = (bkts[b].endRange - epsilon).toString();
+
     }
     else {
         var valueBkts = [];
@@ -347,7 +360,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
 
     var bkts = [], value1 = filterList[0].item.getFacetByName(category).values[0], value = valueFn(value1), label = labelFn(value1);
     var bkt = new PivotViewer.Models.Bucket(value1.value, label);
-    bkt.addTile(filterList[0]); bkt.addValue(value);
+    bkt.addTile(filterList[0]); bkt.addValue(value1.value);
     bkts.push(bkt);
 
     var i = 1, j = 0;
@@ -355,12 +368,12 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
         var tile = filterList[i], facet = tile.item.getFacetByName(category);
         if (facet == undefined) break;
         if (tile.missing) continue;
-        var value2 = facet.values[0];
-        if(valueFn(value2) > value) {
+        var value2 = facet.values[0], newVal = valueFn(value2);
+        if(newVal != value) {
             value1 = value2;
-            var label = labelFn(value2), value = valueFn(value2);
+            var label = labelFn(value2), value = newVal;
             bkts[++j] = new PivotViewer.Models.Bucket(value2.value, label);
-            bkts[j].addTile(tile); bkts[j].addValue(value);
+            bkts[j].addTile(tile); bkts[j].addValue(value2.value);
         }
         else {
             bkts[j].addTile(tile);

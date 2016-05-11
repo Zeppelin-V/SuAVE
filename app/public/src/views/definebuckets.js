@@ -244,11 +244,18 @@ DB.getBuckets = function (category) {
     if (facet.attr("mode") != "db") return null;
 
     var buckets = [];
-    if (category.isNumber()|| category.isOrdinal()) {
+    if (category.isNumber()) {
         var values = facet.next().find(".pv-facet-numericslider").modSlider("option", "values");
         for (var i = 0; i < values.length - 1; i++) {
             buckets[i] = new PivotViewer.Models.Bucket(values[i], category.getValueLabel(values[i]), values[i + 1], category.getValueLabel(values[i + 1]));
         }
+    }
+    else if (category.isOrdinal()) {
+        var values = facet.next().find(".pv-facet-numericslider").modSlider("option", "values");
+        for (var i = 0; i < values.length - 2; i++) {
+            buckets[i] = new PivotViewer.Models.Bucket(values[i], category.getValueLabel(values[i]), values[i + 1], category.getValueLabel(values[i + 1] - 1));
+        }
+        buckets[i] = new PivotViewer.Models.Bucket(values[i], category.getValueLabel(values[i]), values[i + 1], category.getValueLabel(values[i + 1]));
     }
     else {
         buckets.values = [];

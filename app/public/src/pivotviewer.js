@@ -232,7 +232,7 @@ var ruleNums = 0;
         return facetControls.join('');
     };
 
-    var _refreshSliderWidget = function (category, values, histogramFn) {
+    PV._refreshSliderWidget = function (category, values, histogramFn) {
         var name = PivotViewer.Utils.escapeMetaChars(PV.cleanName(category.name));
         var p = $("#pv-filterpanel-category-numberitem-" + name);
         var create = p.attr("created") == undefined;
@@ -274,8 +274,8 @@ var ruleNums = 0;
         }
     }
 
-    PV._refreshNumberWidget = function (category, values) {_refreshSliderWidget(category, values, PivotViewer.Utils.getHistogram);}
-    PV._refreshOrdinalWidget = function (category, values) {_refreshSliderWidget(category, values, PivotViewer.Utils.getOrdinalHistogram);}
+    PV._refreshNumberWidget = function (category, values) {PV._refreshSliderWidget(category, values, PivotViewer.Utils.getHistogram);}
+    PV._refreshOrdinalWidget = function (category, values) {PV._refreshSliderWidget(category, values, PivotViewer.Utils.getOrdinalHistogram);}
 
     PV._stopSlider = function (s, category, event, ui) {
         var s = $('#pv-facet-numericslider-' + PV.cleanName(category.name));
@@ -1926,6 +1926,8 @@ var ruleNums = 0;
             $(".pv-filterpanel-accordion-heading-clear").css("visibility", "hidden");
             $("#pv-long-search-clear").css("visibility", "hidden");
             $("#pv-long-search").val("");
+            $(".pv-value-search").val("");
+            $(".pv-search-clear").css("visibility", "hidden");
             _longstringFilters = null;
             PV.filterCollection();
         });
@@ -1997,7 +1999,7 @@ var ruleNums = 0;
                     search = $('.pv-filterpanel-accordion-facet-list-item[id^="pv-facet-value-' + PV.cleanName(category.name) + '"]');
                     search.hide();
                     search = search.filter(function () {
-                      return $(this).children().eq(0).attr('itemvalue').toLowerCase().indexOf(input) >= 0 && $(this).children().eq(2).html() > 0;
+                      return PV.cleanName($(this).children().eq(0).attr('itemvalue').toLowerCase()).indexOf(input) >= 0 && $(this).children().eq(2).html() > 0;
                     });
                     search.show();
 
@@ -2403,12 +2405,10 @@ var ruleNums = 0;
             if ($("input[itemfacet|='" + $(checkbox).attr("itemfacet") + "']:checked").length == 0) {
                 enlarge = true;
                 $(checkbox).parent().parent().parent().prev().find('.pv-filterpanel-accordion-heading-clear').trigger("click");
-                clear = true;
-                return;
             }
             else{
                 enlarge = false;
-                clear = false;
+                clear = true;
             }
         }
 
