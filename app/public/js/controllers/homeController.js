@@ -26,7 +26,7 @@ function HomeController()
 			'<div class="row" ><div class="col-xs-1"><input id="pv-grid" class="checkbox-custom"  type="checkbox">'+
 			'<label for="pv-grid" class="checkbox-custom-label">Grid</label></div>'+
 			'<div class="col-xs-1"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
-			'<label for="pv-bucket" class="checkbox-custom-label">Buecket</label></div>'+
+			'<label for="pv-bucket" class="checkbox-custom-label">Bucket</label></div>'+
 			'<div class="col-xs-1"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div>'+
 			'<div class="col-xs-1"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
