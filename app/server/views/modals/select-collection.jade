@@ -1,6 +1,6 @@
 html
   body
-    .modal-select-collection.modal.hide.fade
+    .modal.modal-select-collection.hide.fade
       .modal-header
         button.close(data-dismiss='modal') x
         h3
@@ -9,16 +9,13 @@ html
         #pv-views.container
         .container
           .row
-            .col-xs-3
-              p.subheading Select a collection:
-              br
+            .col-xs-5
+              p.subheading Select a shape collection:
               select#collect-select
                 option(selected='', disabled='', hidden='')
-                option(value='default') Default
-                option(value='color') Color
                 option(value='gender') Gender
                 option(value='object') Object
-            .col-xs-3
+            .col-xs-5
               p.subheading Select a field to associate with survey icons:
               select#column-select
         #column-collect.container

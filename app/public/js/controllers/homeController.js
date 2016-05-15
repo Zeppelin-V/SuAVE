@@ -23,17 +23,17 @@ function HomeController()
 		//insert views checkboxes
 		$('#pv-views').empty();
 		$('#pv-views').append(
-			'<div class="row" ><div class="col-xs-2"><input id="pv-grid" class="checkbox-custom"  type="checkbox">'+
+			'<div class="row" ><div class="col-xs-1"><input id="pv-grid" class="checkbox-custom"  type="checkbox">'+
 			'<label for="pv-grid" class="checkbox-custom-label">Grid</label></div>'+
-			'<div class="col-xs-2"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-1"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-bucket" class="checkbox-custom-label">Buecket</label></div>'+
-			'<div class="col-xs-2"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
-			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div></div><div class="row">'+
-			'<div class="col-xs-2"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-1"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
+			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div>'+
+			'<div class="col-xs-1"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-qca" class="checkbox-custom-label">QCA</label></div>'+
-			'<div class="col-xs-2"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-1"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-map" class="checkbox-custom-label">Map</label> </div>'+
-			'<div class="col-xs-2"><input id="pv-r" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-1"><input id="pv-r" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-r" class="checkbox-custom-label">R</label></div></div>'
 		);
 		var views = survey.views.toString();
@@ -91,11 +91,20 @@ function HomeController()
 		if($('#collect-select').find(':selected').val() != '' &&
 	 				$('#column-select').find(':selected').val() != ''){
 			for(var i = 0; i < gData.length; i++){
-				var val = $('#collect-drop-'+i+' .dd-selected-value').val();
-				if(val == '0'){
-					collection.values[gData[i]] = 'default';
+				var color = $('#color-drop-'+i+' .dd-selected-value').val();
+				var shape = $('#collect-drop-'+i+' .dd-selected-value').val();
+				if(color == '0') {
+					if(shape == '0'){
+						collection.values[gData[i]] = 'default';
+					}else{
+						collection.values[gData[i]] = shape;
+					}
 				}else{
-					collection.values[gData[i]] = val;
+					if(shape == '0'){
+						collection.values[gData[i]] = color;
+					}else{
+						collection.values[gData[i]] = color + '_' + shape;
+					}
 				}
 			}
 			$.ajax({
@@ -245,8 +254,6 @@ function HomeController()
 		var collect;
 		if(collectVal == "default" ){
 			collect = defaultImg;
-		}else if(collectVal == "color"){
-			collect = colorImg;
 		}else if(collectVal == "gender"){
 			collect = genderImg;
 		}else if(collectVal == "object"){
@@ -267,17 +274,24 @@ function HomeController()
 
 				columnImg = generateImgJson(data);
 				Dlength = data.length;
-				$('#column-collect').append('<p>Please assign an image to each value:</p>');
+				$('#column-collect').append('<p>Please assign a color and a shape to each value:</p>');
 
 				for(var i = 0; i < data.length; i++){
 					$('#column-collect').append(
-						'<div class="row"><div class="col-xs-3"><div id="collect-drop-'+i+'"></div></div>'+
+						'<div class="row"><div class="col-xs-3"><div id="color-drop-'+i+'"></div></div>'+
+						'<div class="col-xs-3"><div id="collect-drop-'+i+'"></div></div>'+
 						'<div class="col-xs-3"><div id="column-drop-'+i+'" class="col-xs-3"></div></div></div></br>');
 				}
 
 				for(var i = 0; i < data.length; i++){
 
 					//inflate collection dropdown
+					$('#color-drop-'+i).ddslick({
+						data:colorImg,
+						width:250,
+						imagePosition:"right"
+					});
+
 					$('#collect-drop-'+i).ddslick({
 						data:collect,
 						width:250,

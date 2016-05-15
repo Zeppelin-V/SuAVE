@@ -1,8 +1,14 @@
 var colorImg = [
     {
-        text: "Please select a pattern",
+        text: "Please select a color",
         value: 0,
         selected: false,
+        imageSrc: "/../../img/default.jpg"
+    },
+    {
+        text: "Default",
+        value: "default",
+        selected: true,
         imageSrc: "/../../img/default.jpg"
     },
     {
@@ -210,7 +216,7 @@ var defaultImg = [
 
 var genderImg = [
   {
-      text: "Please select a pattern",
+      text: "Please select a shape",
       value: 0,
       selected: false,
       imageSrc: "/../../img/default.jpg"
@@ -239,7 +245,7 @@ var genderImg = [
 
 var objectImg = [
   {
-      text: "Please select a pattern",
+      text: "Please select a shape",
       value: 0,
       selected: false,
       imageSrc: "/../../img/default.jpg"

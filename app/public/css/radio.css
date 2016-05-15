@@ -119,8 +119,13 @@ input.radio:checked ~ label:before {
 }
 
 .modal-select-collection{
+  position: relative;
+  margin: 0 auto;
+  left:0;
   height: auto;
   max-height: 1000px;
+  width: auto;
+  max-width: 850px;
 }
 
 .modal-select-collection .modal-body{
