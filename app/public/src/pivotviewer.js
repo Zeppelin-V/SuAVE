@@ -705,9 +705,12 @@ var ruleNums = 0;
         var filterList = [], longStringFiltered = null, stringFilters, datetimeFilters, numericFilters, selectedFilters;
         if (filterChange == undefined) {
             if (_longstringFilters != null) {
+				console.log(_tiles.length);
                 var count = 0; longStringFiltered = [];
                 for (var i = 0, _iLen = _tiles.length; i < _iLen; i++) {
+					console.log(_longstringFilters);
                     var facet = _tiles[i].item.getFacetByName(_longstringFilters.facet);
+					console.log(_tiles[i].item);
                     if (facet != undefined && facet.values[0].value.toLowerCase().indexOf(_longstringFilters.value) >= 0) {
                         longStringFiltered[i] = true;
                         count++
@@ -1513,7 +1516,7 @@ var ruleNums = 0;
                 var category = PivotCollection.categories[event.visibleCategories[i]];
                 if (!category.isFilterVisible) continue;
                 if (category.isLongString()) {
-                    longSearchSelect.append("<option value='" + PV.cleanName(category.name.toLowerCase()) + "'>" + category.name + "</option>");
+                    longSearchSelect.append("<option value='" + PV.cleanName(category.name) + "'>" + category.name + "</option>");
                     _longStringCategories.push(category);
                 }
                 else {
@@ -1569,7 +1572,7 @@ var ruleNums = 0;
                     }
                     LoadSem.acquire(function (release) {
                         if ($('#pv-long-search').val() != null && $('#pv-long-search').val() != "")
-                            _longstringFilters = { facet: _nameMapping[$("#pv-long-search-cat").val()], value: $("#pv-long-search").val().toLowerCase() };
+                            _longstringFilters = { facet: $("#pv-long-search-cat").text(), value: $("#pv-long-search").val().toLowerCase() };
                         else _longstringFilters = null;
                         PV.filterCollection();
                         release();
@@ -1591,9 +1594,9 @@ var ruleNums = 0;
                     $("#pv-long-search-cat option").remove();
                     var search = $('.pv-filterpanel-search').val();
                     for (var i = 0; i < _longStringCategories.length; i++) {
-                        var category = _longStringCategories[i], clean = PV.cleanName(category.name.toLowerCase());
+                        var category = _longStringCategories[i], clean = PV.cleanName(category.name);
                         if (search != "" && clean.indexOf(search) < 0) continue;
-                        $("#pv-long-search-cat").append("<option value='" + PV.cleanName(category.name.toLowerCase()) + "'>" + category.name + "</option>");
+                        $("#pv-long-search-cat").append("<option value='" + PV.cleanName(category.name) + "'>" + category.name + "</option>");
                     }
                 }
                 $(this).attr("dirty", 0);
@@ -2294,7 +2297,7 @@ var ruleNums = 0;
                     detailDOM[i] += "<div pv-detail-item-value='" + value.value +
                         "' class='pv-infopanel-detail-item detail-item-value" + (category.isFilterVisible ? " detail-item-value-filter" : "") + "'>";
                     if (value.href != null && value.href != "")
-                        detailDOM[i] += "<a class='detail-item-link' href='" + value.href + "'>" + value.label + "</a>";
+                        detailDOM[i] += "<a class='detail-item-link' href='" + value.href + "' target='_blank'>" + value.label + "</a>";
                     else detailDOM[i] += value.label;
                     detailDOM[i] += "</div>";
                 }

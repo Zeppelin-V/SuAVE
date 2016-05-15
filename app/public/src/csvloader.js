@@ -87,7 +87,7 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                 else if (categories[i] == "#views") {
                     var j = 1;
                     this.collection.config.views = [];
-                    while (this.data[j][i] != null && this.data[j][i] != "") this.collection.config.views.push(this.data[j++][i].toLowerCase());
+                    while (this.data[j][i] != null && this.data[j][i] != "") this.collection.config.views.push(this.data[j++][i]);
                 }
                 continue;
             }
@@ -157,6 +157,7 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                 var value = new PivotViewer.Models.FacetValue(raw);
                 value.value = raw;
                 value.href = raw;
+				        f.addValue(value);
             }
             else f.addValue(new PivotViewer.Models.FacetValue(raw));
             facets.push(f);
