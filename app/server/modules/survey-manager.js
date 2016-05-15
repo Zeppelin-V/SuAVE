@@ -79,7 +79,7 @@ exports.changeCollection = function(files, user, collection, column, callback){
 			});
 		}
 	});
-
+	/*
 	loader.generateDeepZoom(__dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name,
 		collection, user+"_"+files.body.name+".dzc", function(e){
@@ -87,7 +87,7 @@ exports.changeCollection = function(files, user, collection, column, callback){
 			callback(e);
 		}
 	});
-
+	*/
 }
 
 exports.getSurveyByUsername = function(username, callback)

@@ -216,6 +216,114 @@ var genderImg = [
       imageSrc: "/../../img/default.jpg"
   },
   {
+      text: "Male",
+      value: "male",
+      selected: false,
+      imageSrc: "/../../img/gender/male.jpg"
+  },
+  {
+      text: "Female",
+      value: "female",
+      selected: false,
+      imageSrc: "/../../img/gender/female.jpg"
+  },
+  {
+      text: "Agender",
+      value: "agender",
+      selected: false,
+      imageSrc: "/../../img/gender/agender.jpg"
+  }
+
+];
+
+
+var objectImg = [
+  {
+      text: "Please select a pattern",
+      value: 0,
+      selected: false,
+      imageSrc: "/../../img/default.jpg"
+  },
+  {
+      text: "Atom",
+      value: "atom",
+      selected: false,
+      imageSrc: "/../../img/object/atom.jpg"
+  },
+  {
+      text: "Battery",
+      value: "battery",
+      selected: false,
+      imageSrc: "/../../img/object/battery.jpg"
+  },
+  {
+      text: "Car",
+      value: "car",
+      selected: false,
+      imageSrc: "/../../img/object/car.jpg"
+  },
+  {
+      text: "Cloud",
+      value: "cloud",
+      selected: false,
+      imageSrc: "/../../img/object/cloud.jpg"
+  },
+  {
+      text: "Plane",
+      value: "plane",
+      selected: false,
+      imageSrc: "/../../img/object/plane.jpg"
+  },
+  {
+      text: "Spider",
+      value: "spider",
+      selected: false,
+      imageSrc: "/../../img/object/spider.jpg"
+  },
+  {
+      text: "Sun",
+      value: "sun",
+      selected: false,
+      imageSrc: "/../../img/object/sun.jpg"
+  },
+  {
+      text: "Tree",
+      value: "tree",
+      selected: false,
+      imageSrc: "/../../img/object/tree.jpg"
+  },
+  {
+      text: "Water",
+      value: "water",
+      selected: false,
+      imageSrc: "/../../img/object/water.jpg"
+  }
+];
+
+function generateImgJson(options){
+  var result = [];
+  for(var i = 0; i < options.length; i++){
+    data = options[i];
+    if(data.length == 0) data = "Null";
+    result.push({'text': data,
+                  'value': data,
+                  'selected': false,
+                  'imageSrc': "/../../img/blue.jpg"}
+    );
+  }
+  return result;
+}
+
+
+/*
+var genderImg = [
+  {
+      text: "Please select a pattern",
+      value: 0,
+      selected: false,
+      imageSrc: "/../../img/default.jpg"
+  },
+  {
       text: "Blue",
       value: "blue_",
       selected: false,
@@ -451,7 +559,8 @@ var genderImg = [
   }
 ];
 
-var scienceImg = [
+
+var objectImg = [
   {
       text: "Please select a pattern",
       value: 0,
@@ -550,16 +659,4 @@ var scienceImg = [
   }
 ];
 
-function generateImgJson(options){
-  var result = [];
-  for(var i = 0; i < options.length; i++){
-    data = options[i];
-    if(data.length == 0) data = "Null";
-    result.push({'text': data,
-                  'value': data,
-                  'selected': false,
-                  'imageSrc': "/../../img/blue.jpg"}
-    );
-  }
-  return result;
-}
+*/

@@ -43,7 +43,7 @@
     <script src="src/views/tilecontroller.min.js" type="text/javascript"></script>
     <script src="src/views/deepzoom.min.js" type="text/javascript"></script>
     <script src="src/pivotviewer.js" type="text/javascript"></script>
-    <script src="src/csvloader.min.js" type="text/javascript"></script>
+    <script src="src/csvloader.js" type="text/javascript"></script>
     <script src="src/rloader.js" type="text/javascript"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
@@ -73,10 +73,10 @@
                 if(query.views[5] == 1) options.Views.push("r");
             }
         }
-        
+
         if(query.views != undefined){
             var file = query.file;
-            if(query.file.endsWith(".zip") && query.type == "csv") 
+            if(query.file.endsWith(".zip") && query.type == "csv")
                 file = (query.file).replace('.zip', '.csv');
             if(query.views[5] == 1) initRSession("http://maxim.ucsd.edu/suave/surveys/"+file);
         }

@@ -705,12 +705,9 @@ var ruleNums = 0;
         var filterList = [], longStringFiltered = null, stringFilters, datetimeFilters, numericFilters, selectedFilters;
         if (filterChange == undefined) {
             if (_longstringFilters != null) {
-				console.log(_tiles.length);
                 var count = 0; longStringFiltered = [];
                 for (var i = 0, _iLen = _tiles.length; i < _iLen; i++) {
-					console.log(_longstringFilters);
                     var facet = _tiles[i].item.getFacetByName(_longstringFilters.facet);
-					console.log(_tiles[i].item);
                     if (facet != undefined && facet.values[0].value.toLowerCase().indexOf(_longstringFilters.value) >= 0) {
                         longStringFiltered[i] = true;
                         count++

@@ -118,7 +118,7 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
   }
 
   //generate dzc
-  xml = '<?xml version="1.0" encoding="utf-8"?><Collection MaxLevel="'+
+  xml = '<?xml version="1.0" encoding="utf-8"?><Collection MaxLevel="'
     +maxLevel+'" TileSize="256" Format="jpg"><Items>'+xml+'</Items></Collection>';
 
   fs.writeFile(dir + "/" + destination, xml, function(e){
