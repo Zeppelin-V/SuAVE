@@ -1291,7 +1291,7 @@ var ruleNums = 0;
                         }
                     }
                 }
-                PV._sortStringValues(category.name);
+                //PV._sortStringValues(category.name);
             }
             else if (category.isDateTime()) {
                 var filterList = [];
@@ -2405,11 +2405,13 @@ var ruleNums = 0;
             if ($("input[itemfacet|='" + $(checkbox).attr("itemfacet") + "']:checked").length == 0) {
                 enlarge = true;
                 $(checkbox).parent().parent().parent().prev().find('.pv-filterpanel-accordion-heading-clear').trigger("click");
+                return
             }
             else{
                 enlarge = false;
-                clear = true;
+                clear = false;
             }
+
         }
 
         if (category.isString()) PV.filterCollection({ category: category, enlarge: enlarge, clear: clear, value: value });
