@@ -6,7 +6,8 @@ function HomeController()
 	var DLength;
 	var collection = {};
 	var SID;
-	var gData;
+	var shapeData;
+	var colorData;
 
 // handle user logout //
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
@@ -23,17 +24,17 @@ function HomeController()
 		//insert views checkboxes
 		$('#pv-views').empty();
 		$('#pv-views').append(
-			'<div class="row" ><div class="col-xs-1"><input id="pv-grid" class="checkbox-custom"  type="checkbox">'+
+			'<div class="row" ><div class="col-xs-2"><input id="pv-grid" class="checkbox-custom"  type="checkbox">'+
 			'<label for="pv-grid" class="checkbox-custom-label">Grid</label></div>'+
-			'<div class="col-xs-1"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
-			'<label for="pv-bucket" class="checkbox-custom-label">Bucket</label></div>'+
-			'<div class="col-xs-1"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
-			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div>'+
-			'<div class="col-xs-1"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-2"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
+			'<label for="pv-bucket" class="checkbox-custom-label">Buecket</label></div>'+
+			'<div class="col-xs-2"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
+			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div></div><div class="row">'+
+			'<div class="col-xs-2"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-qca" class="checkbox-custom-label">QCA</label></div>'+
-			'<div class="col-xs-1"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-2"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-map" class="checkbox-custom-label">Map</label> </div>'+
-			'<div class="col-xs-1"><input id="pv-r" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-2"><input id="pv-r" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-r" class="checkbox-custom-label">R</label></div></div>'
 		);
 		var views = survey.views.toString();
@@ -44,9 +45,10 @@ function HomeController()
     if(views[4] == '1') $("#pv-map").prop("checked", true);
 		if(views[5] == '1') $("#pv-r").prop("checked", true);
 
-		$('#column-select').empty();
-		$('#collect-select').removeAttr("selected");
-		$('#column-collect').empty();
+		$('#column-select-1').empty();
+		$('#column-select-2').empty();
+		$('#collect-select').val([]);
+		$('#column-collect-shape').empty();
 		//get Columns
 		$.ajax({
 			url: "/getSurveyColumnsNCollection",
@@ -54,9 +56,11 @@ function HomeController()
 			data: {"name" : survey.name, "user": user},
 			success: function(data){
 				var column = data;
-				$("#column-select").append($("<option selected disabled hidden></option>").html(""));
+				$("#column-select-1").append($("<option selected disabled hidden></option>").html(""));
+				$("#column-select-2").append($("<option selected disabled hidden></option>").html(""));
 				for(var i = 0; i < column.length; i++){
-					$("#column-select").append($("<option></option>").val(i).html(column[i]));
+					$("#column-select-1").append($("<option></option>").val(i).html(column[i]));
+					$("#column-select-2").append($("<option></option>").val(i).html(column[i]));
 				}
 			},
 			error: function(jqXHR){
@@ -67,44 +71,53 @@ function HomeController()
 
 	$("#collect-select").change(function() {
     var collectVal = $(this).find(':selected').val();
-    var columnVal = $('#column-select').find(':selected').text();
+    var columnVal = $('#column-select-1').find(':selected').text();
 
     if(columnVal.length > 0){
-			collection['column'] = parseInt($('#column-select').find(':selected').val());
+			collection['sColumn'] = parseInt($('#column-select-1').find(':selected').val());
       that.fetchColVal(columnVal, collectVal);
     }
 
 	});
 
-	$("#column-select").change(function() {
+	$("#column-select-1").change(function() {
     var columnVal = $(this).find(':selected').text();
     var collectVal = $('#collect-select').find(':selected').val();
 
     if(collectVal.length > 0){
-			collection['column'] = parseInt($('#column-select').find(':selected').val());
+			collection['sColumn'] = parseInt($('#column-select-1').find(':selected').val());
     	that.fetchColVal(columnVal, collectVal);
     }
+	});
+
+	$("#column-select-2").change(function() {
+		var columnVal = $(this).find(':selected').text();
+		collection['cColumn'] = parseInt($('#column-select-2').find(':selected').val());
+		that.fetchColor(columnVal);
 	});
 
 	$(document).on('click', '#select-collection-submit', function(){
 
 		if($('#collect-select').find(':selected').val() != '' &&
 	 				$('#column-select').find(':selected').val() != ''){
-			for(var i = 0; i < gData.length; i++){
-				var color = $('#color-drop-'+i+' .dd-selected-value').val();
+
+			for(var i = 0; i < shapeData.length; i++){
 				var shape = $('#collect-drop-'+i+' .dd-selected-value').val();
-				if(color == '0') {
-					if(shape == '0'){
-						collection.values[gData[i]] = 'default';
-					}else{
-						collection.values[gData[i]] = shape;
-					}
+
+				if(shape == '0'){
+						collection.sValues[shapeData[i]] = '';
 				}else{
-					if(shape == '0'){
-						collection.values[gData[i]] = color;
-					}else{
-						collection.values[gData[i]] = color + '_' + shape;
-					}
+						collection.sValues[shapeData[i]] = shape;
+				}
+			}
+
+			for(var i = 0; i < colorData.length; i++){
+				var color = $('#color-drop-'+i+' .dd-selected-value').val();
+
+				if(color == '0') {
+					collection.cValues[colorData[i]] = '';
+				}else{
+					collection.cValues[colorData[i]] = color;
 				}
 			}
 			$.ajax({
@@ -247,7 +260,7 @@ function HomeController()
 	});
 
 	this.fetchColVal = function(columnVal, collectVal){
-		$('#column-collect').empty();
+		$('#column-collect-shape').empty();
 		collection['name'] = collectVal;
 
 		var columnImg;
@@ -265,20 +278,21 @@ function HomeController()
 			type: "POST",
 			data: {"name" : surveys[SID].name, "user": user, "column": columnVal},
 			success: function(data){
-				gData = data;
+				shapeData = data;
 				//generate initial collect json
-				collection['values'] = {};
+				collection['sValues'] = {};
+				/*
 				for(var i = 0; i < data.length; i++){
-					collection.values[data[i]] = 'default';
-				}
+					collection.sValues[data[i]] = '';
+				}*/
 
 				columnImg = generateImgJson(data);
 				Dlength = data.length;
-				$('#column-collect').append('<p>Please assign a color and a shape to each value:</p>');
+				$('#column-collect-shape').append('<p>Please assign a shape to each value:</p>');
 
 				for(var i = 0; i < data.length; i++){
-					$('#column-collect').append(
-						'<div class="row"><div class="col-xs-3"><div id="color-drop-'+i+'"></div></div>'+
+					$('#column-collect-shape').append(
+						'<div class="row">'+
 						'<div class="col-xs-3"><div id="collect-drop-'+i+'"></div></div>'+
 						'<div class="col-xs-3"><div id="column-drop-'+i+'" class="col-xs-3"></div></div></div></br>');
 				}
@@ -286,11 +300,6 @@ function HomeController()
 				for(var i = 0; i < data.length; i++){
 
 					//inflate collection dropdown
-					$('#color-drop-'+i).ddslick({
-						data:colorImg,
-						width:250,
-						imagePosition:"right"
-					});
 
 					$('#collect-drop-'+i).ddslick({
 						data:collect,
@@ -309,12 +318,61 @@ function HomeController()
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
 			}
 		});
-
-
-
-
-
 	}
+
+	this.fetchColor = function(columnVal){
+		$('#column-collect-color').empty();
+		collection['name'] = collectVal;
+
+		var columnImg;
+		var collect = colorImg;
+
+		$.ajax({
+			url: "/getColumnsOptions",
+			type: "POST",
+			data: {"name" : surveys[SID].name, "user": user, "column": columnVal},
+			success: function(data){
+				colorData = data;
+
+				//generate initial collect json
+				collection['cValues'] = {};
+				/*
+				for(var i = 0; i < data.length; i++){
+					collection.cValues[data[i]] = 'default';
+				}
+				*/
+				columnImg = generateImgJson(data);
+				Dlength = data.length;
+				$('#column-collect-color').append('<p>Please assign a color to each value:</p>');
+
+				for(var i = 0; i < data.length; i++){
+					$('#column-collect-color').append(
+						'<div class="row"><div class="col-xs-3"><div id="color-drop-'+i+'"></div></div>'+
+						'<div class="col-xs-3"><div id="column-drop2-'+i+'" class="col-xs-3"></div></div></div></br>');
+				}
+
+				for(var i = 0; i < data.length; i++){
+
+					//inflate collection dropdown
+					$('#color-drop-'+i).ddslick({
+						data:colorImg,
+						width:250,
+						imagePosition:"right"
+					});
+
+					$('#column-drop2-'+i).ddslick({
+						data:[columnImg[i]],
+						width:250,
+						imagePosition:"right"
+					});
+				}
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
+	}
+
 
 	this.attemptLogout = function()
 	{

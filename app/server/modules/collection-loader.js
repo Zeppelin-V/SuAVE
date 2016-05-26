@@ -158,21 +158,46 @@ exports.setImgProperty = function(data, collection, callback){
     callback(data);
 
   }else{
-    var valCol = collection['column'];
+    //var valCol = collection['column'];
+    var shapeCol = collection['sColumn'];
+    var colorCol = collection['cColumn'];
+
     if(img_column == -1){
       data[0].push("#img");
       for(var i = 1; i < data.length; i++){
-        var img = data[i][valCol];
-        data[i].push(collection.values[img]);
+        var color = data[i][colorCol];
+        var shape = data[i][shapeCol];
+        if(color == ''){
+          if(shape == ''){
+            data[i].push("default");
+          }else{
+            data[i].push(collection.sValues[shape]);
+          }
+        }else{
+          if(shape == ''{
+            data[i].push(collection.cValues[color]);
+          }else{
+            data[i].push(collection.cValues[color]+'_'+collection.sValues[shape]);
+          }
+        }
       }
     }else{
       //if #img column already exists
       for(var i = 1; i < data.length; i++){
-        var img = data[i][valCol];
-        if(img == ''){
-          data[i][img_column] = collection.values['0'];
+        var color = data[i][colorCol];
+        var shape = data[i][shapeCol];
+        if(color == ''){
+          if(shape == ''){
+            data[i][img_column] = "default";
+          }else{
+            data[i][img_column] = collection.sValues[shape];
+          }
         }else{
-          data[i][img_column] = collection.values[img];
+          if(shape == ''{
+            data[i][img_column] = collection.cValues[color];
+          }else{
+            data[i][img_column] = collection.cValues[color]+'_'+collection.sValues[shape];
+          }
         }
       }
     }
