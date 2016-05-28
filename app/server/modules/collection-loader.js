@@ -161,20 +161,29 @@ exports.setImgProperty = function(data, collection, callback){
     //var valCol = collection['column'];
     var shapeCol = collection['sColumn'];
     var colorCol = collection['cColumn'];
+    var color;
+    var shape;
 
     if(img_column == -1){
       data[0].push("#img");
       for(var i = 1; i < data.length; i++){
-        var color = data[i][colorCol];
-        var shape = data[i][shapeCol];
+        if (shapeCol != '|^') shape = data[i][shapeCol].toLowerCase();
+        if (colorCol != '|^') color = data[i][colorCol].toLowerCase();
+
         if(color == ''){
-          if(shape == ''){
+          color = '|^';
+        }
+        if(shape == ''){
+          shape = '|^';
+        }
+        if(colorCol == '|^' || collection.cValues[color] == ''){
+          if(shapeCol == '|^' || collection.sValues[shape] == ''){
             data[i].push("default");
           }else{
             data[i].push(collection.sValues[shape]);
           }
         }else{
-          if(shape == ''{
+          if(collection.sValues[shape] == ''){
             data[i].push(collection.cValues[color]);
           }else{
             data[i].push(collection.cValues[color]+'_'+collection.sValues[shape]);
@@ -184,16 +193,24 @@ exports.setImgProperty = function(data, collection, callback){
     }else{
       //if #img column already exists
       for(var i = 1; i < data.length; i++){
-        var color = data[i][colorCol];
-        var shape = data[i][shapeCol];
+        if (shapeCol != '|^') shape = data[i][shapeCol].toLowerCase();
+        if (colorCol != '|^') color = data[i][colorCol].toLowerCase();
+
         if(color == ''){
-          if(shape == ''){
+          color = '|^';
+        }
+        if(shape == ''){
+          shape = '|^';
+        }
+
+        if(colorCol == '|^' || collection.cValues[color] == ''){
+          if(shapeCol == '|^' || collection.sValues[shape] == ''){
             data[i][img_column] = "default";
           }else{
             data[i][img_column] = collection.sValues[shape];
           }
         }else{
-          if(shape == ''{
+          if(shapeCol == '|^' || collection.sValues[shape] == ''){
             data[i][img_column] = collection.cValues[color];
           }else{
             data[i][img_column] = collection.cValues[color]+'_'+collection.sValues[shape];

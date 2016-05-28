@@ -6,8 +6,8 @@ function HomeController()
 	var DLength;
 	var collection = {};
 	var SID;
-	var shapeData;
-	var colorData;
+	var shapeData=[];
+	var colorData=[];
 
 // handle user logout //
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
@@ -21,6 +21,7 @@ function HomeController()
 		var i = id.slice(-1);
 		SID = i;
 		var survey = surveys[i];
+		collection = {};
 		//insert views checkboxes
 		$('#pv-views').empty();
 		$('#pv-views').append(
@@ -47,7 +48,7 @@ function HomeController()
 
 		$('#column-select-1').empty();
 		$('#column-select-2').empty();
-		$('#collect-select').val([]);
+		$('#collect-select').prop("selected", false);
 		$('#column-collect-shape').empty();
 		//get Columns
 		$.ajax({
@@ -93,33 +94,47 @@ function HomeController()
 	$("#column-select-2").change(function() {
 		var columnVal = $(this).find(':selected').text();
 		collection['cColumn'] = parseInt($('#column-select-2').find(':selected').val());
-		that.fetchColor(columnVal);
+		that.fetchColVal(columnVal, "");
 	});
 
 	$(document).on('click', '#select-collection-submit', function(){
 
 		if($('#collect-select').find(':selected').val() != '' &&
-	 				$('#column-select').find(':selected').val() != ''){
-
+	 				$('#column-select-1').find(':selected').val() != ''){
 			for(var i = 0; i < shapeData.length; i++){
 				var shape = $('#collect-drop-'+i+' .dd-selected-value').val();
-
+				shapeData[i] = shapeData[i].toLowerCase();
+				if(shapeData[i] == ''){
+					shapeData[i] = '|^';
+				}
 				if(shape == '0'){
 						collection.sValues[shapeData[i]] = '';
 				}else{
 						collection.sValues[shapeData[i]] = shape;
 				}
 			}
+		}else{
+			collection["sColumn"] = "|^";
+		}
 
+		if($('#column-select-2').find(':selected').val() != ''){
 			for(var i = 0; i < colorData.length; i++){
 				var color = $('#color-drop-'+i+' .dd-selected-value').val();
-
+				colorData[i] = colorData[i].toLowerCase();
+				if(colorData[i] == ''){
+					colorData[i] = '|^';
+				}
 				if(color == '0') {
 					collection.cValues[colorData[i]] = '';
 				}else{
 					collection.cValues[colorData[i]] = color;
 				}
 			}
+		}else{
+			collection["cColumn"] = "|^";
+		}
+
+		if(collection["cColumn"] != "|^" || collection["sColumn"] != "|^"){
 			$.ajax({
 				url: "/changeCollection",
 				type: "POST",
@@ -131,7 +146,7 @@ function HomeController()
 				}
 			});
 		}
-
+		
 		var views = "";
 		//change view options
 		if($("#pv-grid").is(':checked')){
@@ -260,58 +275,100 @@ function HomeController()
 	});
 
 	this.fetchColVal = function(columnVal, collectVal){
-		$('#column-collect-shape').empty();
-		collection['name'] = collectVal;
-
 		var columnImg;
 		var collect;
-		if(collectVal == "default" ){
-			collect = defaultImg;
-		}else if(collectVal == "gender"){
-			collect = genderImg;
-		}else if(collectVal == "object"){
-			collect = objectImg;
+
+		if(collectVal == ""){
+			$('#column-collect-color').empty();
+			collect = colorImg;
+		}else{
+			$('#column-collect-shape').empty();
+			collection['name'] = collectVal;
+			if(collectVal == "default" ){
+				collect = defaultImg;
+			}else if(collectVal == "gender"){
+				collect = genderImg;
+			}else if(collectVal == "object"){
+				collect = objectImg;
+			}
 		}
+
 
 		$.ajax({
 			url: "/getColumnsOptions",
 			type: "POST",
 			data: {"name" : surveys[SID].name, "user": user, "column": columnVal},
 			success: function(data){
-				shapeData = data;
-				//generate initial collect json
-				collection['sValues'] = {};
-				/*
-				for(var i = 0; i < data.length; i++){
-					collection.sValues[data[i]] = '';
-				}*/
+				if(collectVal == ""){
+					colorData = data;
 
-				columnImg = generateImgJson(data);
-				Dlength = data.length;
-				$('#column-collect-shape').append('<p>Please assign a shape to each value:</p>');
+					//generate initial collect json
+					collection['cValues'] = {};
+					/*
+					for(var i = 0; i < data.length; i++){
+						collection.cValues[data[i]] = 'default';
+					}
+					*/
+					columnImg = generateImgJson(data);
+					Dlength = data.length;
+					$('#column-collect-color').append('<p>Please assign a color to each value:</p>');
 
-				for(var i = 0; i < data.length; i++){
-					$('#column-collect-shape').append(
-						'<div class="row">'+
-						'<div class="col-xs-3"><div id="collect-drop-'+i+'"></div></div>'+
-						'<div class="col-xs-3"><div id="column-drop-'+i+'" class="col-xs-3"></div></div></div></br>');
-				}
+					for(var i = 0; i < data.length; i++){
+						$('#column-collect-color').append(
+							'<div class="row"><div class="col-xs-3"><div id="color-drop-'+i+'"></div></div>'+
+							'<div class="col-xs-3"><div id="column-drop2-'+i+'" class="col-xs-3"></div></div></div></br>');
+					}
 
-				for(var i = 0; i < data.length; i++){
+					for(var i = 0; i < data.length; i++){
+						//inflate collection dropdown
+						$('#color-drop-'+i).ddslick({
+							data:colorImg,
+							width:250,
+							imagePosition:"right"
+						});
 
-					//inflate collection dropdown
+						$('#column-drop2-'+i).ddslick({
+							data:[columnImg[i]],
+							width:250,
+							imagePosition:"right"
+						});
+					}
+				}else{
+					shapeData = data;
+					//generate initial collect json
+					collection['sValues'] = {};
+					/*
+					for(var i = 0; i < data.length; i++){
+						collection.sValues[data[i]] = '';
+					}*/
 
-					$('#collect-drop-'+i).ddslick({
-						data:collect,
-						width:250,
-						imagePosition:"right"
-					});
+					columnImg = generateImgJson(data);
+					Dlength = data.length;
+					$('#column-collect-shape').append('<p>Please assign a shape to each value:</p>');
 
-					$('#column-drop-'+i).ddslick({
-						data:[columnImg[i]],
-						width:250,
-						imagePosition:"right"
-					});
+					for(var i = 0; i < data.length; i++){
+						$('#column-collect-shape').append(
+							'<div class="row">'+
+							'<div class="col-xs-3"><div id="collect-drop-'+i+'"></div></div>'+
+							'<div class="col-xs-3"><div id="column-drop-'+i+'" class="col-xs-3"></div></div></div></br>');
+					}
+
+					for(var i = 0; i < data.length; i++){
+
+						//inflate collection dropdown
+
+						$('#collect-drop-'+i).ddslick({
+							data:collect,
+							width:250,
+							imagePosition:"right"
+						});
+
+						$('#column-drop-'+i).ddslick({
+							data:[columnImg[i]],
+							width:250,
+							imagePosition:"right"
+						});
+					}
 				}
 			},
 			error: function(jqXHR){
@@ -319,10 +376,10 @@ function HomeController()
 			}
 		});
 	}
-
+	/*
 	this.fetchColor = function(columnVal){
 		$('#column-collect-color').empty();
-		collection['name'] = collectVal;
+		//collection['name'] = collectVal;
 
 		var columnImg;
 		var collect = colorImg;
@@ -336,11 +393,11 @@ function HomeController()
 
 				//generate initial collect json
 				collection['cValues'] = {};
-				/*
+
 				for(var i = 0; i < data.length; i++){
 					collection.cValues[data[i]] = 'default';
 				}
-				*/
+
 				columnImg = generateImgJson(data);
 				Dlength = data.length;
 				$('#column-collect-color').append('<p>Please assign a color to each value:</p>');
@@ -352,7 +409,6 @@ function HomeController()
 				}
 
 				for(var i = 0; i < data.length; i++){
-
 					//inflate collection dropdown
 					$('#color-drop-'+i).ddslick({
 						data:colorImg,
@@ -371,7 +427,7 @@ function HomeController()
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
 			}
 		});
-	}
+	}*/
 
 
 	this.attemptLogout = function()
