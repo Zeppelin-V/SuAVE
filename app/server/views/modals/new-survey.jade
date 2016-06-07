@@ -5,7 +5,7 @@ html
         button.close(data-dismiss='modal') x
         h3
       .modal-body
-        label Select a csv file to upload:
+        h3 Select a csv file to upload:
         form#new-survey(action='/uploadCSV', method='POST', enctype='multipart/form-data')
           hr
           fieldset
@@ -18,7 +18,7 @@ html
               p#error-text(style='color:red;')
             hr
             .form-buttons
-              button#new-survey-submit.btn(type='submit') submit
+              button#new-survey-submit.btn.btn-raised.btn-info(type='submit') submit
       .modal-footer
-        p(style="text-align: left; position: absolute;") Please check out the format of uploading file:
-        button#help-button.btn.btn-newSurvey Help
+        h3(style="text-align: left; position: absolute;") Check out the format of uploading file:
+        button#help-button.btn.btn-raised.btn-default.btn-newSurvey Help

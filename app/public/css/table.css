@@ -10,9 +10,44 @@
   margin-right: 5px;
 }
 
-.carousel-inner{
-  margin-top: 20px;
+.alert-error b, .alert .alert-error{
+  color:red;
 }
+
+#login-checkbox{
+  padding-left: 0px;
+}
+
+#login-checkbox input{
+  opacity: 1;
+  position:inherit;
+  margin-left: -15px;
+  margin-top: 5px;
+  width: 1;
+  height: 1;
+}
+
+#account-form-btn1, #account-form-btn2, #cancel, #retrieve-password-submit{
+  padding-left: 16px;
+}
+
+#retrieve-password-submit{
+  margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 1000px) {
+  .carousel-inner{
+    margin-top: 40px;
+    margin-bottom: 30px;
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+  .carousel-inner{
+    margin-top: 20px;
+  }
+}
+
 .carousel-row {
     margin-bottom: 10px;
 }

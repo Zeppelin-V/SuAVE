@@ -11,7 +11,7 @@ exports.getAbout = function(num){
   }
   else if (num == 2) {
     return aboutTwo;
-  }else if (numm == 3) {
+  }else if (num == 3) {
     return aboutThree;
   }
 };

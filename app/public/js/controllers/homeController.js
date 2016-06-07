@@ -376,59 +376,6 @@ function HomeController()
 			}
 		});
 	}
-	/*
-	this.fetchColor = function(columnVal){
-		$('#column-collect-color').empty();
-		//collection['name'] = collectVal;
-
-		var columnImg;
-		var collect = colorImg;
-
-		$.ajax({
-			url: "/getColumnsOptions",
-			type: "POST",
-			data: {"name" : surveys[SID].name, "user": user, "column": columnVal},
-			success: function(data){
-				colorData = data;
-
-				//generate initial collect json
-				collection['cValues'] = {};
-
-				for(var i = 0; i < data.length; i++){
-					collection.cValues[data[i]] = 'default';
-				}
-
-				columnImg = generateImgJson(data);
-				Dlength = data.length;
-				$('#column-collect-color').append('<p>Please assign a color to each value:</p>');
-
-				for(var i = 0; i < data.length; i++){
-					$('#column-collect-color').append(
-						'<div class="row"><div class="col-xs-3"><div id="color-drop-'+i+'"></div></div>'+
-						'<div class="col-xs-3"><div id="column-drop2-'+i+'" class="col-xs-3"></div></div></div></br>');
-				}
-
-				for(var i = 0; i < data.length; i++){
-					//inflate collection dropdown
-					$('#color-drop-'+i).ddslick({
-						data:colorImg,
-						width:250,
-						imagePosition:"right"
-					});
-
-					$('#column-drop2-'+i).ddslick({
-						data:[columnImg[i]],
-						width:250,
-						imagePosition:"right"
-					});
-				}
-			},
-			error: function(jqXHR){
-				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
-			}
-		});
-	}*/
-
 
 	this.attemptLogout = function()
 	{
@@ -500,9 +447,9 @@ function HomeController()
 			'<div class="slide-footer"><div id="hidden-button" class="col-xs-1"><h4>Public: </h4></div>'+
 			'<div class="toggle-button" id="public-'+i+'"><button ></button></div>'+
 			'<span class="pull-right buttons">'+
-			'<button id="survey-'+i+'" class="btn btn-sm btn-primary surveys-click"><i class="fa fa-fw fa-eye"></i> Show</button>'+
-			'<button id="edit-'+i+'" class="btn btn-sm btn-primary surveys-edit"><i class="fa fa-map-o"></i> Edit</button>'+
-			'<button id="delete-'+i+'" class="btn btn-sm btn-primary surveys-delete"><i class="fa fa-fw fa-warning"></i> Delete</button>'+
+			'<button id="survey-'+i+'" class="btn btn-raised btn-sm btn btn-raised btn-info surveys-click"><i class="fa fa-fw fa-eye"></i> Show</button>'+
+			'<button id="edit-'+i+'" class="btn btn-raised btn-sm btn btn-raised btn-info surveys-edit"><i class="fa fa-map-o"></i> Edit</button>'+
+			'<button id="delete-'+i+'" class="btn btn-raised btn-sm btn-info surveys-delete"><i class="fa fa-fw fa-warning"></i> Delete</button>'+
 			'</span></div></div></div>'
 			);
 			if($('#'+surveys[i].view+'-'+i).length == 0){
