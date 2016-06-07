@@ -1,31 +1,4 @@
-html
+doctype html
+html(lang='en')
   body
     .modal.modal-select-collection.hide.fade
-      .modal-header
-        button.close(data-dismiss='modal') x
-        h3
-      .modal-body
-        p Public View Options:
-        #pv-views.container
-        .container
-          .row
-            .col-xs-3
-              p.subheading Select a shape collection:
-              select#collect-select
-                option(selected='', disabled='', hidden='')
-                option(value='gender') Gender
-                option(value='object') Object
-            .col-xs-3
-              p.subheading Select a field to associate with shapes:
-              select#column-select-1
-        #column-collect-shape.container
-        hr
-        .container
-          .row
-            .col-xs-3
-              p.subheading Select a field to associate with colors:
-              select#column-select-2
-
-        #column-collect-color.container
-        .form-buttons
-          button#select-collection-submit.btn(data-dismiss='modal') submit

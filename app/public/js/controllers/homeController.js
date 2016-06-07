@@ -15,8 +15,62 @@ function HomeController()
 	$('#btn-addNew').click(function(){$('.modal-new-survey').modal('show') });
 
 //set listener on buttons
+	$(document).on('click', '#select-about-submit', function(){
+		window.frames[0].frameElement.contentWindow.getCode(function(data){
+
+			$.ajax({
+				url: "/changeAboutFileByID",
+				type: "POST",
+				data: {"name" : surveys[SID].name, "user": user,
+					"data": data},
+				success: function(code){
+				},
+				error: function(jqXHR){
+					console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+				}
+			});
+		});
+
+	});
+
+	$(document).on('click', '#select-icons', function(){
+		$('.surveys-edit').click();
+	});
+
+	$(document).on('click', '#select-about', function(){
+		$('.modal-select-collection').empty();
+		$('.modal-select-collection').css("width", "800px");
+		$('.modal-select-collection').append('<div class="modal-header">'+
+		' <button data-dismiss="modal" class="close">x</button> '+
+		'<div class="container"> <div style="padding-left:90px;" class="row"> '+
+		'<div class="col-xs-3">'+
+		' <button id="select-icons" style="width:100%;" class="btn btn btn-default">Icons</button>'+
+		' </div> <div class="col-xs-3"> '+
+		'<button id="select-about" style="width:100%;" class="btn btn btn-default">About</button> '+
+		'</div>  </div> </div> <iframe height="450px" width="100%" src="/editor.html" id="editorFrame">'+
+		'</iframe><button id="select-about-submit" data-dismiss="modal" class="btn btn-raised btn-info">submit</button></div>');
+	});
+
+	window.editorFrameLoaded = function (){
+		$.ajax({
+			url: "/getAboutFileByID",
+			type: "GET",
+			data: {"name" : surveys[SID].name, "user": user},
+			success: function(code){
+				window.frames[0].frameElement.contentWindow.setCode(code);
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
+	}
+
 	$(document).on('click', '.surveys-edit', function(){
 		$('.modal-select-collection').modal('show');
+		$('.modal-select-collection').css("width", "560px");
+		$('.modal-select-collection').empty();
+		$('.modal-select-collection').append('<div class="modal-header"> <button data-dismiss="modal" class="close">x</button> <div class="container"> <div style="padding-left:90px;" class="row"> <div class="col-xs-2"> <button id="select-icons" style="width:100%;" class="btn btn btn-default">Icons</button> </div> <div class="col-xs-2"> <button id="select-about" style="width:100%;" class="btn btn btn-default">About</button> </div> </div> </div> </div> <div class="modal-body"> <p>Public View Options:</p> <div id="pv-views" class="container"></div> <div class="container"> <div class="row"> <div class="col-xs-3"> <p class="subheading">Select a shape collection:</p> <select id="collect-select"> <option selected="" disabled="" hidden=""></option> <option value="gender">Gender</option> <option value="object">Object</option> </select> </div> <div class="col-xs-3"> <p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1"></select> </div> </div> </div> <div id="column-collect-shape" class="container"></div> <hr/> <div class="container"> <div class="row"> <div class="col-xs-3"> <p class="subheading">Select a field to associate with colors:</p> <select id="column-select-2"></select> </div> </div> </div> <div id="column-collect-color" class="container"></div> <div class="form-buttons"> <button id="select-collection-submit" data-dismiss="modal" class="btn btn-raised btn-info">submit</button> </div> </div>');
+
 		var id = $(this).attr("id");
 		var i = id.slice(-1);
 		SID = i;
@@ -70,7 +124,7 @@ function HomeController()
 		});
 	});
 
-	$("#collect-select").change(function() {
+	$(document).on('change', '#collect-select', function(){
     var collectVal = $(this).find(':selected').val();
     var columnVal = $('#column-select-1').find(':selected').text();
 
@@ -81,7 +135,7 @@ function HomeController()
 
 	});
 
-	$("#column-select-1").change(function() {
+	$(document).on('change', "#column-select-1", function(){
     var columnVal = $(this).find(':selected').text();
     var collectVal = $('#collect-select').find(':selected').val();
 
@@ -91,7 +145,7 @@ function HomeController()
     }
 	});
 
-	$("#column-select-2").change(function() {
+	$(document).on('change', "#column-select-2", function(){
 		var columnVal = $(this).find(':selected').text();
 		collection['cColumn'] = parseInt($('#column-select-2').find(':selected').val());
 		that.fetchColVal(columnVal, "");

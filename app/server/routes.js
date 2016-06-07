@@ -253,6 +253,29 @@ module.exports = function(app) {
 		});
 	});
 
+	app.post('/changeAboutFileByID', function(req, res){
+
+		CL.changeAboutFileByID(req.cookies.user, req.body.name, req.body.data,
+			function(e){
+				if(e){
+					res.status(400).send(e);
+				}else{
+					res.status(200).send("ok");
+				}
+		});
+	});
+
+	app.get('/getAboutFileByID', function(req, res){
+		CL.getAboutFileByID(req.cookies.user, req.query.name,
+			function(e, o){
+				if(e){
+					res.status(400).send(e);
+				}else{
+					res.status(200).send(o);
+				}
+		});
+	});
+
 //get survey's column name
 	app.post('/getSurveyColumnsNCollection', function(req, res){
 		CL.getSurveyColumnAndCollect(req.body.name, req.body.user, function(e, o){

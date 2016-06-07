@@ -38,7 +38,7 @@ function GalleryController()
 			'<div class="carousel-inner"><img src="/../img/blue.jpg" alt="Image"></div></div>'+
 			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><p>'+'</p></div>'+
 			'<div class="slide-footer"><span class="pull-right buttons">'+
-			'<button id="survey-'+i+'" class="btn btn-sm btn-primary surveys-click"><i class="fa fa-fw fa-eye"></i> Show</button>'+
+			'<button id="survey-'+i+'" class="btn btn-raised btn-info surveys-click"><i class="fa fa-fw fa-eye"></i> Show</button>'+
 			'</span></div></div></div>'
 			);
 		}

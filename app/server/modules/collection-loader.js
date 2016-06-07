@@ -4,6 +4,7 @@ var fsx = require('fs-extra');
 var parse = require('csv-parse');
 var json2csv = require('json2csv');
 var spawn = require('child_process').spawn;
+var GL = require('../global');
 //var sharp = require('sharp');
 
 //load csv file by path
@@ -18,6 +19,33 @@ exports.loadCSV = function(filePath, callback){
     }
   });
 };
+
+exports.changeAboutFileByID = function(user, name, data, callback){
+  var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+"about.html";
+
+  var newData = GL.getAbout(1) + name + GL.getAbout(2) + GL.getAbout(3) + data;
+
+  fs.writeFile(filePath, newData, function(err) {
+    if (err) {
+      callback(err);
+    }else{
+      console.log("successful");
+    }
+  });
+}
+
+exports.getAboutFileByID = function(user, name, callback){
+  var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+"about.html";
+  fs.readFile(filePath, 'utf-8', function (err, data) {
+    if (err) {
+      callback("Unable to read survey info", null);
+    } else {
+      var index = data.indexOf(GL.getAbout(3))+GL.getAbout(3).length;
+
+      callback(null, data.substring(index));
+    }
+  });
+}
 
 exports.getSurveyColumnAndCollect = function(name, user, callback){
   var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+".csv";
