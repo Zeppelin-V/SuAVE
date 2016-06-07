@@ -115,7 +115,7 @@ input.radio:checked ~ label:before {
 
 
 .dd-selected{
-  max-height: 60px;
+  max-height: 30px;
 }
 /*
 .modal-select-collection{

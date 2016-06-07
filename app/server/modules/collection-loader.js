@@ -4,7 +4,7 @@ var fsx = require('fs-extra');
 var parse = require('csv-parse');
 var json2csv = require('json2csv');
 var spawn = require('child_process').spawn;
-var sharp = require('sharp');
+//var sharp = require('sharp');
 
 //load csv file by path
 exports.loadCSV = function(filePath, callback){
@@ -78,6 +78,10 @@ exports.getColumnsOptions = function(name, user, column, callback){
   });
 };
 
+
+/*DEPRECATED*/
+
+/*
 //generate deep zoom files including .dzc and .dzi
 exports.generateDeepZoom = function(dir, collection, destination, callback){
 
@@ -126,8 +130,7 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
       callback(e);
     }
   });
-
-};
+};*/
 
 //set #img column for csv files
 exports.setImgProperty = function(data, collection, callback){

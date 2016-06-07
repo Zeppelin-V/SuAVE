@@ -146,7 +146,7 @@ function HomeController()
 				}
 			});
 		}
-		
+
 		var views = "";
 		//change view options
 		if($("#pv-grid").is(':checked')){
@@ -316,7 +316,7 @@ function HomeController()
 					for(var i = 0; i < data.length; i++){
 						$('#column-collect-color').append(
 							'<div class="row"><div class="col-xs-3"><div id="color-drop-'+i+'"></div></div>'+
-							'<div class="col-xs-3"><div id="column-drop2-'+i+'" class="col-xs-3"></div></div></div></br>');
+							'<div class="col-xs-3"><div id="column-drop2-'+i+'" class="col-xs-3"></div></div></div><p style="line-height: 50%;"></p>');
 					}
 
 					for(var i = 0; i < data.length; i++){
@@ -350,7 +350,7 @@ function HomeController()
 						$('#column-collect-shape').append(
 							'<div class="row">'+
 							'<div class="col-xs-3"><div id="collect-drop-'+i+'"></div></div>'+
-							'<div class="col-xs-3"><div id="column-drop-'+i+'" class="col-xs-3"></div></div></div></br>');
+							'<div class="col-xs-3"><div id="column-drop-'+i+'" class="col-xs-3"></div></div></div><p style="line-height: 50%;"></p>');
 					}
 
 					for(var i = 0; i < data.length; i++){
