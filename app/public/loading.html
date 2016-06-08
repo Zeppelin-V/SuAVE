@@ -78,7 +78,7 @@
             var file = query.file;
             if(query.file.endsWith(".zip") && query.type == "csv")
                 file = (query.file).replace('.zip', '.csv');
-            if(query.views[5] == 1) initRSession("http://132.249.238.135:3000/surveys/"+file);
+            if(query.views[5] == 1) initRSession("http://suave.sdsc.edu:3000/surveys/"+file);
         }
         $(document).ready(function () { $('#pivotviewer').PivotViewer(options); });
     </script>
