@@ -14,10 +14,9 @@ block content
       button#btn-login.btn.btn-info.btn-raised(type='submit')
         i.icon-lock.icon-white
         | Sign in
-      .checkbox#login-checkbox
-        label#remember-me
-          input(type='checkbox', checked='checked')
-          |  Remember Me
+      button.btn.btn-raised.btn-default#rememember-me(type='button')
+        i#check-icon.fa.fa-dot-circle-o
+        |  Remember Me
       .clear-fix
       hr
       .btm-links
@@ -30,7 +29,6 @@ block content
 block scripts
   script(src='/vendor/jquery.min.js')
   script(src='/vendor/jquery.form.js')
-  script(src='/vendor/bootstrap.min.js')
   script(src='/vendor/bootstrap-modal.js')
   script(src='/vendor/bootstrap-transition.js')
   script(src='/vendor/material.min.js')

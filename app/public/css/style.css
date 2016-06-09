@@ -14,13 +14,14 @@ body {
   margin: 15px 0 5px 5px;
 }
 #login-container button {
-  width: 150px;
-  padding: 6px 35px 6px 35px;
+  width: 140px;
+  padding: 6px 30px 6px 30px;
   float: left;
   margin-top: 15px;
 }
-#login-container .checkbox {
-  margin: 23px 0 0 180px;
+#login-container #rememember-me {
+  padding: 6px 0px 6px 0px;
+  margin-left: 15px;
 }
 #login-container .btm-links {
   text-align: center;

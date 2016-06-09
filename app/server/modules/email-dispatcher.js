@@ -23,7 +23,7 @@ EM.dispatchResetPasswordLink = function(account, callback)
 
 EM.composeEmail = function(o)
 {
-	var link = 'http://suave.sdsc.edu:3000'+o.email+'&p='+o.pass;
+	var link = 'http://suave.sdsc.edu:3000/reset-password?e='+o.email+'&p='+o.pass;
 	var html = "<html><body>";
 		html += "Hi "+o.name+",<br><br>";
 		html += "Your username is <b>"+o.user+"</b><br><br>";
