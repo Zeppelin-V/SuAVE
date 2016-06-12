@@ -50,7 +50,7 @@ exports.createNewSurvey = function(files, user, callback){
 
 				var aboutPath = __dirname + "/../../public/surveys/"+user+"_"
           +name+"about.html"
-				var aboutContent = GL.getAbout(1) + name + GL.getAbout(2) + GL.getAbout(3);
+					var aboutContent = GL.getAbout(1) + name + GL.getAbout(2) + GL.getAbout(3) + GL.getAbout(4);
 				fs.writeFile(aboutPath, aboutContent, function(err){
           if(err){
             callback(err);
