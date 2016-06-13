@@ -5,14 +5,16 @@ function HomeController()
 	var that = this;
 	var DLength;
 	var collection = {};
-	var SID;
 	var shapeData=[];
 	var colorData=[];
+	var SID;
 
 // handle user logout //
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
 	$('#btn-update').click(function(){ window.open('/update', "_self"); });
-	$('#btn-addNew').click(function(){$('.modal-new-survey').modal('show') });
+
+//handle new survey
+	$('#btn-addNew').click(function(){$('.modal-new-survey').modal('show'); });
 
 //set listener on buttons
 	$(document).on('click', '#select-about-submit', function(){
@@ -43,12 +45,49 @@ function HomeController()
 		$('.modal-select-collection').append('<div class="modal-header">'+
 		' <button data-dismiss="modal" class="close">x</button> '+
 		'<div class="container"> <div style="padding-left:90px;" class="row"> '+
-		'<div class="col-xs-3">'+
+		'<div class="col-xs-2">'+
 		' <button id="select-icons" style="width:100%;" class="btn btn btn-default">Icons</button>'+
-		' </div> <div class="col-xs-3"> '+
+		' </div> <div class="col-xs-2"> '+
 		'<button id="select-about" style="width:100%;" class="btn btn btn-default">About</button> '+
+		' </div> <div class="col-xs-2"> '+
+		'<button id="select-reupload" style="width:100%;" class="btn btn btn-default">File</button> '+
 		'</div>  </div> </div> <iframe height="450px" width="100%" src="/editor.html" id="editorFrame">'+
 		'</iframe><button id="select-about-submit" data-dismiss="modal" class="btn btn-raised btn-info">submit</button></div>');
+	});
+
+	$(document).on('click', '#select-reupload', function(){
+		$('.modal-select-collection').modal('show');
+		$('.modal-select-collection').css("width", "560px");
+		$('.modal-select-collection').empty();
+		//upload file
+		$('.modal-select-collection').append('<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
+		' <div class="container"> <div style="padding-left:90px;" class="row"> '+
+		'<div class="col-xs-1"> <button id="select-icons"  class="btn btn btn-default">Icons</button> </div>'+
+		'<div class="col-xs-1"> <button id="select-about"  class="btn btn btn-default">About</button> </div> '+
+		'<div class="col-xs-1"> <button id="select-reupload"  class="btn btn btn-default">File</button> </div>'+
+		'</div> </div> </div> '+
+		'<div class="modal-body"> <h3>Select a new csv file to upload:</h3> '+
+		'<form id="replace-survey" action="/replaceCSV" method="POST" enctype="multipart/form-data"> '+
+		'<hr/> <fieldset> <div class="control-group"> <input type="file" name="file" required="required"/> </div>'+
+		'<div class="form-buttons"> <button id="replace-survey-submit" type="submit" class="btn btn-raised btn-info">'+
+		'submit</button> </div> </fieldset> </form> </div>');
+
+		$('#replace-survey').ajaxForm({
+			data: surveys[SID],
+			beforeSubmit : function(formData, jqForm, options){
+				$('.modal-loading').modal({ show : false, keyboard : false, backdrop : 'static' });
+				$('.modal-loading .modal-body h3').html('Loading....');
+				$('.modal-loading').modal('show');
+				return true;
+			},
+			success	: function(responseText, status, xhr, $form){
+				$('.modal-loading').modal('hide');
+				$('.modal-select-collection').modal('hide');
+			},
+			error : function(e){
+
+			}
+		});
 	});
 
 	window.editorFrameLoaded = function (){
@@ -69,7 +108,21 @@ function HomeController()
 		$('.modal-select-collection').modal('show');
 		$('.modal-select-collection').css("width", "560px");
 		$('.modal-select-collection').empty();
-		$('.modal-select-collection').append('<div class="modal-header"> <button data-dismiss="modal" class="close">x</button> <div class="container"> <div style="padding-left:90px;" class="row"> <div class="col-xs-2"> <button id="select-icons" style="width:100%;" class="btn btn btn-default">Icons</button> </div> <div class="col-xs-2"> <button id="select-about" style="width:100%;" class="btn btn btn-default">About</button> </div> </div> </div> </div> <div class="modal-body"> <p>Public View Options:</p> <div id="pv-views" class="container"></div> <div class="container"> <div class="row"> <div class="col-xs-3"> <p class="subheading">Select a shape collection:</p> <select id="collect-select"> <option selected="" disabled="" hidden=""></option> <option value="gender">Gender</option> <option value="object">Object</option> </select> </div> <div class="col-xs-3"> <p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1"></select> </div> </div> </div> <div id="column-collect-shape" class="container"></div> <hr/> <div class="container"> <div class="row"> <div class="col-xs-3"> <p class="subheading">Select a field to associate with colors:</p> <select id="column-select-2"></select> </div> </div> </div> <div id="column-collect-color" class="container"></div> <div class="form-buttons"> <button id="select-collection-submit" data-dismiss="modal" class="btn btn-raised btn-info">submit</button> </div> </div>');
+		//insert collection selections
+		$('.modal-select-collection').append('<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
+		' <div class="container"> <div style="padding-left:90px;" class="row"> '+
+		'<div class="col-xs-1"> <button id="select-icons"  class="btn btn btn-default">Icons</button> </div>'+
+		' <div class="col-xs-1"> <button id="select-about"  class="btn btn btn-default">About</button> </div> '+
+		'<div class="col-xs-1"> <button id="select-reupload"  class="btn btn btn-default">File</button> </div>'+
+		'</div> </div> </div> <div class="modal-body"> <p>Public View Options:</p> <div id="pv-views" class="container"></div> '+
+		'<div class="container"> <div class="row"> <div class="col-xs-3"> <p class="subheading">Select a shape collection:</p> '+
+		'<select id="collect-select"> <option selected="" disabled="" hidden=""></option> <option value="gender">Gender</option>'+
+		' <option value="object">Object</option> </select> </div> <div class="col-xs-3">'+
+		' <p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1"></select> </div> </div> '+
+		'</div> <div id="column-collect-shape" class="container"></div> <hr/> <div class="container"> <div class="row"> '+
+		'<div class="col-xs-3"> <p class="subheading">Select a field to associate with colors:</p> <select id="column-select-2">'+
+		'</select> </div> </div> </div> <div id="column-collect-color" class="container"></div> <div class="form-buttons"> '+
+		'<button id="select-collection-submit" data-dismiss="modal" class="btn btn-raised btn-info">submit</button> </div> </div>');
 
 		var id = $(this).attr("id");
 		var i = id.slice(-1);

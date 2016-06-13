@@ -61,6 +61,31 @@ exports.createNewSurvey = function(files, user, callback){
 	});
 }
 
+exports.replaceSurvey = function(files, user, callback){
+  surveys.findOne({"name": files.body.name, "user": user}, function(e, o){
+		if (e){
+			callback("Survey does not exist!");
+		}
+    else{
+      fs.readFile(files.file.path, function(err, data){
+				if (!fs.existsSync(__dirname + "/../../public/surveys")){
+			    fs.mkdirSync(__dirname + "/../../public/surveys");
+			  }
+				var name = files.body.name.replace(/ /g,"-");
+        var newPath = __dirname + "/../../public/surveys/"+user+"_"
+          +name+".csv";
+        fs.writeFile(newPath, data, function(err){
+          if(err){
+            callback(err);
+          }else{
+						callback(null, "ok");
+          }
+        });
+      });
+    }
+	});
+}
+
 exports.changeCollection = function(files, user, collection, column, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";

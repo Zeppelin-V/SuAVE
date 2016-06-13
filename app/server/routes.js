@@ -219,7 +219,29 @@ module.exports = function(app) {
 		});
 	});
 
-//new survey
+//replace survey csv file
+	app.post('/replaceCSV', uploading.single('file'), function(req, res){
+		SM.replaceSurvey(req, req.cookies.user, function(e){
+			if (e){
+				res.status(400).send(e);
+			}	else{
+				res.status(200).send('ok');
+
+				req.body.name = req.body.name.replace(/ /g,"-");
+				SM.changeCollection(req, req.cookies.user, {"name": "default"},
+					function(e){
+					if(e){
+						res.status(400).send(e);
+					}else{
+						res.status(200).send('ok');
+					}
+				});
+			}
+		});
+	});
+
+
+	//new survey
 	app.post('/uploadCSV', uploading.single('file'), function(req, res){
 		SM.createNewSurvey(req, req.cookies.user, function(e){
 			if (e){
