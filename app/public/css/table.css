@@ -35,6 +35,12 @@
   margin-bottom: 10px;
 }
 
+@media only screen and (max-width: 800px) {
+  .modal.fade.in{
+    top:35%;
+  }
+}
+
 @media only screen and (max-width: 1000px) {
   .carousel-inner{
     margin-top: 40px;

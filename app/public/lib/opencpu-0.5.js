@@ -430,7 +430,7 @@ if(!window.jQuery) {
         console.log("Path updated. Available objects/functions:\n" + resdata);
 
       }).fail(function(xhr, textStatus, errorThrown){
-        alert("Connection to OpenCPU failed:\n" + textStatus + "\n" + xhr.responseText + "\n" + errorThrown);
+        //alert("Connection to OpenCPU failed:\n" + textStatus + "\n" + xhr.responseText + "\n" + errorThrown);
       });
     }
   }

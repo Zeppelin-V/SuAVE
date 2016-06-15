@@ -46,11 +46,11 @@ function HomeController()
 		' <button data-dismiss="modal" class="close">x</button> '+
 		'<div class="container"> <div style="padding-left:90px;" class="row"> '+
 		'<div class="col-xs-2">'+
-		' <button id="select-icons" style="width:100%;" class="btn btn btn-default">Icons</button>'+
+		' <button id="select-icons" style="width:100%;" class="btn btn btn-default">View Options</button>'+
 		' </div> <div class="col-xs-2"> '+
-		'<button id="select-about" style="width:100%;" class="btn btn btn-default">About</button> '+
+		'<button id="select-about" style="width:100%;" class="btn btn btn-default">Describe Survey</button> '+
 		' </div> <div class="col-xs-2"> '+
-		'<button id="select-reupload" style="width:100%;" class="btn btn btn-default">File</button> '+
+		'<button id="select-reupload" style="width:100%;" class="btn btn btn-default">Reupload Data</button> '+
 		'</div>  </div> </div> <iframe height="450px" width="100%" src="/editor.html" id="editorFrame">'+
 		'</iframe><button id="select-about-submit" data-dismiss="modal" class="btn btn-raised btn-info">submit</button></div>');
 	});
@@ -61,10 +61,10 @@ function HomeController()
 		$('.modal-select-collection').empty();
 		//upload file
 		$('.modal-select-collection').append('<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
-		' <div class="container"> <div style="padding-left:90px;" class="row"> '+
-		'<div class="col-xs-1"> <button id="select-icons"  class="btn btn btn-default">Icons</button> </div>'+
-		'<div class="col-xs-1"> <button id="select-about"  class="btn btn btn-default">About</button> </div> '+
-		'<div class="col-xs-1"> <button id="select-reupload"  class="btn btn btn-default">File</button> </div>'+
+		' <div class="container"> <div style="padding-left:30px;" class="row"> '+
+		'<div class="col-xs-1" style="margin-right:5%;"> <button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
+		'<div class="col-xs-1" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
+		'<div class="col-xs-1" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
 		'</div> </div> </div> '+
 		'<div class="modal-body"> <h3>Select a new csv file to upload:</h3> '+
 		'<form id="replace-survey" action="/replaceCSV" method="POST" enctype="multipart/form-data"> '+
@@ -110,10 +110,10 @@ function HomeController()
 		$('.modal-select-collection').empty();
 		//insert collection selections
 		$('.modal-select-collection').append('<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
-		' <div class="container"> <div style="padding-left:90px;" class="row"> '+
-		'<div class="col-xs-1"> <button id="select-icons"  class="btn btn btn-default">Icons</button> </div>'+
-		' <div class="col-xs-1"> <button id="select-about"  class="btn btn btn-default">About</button> </div> '+
-		'<div class="col-xs-1"> <button id="select-reupload"  class="btn btn btn-default">File</button> </div>'+
+		' <div class="container"> <div style="padding-left:30px;" class="row"> '+
+		'<div class="col-xs-1" style="margin-right:5%;"> <button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
+		' <div class="col-xs-1" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
+		'<div class="col-xs-1" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
 		'</div> </div> </div> <div class="modal-body"> <p>Public View Options:</p> <div id="pv-views" class="container"></div> '+
 		'<div class="container"> <div class="row"> <div class="col-xs-3"> <p class="subheading">Select a shape collection:</p> '+
 		'<select id="collect-select"> <option selected="" disabled="" hidden=""></option> <option value="gender">Gender</option>'+
@@ -135,7 +135,7 @@ function HomeController()
 			'<div class="row" ><div class="col-xs-2"><input id="pv-grid" class="checkbox-custom"  type="checkbox">'+
 			'<label for="pv-grid" class="checkbox-custom-label">Grid</label></div>'+
 			'<div class="col-xs-2"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
-			'<label for="pv-bucket" class="checkbox-custom-label">Buecket</label></div>'+
+			'<label for="pv-bucket" class="checkbox-custom-label">Bucket</label></div>'+
 			'<div class="col-xs-2"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div></div><div class="row">'+
 			'<div class="col-xs-2"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+

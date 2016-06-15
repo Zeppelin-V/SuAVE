@@ -130,7 +130,7 @@ input.radio:checked ~ label:before {
   left:0;
   right:0;
   height: auto;
-  max-height: 570px;
+  max-height: 580px;
   width: auto;
   max-width: 800px;
 }
