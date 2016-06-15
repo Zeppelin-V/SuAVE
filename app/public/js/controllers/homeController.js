@@ -117,11 +117,15 @@ function HomeController()
 		'</div> </div> </div> <div class="modal-body"> <p>Public View Options:</p> <div id="pv-views" class="container"></div> '+
 		'<div class="container"> <div class="row"> <div class="col-xs-3"> <p class="subheading">Select a shape collection:</p> '+
 		'<select id="collect-select"> <option selected="" disabled="" hidden=""></option> <option value="gender">Gender</option>'+
-		' <option value="object">Object</option> </select> </div> <div class="col-xs-3">'+
-		' <p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1"></select> </div> </div> '+
+		'<option value="object">Object</option> </select> </div> <div class="col-xs-3">'+
+		'<p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1"></select> </div> </div> '+
 		'</div> <div id="column-collect-shape" class="container"></div> <hr/> <div class="container"> <div class="row"> '+
 		'<div class="col-xs-3"> <p class="subheading">Select a field to associate with colors:</p> <select id="column-select-2">'+
-		'</select> </div> </div> </div> <div id="column-collect-color" class="container"></div> <div class="form-buttons"> '+
+		'</select> </div> </div> </div> <div id="column-collect-color" class="container"></div>'+
+		'<hr/> <div class="container"> <div class="row"> '+
+		'<div class="col-xs-3"> <p class="subheading">Select a field to associate with item names:</p> <select id="column-select-3">'+
+		'</select> </div> </div> </div>'+
+		' <div class="form-buttons"> '+
 		'<button id="select-collection-submit" data-dismiss="modal" class="btn btn-raised btn-info">submit</button> </div> </div>');
 
 		var id = $(this).attr("id");
@@ -155,6 +159,7 @@ function HomeController()
 
 		$('#column-select-1').empty();
 		$('#column-select-2').empty();
+		$('#column-select-3').empty();
 		$('#collect-select').prop("selected", false);
 		$('#column-collect-shape').empty();
 		//get Columns
@@ -166,9 +171,11 @@ function HomeController()
 				var column = data;
 				$("#column-select-1").append($("<option selected disabled hidden></option>").html(""));
 				$("#column-select-2").append($("<option selected disabled hidden></option>").html(""));
+				$("#column-select-3").append($("<option selected disabled hidden></option>").html(""));
 				for(var i = 0; i < column.length; i++){
 					$("#column-select-1").append($("<option></option>").val(i).html(column[i]));
 					$("#column-select-2").append($("<option></option>").val(i).html(column[i]));
+					$("#column-select-3").append($("<option></option>").val(i).html(column[i]));
 				}
 			},
 			error: function(jqXHR){
@@ -253,6 +260,23 @@ function HomeController()
 				}
 			});
 		}
+
+		if($('#column-select-3').find(':selected').val() != ''){
+			var iName = $('#column-select-3').find(':selected').val();
+			console.log(iName);
+			$.ajax({
+				url: "/changeCollectionItemName",
+				type: "POST",
+				data: {"name" : surveys[SID].name, "iName": iName},
+				success: function(data){
+				},
+				error: function(jqXHR){
+					console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+				}
+			});
+		}
+
+
 
 		var views = "";
 		//change view options

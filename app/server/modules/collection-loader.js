@@ -253,7 +253,7 @@ exports.setImgProperty = function(data, collection, callback){
   }
 };
 
-//set csv csv files
+//set csv files
 exports.setCSV = function(filePath, collection, callback){
   var that = this;
   that.loadCSV(filePath, function(o){
@@ -264,6 +264,43 @@ exports.setCSV = function(filePath, collection, callback){
       that.setImgProperty(data, collection, function(e){
         callback(e);
       });
+    }
+  });
+};
+
+//set csv files
+exports.setCSViName = function(filePath, iName, callback){
+  var that = this;
+  that.loadCSV(filePath, function(o){
+    if(o == "err"){
+      callback("err");
+    }else{
+      var data = o;
+
+      var that = this;
+      var categories = data[0];
+      var iName_column = -1;
+      //get the index of name column
+      for (var i = 0; i < categories.length; i++) {
+          if (categories[i] == "#name") {
+              iName_column = i;
+              break;
+          }
+      }
+
+      var src_column = iName;
+      if(iName_column == -1){
+        data[0].push("#name");
+        for(var i = 1; i < data.length; i++){
+          data[i].push(data[i][src_column]);
+        }
+      }else{
+        for(var i = 1; i < data.length; i++){
+          data[i][iName_column] = data[i][src_column];
+        }
+      }
+
+      callback(data);
     }
   });
 };

@@ -115,6 +115,26 @@ exports.changeCollection = function(files, user, collection, column, callback){
 	*/
 }
 
+exports.changeCollection = function(files, user, collection, column, callback){
+	var filePath = __dirname + "/../../public/surveys/"+user+"_"
+		+files.body.name+".csv";
+
+	//load csv data
+	var data;
+	loader.setCSViName(filePath, files.body.iName, function(o){
+		if(o == "err"){
+			callback("Unable to read file");
+		}else{
+			data = o;
+			loader.saveCSV(filePath, data, function(e){
+				if(e){
+					callback("Unable to save file")
+				}
+			});
+		}
+	});
+}
+
 exports.getSurveyByUsername = function(username, callback)
 {
 	surveys.find({user: username}).toArray(function(e, o){
