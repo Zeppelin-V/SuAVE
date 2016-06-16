@@ -16,6 +16,7 @@ $(document).ready(function(){
 			setTimeout(function(){window.location.href = '/';}, 300);
 		},
 		error : function(e){
+			$('.modal-loading').modal('hide');
 			if(e.responseText == "Name is taken"){
 				$("#error-text").text("The name is used!");
 			}
