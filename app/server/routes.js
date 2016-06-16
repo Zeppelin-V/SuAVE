@@ -276,7 +276,7 @@ module.exports = function(app) {
 	});
 
 	app.post('/changeCollectionItemName', function(req, res){
-		SM.changeCollection(req, req.cookies.user, req.body.collection,
+		SM.changeCollectionItemName(req, req.cookies.user, req.body.collection,
 			function(e){
 			if(e){
 				res.status(400).send(e);

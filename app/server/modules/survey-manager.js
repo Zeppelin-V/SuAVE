@@ -115,7 +115,7 @@ exports.changeCollection = function(files, user, collection, column, callback){
 	*/
 }
 
-exports.changeCollection = function(files, user, collection, column, callback){
+exports.changeCollectionItemName = function(files, user, collection, column, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
 
