@@ -115,11 +115,14 @@ function HomeController()
 		' <div class="col-xs-1" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
 		'<div class="col-xs-1" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
 		'</div> </div> </div> <div class="modal-body"> <p>Public View Options:</p> <div id="pv-views" class="container"></div> '+
-		'<div class="container"> <div class="row"> <div class="col-xs-3"> <p class="subheading">Select a shape collection:</p> '+
+		'<div class="container"> <div class="row"> '+
+		'<div class="col-xs-3">'+
+		'<p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1"></select> </div> '+
+		'<div class="col-xs-3"> <p class="subheading">Select a shape collection:</p> '+
 		'<select id="collect-select"> <option selected="" disabled="" hidden=""></option> <option value="gender">Gender</option>'+
-		'<option value="object">Object</option> </select> </div> <div class="col-xs-3">'+
-		'<p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1"></select> </div> </div> '+
-		'</div> <div id="column-collect-shape" class="container"></div> <hr/> <div class="container"> <div class="row"> '+
+		'<option value="object">Object</option> </select> </div> '+
+		'</div></div> '+
+		'<div id="column-collect-shape" class="container"></div> <hr/> <div class="container"> <div class="row"> '+
 		'<div class="col-xs-3"> <p class="subheading">Select a field to associate with colors:</p> <select id="column-select-2">'+
 		'</select> </div> </div> </div> <div id="column-collect-color" class="container"></div>'+
 		'<hr/> <div class="container"> <div class="row"> '+
@@ -446,23 +449,25 @@ function HomeController()
 
 					for(var i = 0; i < data.length; i++){
 						$('#column-collect-color').append(
-							'<div class="row"><div class="col-xs-3"><div id="color-drop-'+i+'"></div></div>'+
-							'<div class="col-xs-3"><div id="column-drop2-'+i+'" class="col-xs-3"></div></div></div><p style="line-height: 50%;"></p>');
+							'<div class="row"><div class="col-xs-3"><div id="column-drop2-'+i+'"></div></div>'+
+							'<div class="col-xs-3"><div id="color-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
 					}
 
 					for(var i = 0; i < data.length; i++){
 						//inflate collection dropdown
+						$('#column-drop2-'+i).append('<div style="width: 250px;background: '+
+						'rgb(238, 238, 238);position: relative;height: 50px;border: solid 1px #ccc;"> '+
+						'<a class="dd-selected"><img class="dd-selected-image dd-image-right" '+
+						'src="/../../img/default/blue.png"><label class="dd-selected-text" '+
+						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
+
 						$('#color-drop-'+i).ddslick({
 							data:colorImg,
 							width:250,
 							imagePosition:"right"
 						});
 
-						$('#column-drop2-'+i).ddslick({
-							data:[columnImg[i]],
-							width:250,
-							imagePosition:"right"
-						});
+
 					}
 				}else{
 					shapeData = data;
@@ -480,13 +485,18 @@ function HomeController()
 					for(var i = 0; i < data.length; i++){
 						$('#column-collect-shape').append(
 							'<div class="row">'+
-							'<div class="col-xs-3"><div id="collect-drop-'+i+'"></div></div>'+
-							'<div class="col-xs-3"><div id="column-drop-'+i+'" class="col-xs-3"></div></div></div><p style="line-height: 50%;"></p>');
+							'<div class="col-xs-3"><div id="column-drop-'+i+'"></div></div>'+
+							'<div class="col-xs-3"><div id="collect-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
 					}
 
 					for(var i = 0; i < data.length; i++){
 
 						//inflate collection dropdown
+						$('#column-drop-'+i).append('<div style="width: 250px;background: '+
+						'rgb(238, 238, 238);position: relative;height: 50px;border: solid 1px #ccc;"> '+
+						'<a class="dd-selected"><img class="dd-selected-image dd-image-right" '+
+						'src="/../../img/default/blue.png"><label class="dd-selected-text" '+
+						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
 
 						$('#collect-drop-'+i).ddslick({
 							data:collect,
@@ -494,11 +504,6 @@ function HomeController()
 							imagePosition:"right"
 						});
 
-						$('#column-drop-'+i).ddslick({
-							data:[columnImg[i]],
-							width:250,
-							imagePosition:"right"
-						});
 					}
 				}
 			},
