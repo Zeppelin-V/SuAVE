@@ -8,7 +8,7 @@ var colorImg = [
     {
         text: "Default",
         value: "default",
-        selected: true,
+        selected: false,
         imageSrc: "/../../img/default.jpg"
     },
     {

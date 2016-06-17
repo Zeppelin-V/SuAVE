@@ -461,6 +461,8 @@ function HomeController()
 							'<div class="col-xs-3"><div id="color-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
 					}
 
+					var count = 0;
+					var defaultIndex = 2;
 					for(var i = 0; i < data.length; i++){
 						//inflate collection dropdown
 						$('#column-drop2-'+i).append('<div style="width: 250px;background: '+
@@ -468,14 +470,20 @@ function HomeController()
 						'<a class="dd-selected"><label class="dd-selected-text" '+
 						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
 
+						if (count > 31){
+							count = 0;
+							defaultIndex = 2;
+						}
+
 						$('#color-drop-'+i).ddslick({
 							data:colorImg,
+							defaultSelectedIndex: defaultIndex,
 							width:250,
 							background: '#ffffff',
 							imagePosition:"right"
 						});
-
-
+						defaultIndex++;
+						count++;
 					}
 				}else{
 					shapeData = data;
@@ -507,6 +515,7 @@ function HomeController()
 
 						$('#collect-drop-'+i).ddslick({
 							data:collect,
+							defaultSelectedIndex: i+1,
 							width:250,
 							background: '#ffffff',
 							imagePosition:"right"
