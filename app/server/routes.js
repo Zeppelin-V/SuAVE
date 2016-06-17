@@ -267,11 +267,11 @@ module.exports = function(app) {
 	app.post('/changeCollection', function(req, res){
 		SM.changeCollection(req, req.cookies.user, req.body.collection,
 			function(e){
-			if(e){
-				res.status(400).send(e);
-			}else{
-				res.status(200).send('ok');
-			}
+				if(e){
+					res.status(400).send(e);
+				}else{
+					res.status(200).send('ok');
+				}
 		});
 	});
 

@@ -107,6 +107,7 @@ function HomeController()
 	$(document).on('click', '.surveys-edit', function(){
 		$('.modal-select-collection').modal('show');
 		$('.modal-select-collection').css("width", "560px");
+
 		$('.modal-select-collection').empty();
 		//insert collection selections
 		$('.modal-select-collection').append('<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
@@ -251,35 +252,26 @@ function HomeController()
 			collection["cColumn"] = "|^";
 		}
 
+		var iName = $('#column-select-3').find(':selected').val();
+
 		if(collection["cColumn"] != "|^" || collection["sColumn"] != "|^"){
 			$.ajax({
 				url: "/changeCollection",
 				type: "POST",
 				data: {"name" : surveys[SID].name, "user": user, "collection": collection},
 				success: function(data){
+					console.log(data);
+					if(iName != ''){
+						changeIname();
+					}
 				},
 				error: function(jqXHR){
 					console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
 				}
 			});
+		}else if(iName != ''){
+			changeIname();
 		}
-
-		if($('#column-select-3').find(':selected').val() != ''){
-			var iName = $('#column-select-3').find(':selected').val();
-			console.log(iName);
-			$.ajax({
-				url: "/changeCollectionItemName",
-				type: "POST",
-				data: {"name" : surveys[SID].name, "iName": iName},
-				success: function(data){
-				},
-				error: function(jqXHR){
-					console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
-				}
-			});
-		}
-
-
 
 		var views = "";
 		//change view options
@@ -320,7 +312,7 @@ function HomeController()
 			data: {"name" : surveys[SID].name, "user": user, "views": parseInt(views)},
 			success: function(data){
 				surveys[SID].views = parseInt(views);
-				setTimeout(function(){window.location.href = '/';}, 300);
+				if(iName == '') setTimeout(function(){window.location.href = '/';}, 500);
 			},
 			error: function(jqXHR){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
@@ -333,7 +325,23 @@ function HomeController()
 
 	});
 
+	//deal with asynchronized problem.
+	//if two API calls both request write into csv file
+	var changeIname = function(){
+		var iName = $('#column-select-3').find(':selected').val();
 
+		$.ajax({
+			url: "/changeCollectionItemName",
+			type: "POST",
+			data: {"name" : surveys[SID].name, "iName": iName},
+			success: function(data){
+				setTimeout(function(){window.location.href = '/';}, 300);
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
+	};
 
 	$(document).on('click', '.toggle-button', function() {
 		$(this).toggleClass('toggle-button-selected');
@@ -456,14 +464,14 @@ function HomeController()
 					for(var i = 0; i < data.length; i++){
 						//inflate collection dropdown
 						$('#column-drop2-'+i).append('<div style="width: 250px;background: '+
-						'rgb(238, 238, 238);position: relative;height: 50px;border: solid 1px #ccc;"> '+
-						'<a class="dd-selected"><img class="dd-selected-image dd-image-right" '+
-						'src="/../../img/default/blue.png"><label class="dd-selected-text" '+
+						'#eee;position: relative;height: 50px;border: solid 1px #ccc;"> '+
+						'<a class="dd-selected"><label class="dd-selected-text" '+
 						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
 
 						$('#color-drop-'+i).ddslick({
 							data:colorImg,
 							width:250,
+							background: '#ffffff',
 							imagePosition:"right"
 						});
 
@@ -493,14 +501,14 @@ function HomeController()
 
 						//inflate collection dropdown
 						$('#column-drop-'+i).append('<div style="width: 250px;background: '+
-						'rgb(238, 238, 238);position: relative;height: 50px;border: solid 1px #ccc;"> '+
-						'<a class="dd-selected"><img class="dd-selected-image dd-image-right" '+
-						'src="/../../img/default/blue.png"><label class="dd-selected-text" '+
+						'#eee;position: relative;height: 50px;border: solid 1px #ccc;"> '+
+						'<a class="dd-selected"><label class="dd-selected-text" '+
 						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
 
 						$('#collect-drop-'+i).ddslick({
 							data:collect,
 							width:250,
+							background: '#ffffff',
 							imagePosition:"right"
 						});
 

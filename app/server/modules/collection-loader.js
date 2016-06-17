@@ -325,6 +325,8 @@ exports.saveCSV = function(filePath, data, callback){
     fs.writeFile(filePath, csv, function(err) {
       if (err) {
         callback(err);
+      }else{
+        callback(null);
       }
     });
   });

@@ -86,7 +86,7 @@ exports.replaceSurvey = function(files, user, callback){
 	});
 }
 
-exports.changeCollection = function(files, user, collection, column, callback){
+exports.changeCollection = function(files, user, collection, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
 
@@ -99,23 +99,16 @@ exports.changeCollection = function(files, user, collection, column, callback){
 			data = o;
 			loader.saveCSV(filePath, data, function(e){
 				if(e){
-					callback("Unable to save file")
+					callback("Unable to save file");
+				}else{
+					callback(null);
 				}
 			});
 		}
 	});
-	/*
-	loader.generateDeepZoom(__dirname + "/../../public/surveys/"+user+"_"
-		+files.body.name,
-		collection, user+"_"+files.body.name+".dzc", function(e){
-		if(e){
-			callback(e);
-		}
-	});
-	*/
 }
 
-exports.changeCollectionItemName = function(files, user, collection, column, callback){
+exports.changeCollectionItemName = function(files, user, collection, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
 
@@ -129,6 +122,8 @@ exports.changeCollectionItemName = function(files, user, collection, column, cal
 			loader.saveCSV(filePath, data, function(e){
 				if(e){
 					callback("Unable to save file")
+				}else{
+					callback(null);
 				}
 			});
 		}
