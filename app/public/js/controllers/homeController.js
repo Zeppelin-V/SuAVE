@@ -505,6 +505,9 @@ function HomeController()
 							'<div class="col-xs-3"><div id="collect-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
 					}
 
+					var count = 0;
+					var defaultIndex = 1;
+
 					for(var i = 0; i < data.length; i++){
 
 						//inflate collection dropdown
@@ -513,14 +516,24 @@ function HomeController()
 						'<a class="dd-selected"><label class="dd-selected-text" '+
 						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
 
+						if (count > 8 && collectVal == "object"){
+							count = 0;
+							defaultIndex = 1;
+						}else if (count > 2 && collectVal == "gender"){
+							count = 0;
+							defaultIndex = 1;
+						}
+
 						$('#collect-drop-'+i).ddslick({
 							data:collect,
-							defaultSelectedIndex: i+1,
+							defaultSelectedIndex: defaultIndex,
 							width:250,
 							background: '#ffffff',
 							imagePosition:"right"
 						});
 
+						defaultIndex++;
+						count++;
 					}
 				}
 			},

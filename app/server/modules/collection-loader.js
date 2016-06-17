@@ -23,7 +23,7 @@ exports.loadCSV = function(filePath, callback){
 exports.changeAboutFileByID = function(user, name, data, callback){
   var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+"about.html";
 
-  var newData = GL.getAbout(1) + name + GL.getAbout(2) + GL.getAbout(3) + data;
+  var newData = GL.getAbout(1) + name + GL.getAbout(2) + GL.getAbout(3) + data +GL.getAbout(5);
 
   fs.writeFile(filePath, newData, function(err) {
     if (err) {
