@@ -247,7 +247,6 @@ module.exports = function(app) {
 			if (e){
 				res.status(400).send(e);
 			}	else{
-				res.status(200).send('ok');
 				//Set the default collection for new survey
 				var defaultCol = 1;
 				req.body.name = req.body.name.replace(/ /g,"-");
