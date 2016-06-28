@@ -20,7 +20,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
     init: function () {
         this._super();
         this.locCache = [];
-        this.map = null; 
+        this.map = null;
         this.markers = [];
         this.overlay;
         this.overlayBaseImageUrl = null;
@@ -46,7 +46,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
             that.selectMarker(evt.item);
         });
     },
-    setup: function (width, height, offsetX, offsetY, tileMaxRatio) { 
+    setup: function (width, height, offsetX, offsetY, tileMaxRatio) {
         this.width = width;
         this.height = height;
         this.offsetX = offsetX;
@@ -230,7 +230,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                     tile.marker.setIcon(new that.icons[bucket]);
                     that.selected = null;
                     that.selectedMarker.setZIndexOffset(0);
-                    that.selectedMarker = null;    
+                    that.selectedMarker = null;
                     that.selectedBucket = -1;
                     $('.pv-toolbarpanel-info').empty();
                     $('.pv-altinfopanel').fadeIn();
@@ -253,7 +253,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                     else toolbarContent += that.buckets[bucket].startRange + " to " + that.buckets[bucket].endRange;
                     $('.pv-toolbarpanel-info').append(toolbarContent);
                     $('.pv-altinfopanel').hide();
-                    
+
                 }
             }
 
@@ -376,11 +376,11 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         return PivotViewer.Utils.getBuckets(filterList, orderBy);
         //Got rid of multiple values for now
     },
-    filter: function () { 
+    filter: function () {
         var that = this;
         var g = 0;  //keeps track of the no. of geocode locations;
 
-        this.buckets = this.bucketize(this.tiles, this.filterList, this.sortCategory);       
+        this.buckets = this.bucketize(this.tiles, this.filterList, this.sortCategory);
 
         //Clear legend info in toolbar
         $('.pv-toolbarpanel-info').empty();
@@ -443,7 +443,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                 if(category1 != null && category2 != null) {
                     facet1 = tile.item.getFacetByName(category1.name);
                     facet2 = tile.item.getFacetByName(category2.name);
-  
+
                     if (facet1 != undefined && facet2 != undefined) {
                         var latitude = facet1.values[0].value;
                         var longitude = facet2.values[0].value;
@@ -531,8 +531,8 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         if (this.geocodeService == "Google"){
             var geocodeCallBack = function(results, status) {
                 var loc = new L.LatLng(0, 0);
-                
-                if (status == google.maps.GeocoderStatus.OK) { 
+
+                if (status == google.maps.GeocoderStatus.OK) {
                     var googleLoc = results[0].geometry.location;
                     var lat = googleLoc.lat();
                     var long = googleLoc.lng();
@@ -541,18 +541,18 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
 
                 // Add to local cache
                 that.locCache[locName] = loc;
-       
+
                 // Add to persistent cache
                 if (that.localStorage) localStorage.setItem(locName, JSON.stringify(loc));
-       
+
                 // Find items that have that location
                 for (var i = 0; i < that.itemsToGeocode[locName].length; i++) {
                     that.itemsToGeocode[locName][i].loc = loc;
                 }
                 delete that.itemsToGeocode[locName];
-       
+
                 // If geocoding has taken more than 20 secs then try to set
-                // the bookmark.  Otherwise, if the time taken is more than 
+                // the bookmark.  Otherwise, if the time taken is more than
                 // 2 secs make the pins we have so far
                 var now = new Date();
                 if ((now.getTime() - that.geocodeZero.getTime())/1000 > 20) {
@@ -565,7 +565,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                     that.getOverlay();
                     that.startGeocode = new Date();
                 }
-                
+
                 if(Object.keys(that.itemsToGeocode).length == 0) that.createMap();
             }
         }
@@ -593,7 +593,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                 delete that.itemsToGeocode[locName];
 
                 // If geocoding has taken more than 20 secs then try to set
-                // the bookmark.  Otherwise, if the time taken is more than 
+                // the bookmark.  Otherwise, if the time taken is more than
                 // 2 secs make the pins we have so far
                 var now = new Date();
                 if ((now.getTime() - that.geocodeZero.getTime()) / 1000 > 20) {
@@ -665,7 +665,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
     },
     createMarkers: function () {
         if(this.clearMarkers) this.clearMarkers();
-        for (i = 0; i < this.filterList.length; i++) {  
+        for (i = 0; i < this.filterList.length; i++) {
             var tile = this.filterList[i];
             if(tile.loc != undefined && (Settings.showMissing || !tile.missing)) this.newMarker(tile);
         }
@@ -702,7 +702,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
             if (geometryOK) {
                 this.areaObj = areaWkt.toObject({color:'#990000',fillColor:'#EEFFCC',fillOpacity:0.6});
                 if (Wkt.isArray(this.areaObj)) {
-                    for (var o = 0; o < this.areaObj.length; o++) { 
+                    for (var o = 0; o < this.areaObj.length; o++) {
                         this.map.addLayer(this.areaObj[o]);
                     }
                 }
@@ -724,8 +724,8 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
             var iconFile = this.mapService == "google" ? this.icons[i] : (new this.icons[i]).options.iconUrl;
             tableContent += "<tr><td><img src='" + iconFile + "'></img></td>";
             if (this.buckets[i].startRange == this.buckets[i].endRange)
-                tableContent += "<td><div style='overflow:hidden;white-space:nowrap;width:" + width + "px;text-overflow:ellipsis'>" + this.buckets[i].startLabel + "</div></td></tr>"; 
-            else tableContent += "<td><div style='overflow:hidden;white-space:nowrap;width:" + width + "px;text-overflow:ellipsis'>" + this.buckets[i].startLabel + " to " + this.buckets[i].endLabel + "</div></td></tr>"; 
+                tableContent += "<td><div style='overflow:hidden;white-space:nowrap;width:" + width + "px;text-overflow:ellipsis'>" + this.buckets[i].startLabel + "</div></td></tr>";
+            else tableContent += "<td><div style='overflow:hidden;white-space:nowrap;width:" + width + "px;text-overflow:ellipsis'>" + this.buckets[i].startLabel + " to " + this.buckets[i].endLabel + "</div></td></tr>";
         }
         tableContent +="</table>";
         $('.pv-altinfopanel').append(tableContent);
