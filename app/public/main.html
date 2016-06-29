@@ -11,8 +11,10 @@
 <header id="earthcube-header">
  				<h1><a href="http://suave.sdsc.edu:3000" target="_blank" class="logo"><img src="./carnivora_files/suavelogo3-small-copy-e1438196105588.png"></a></h1>
                 <h2 class="tagline"></h2>
-				<a href="https://youtu.be/IqiSf0eWtxQ?list=PLvVijDnlg_tXJJRJlEbRld0IOJCi5-vTD" target="_blank" id="video">Tutorial Videos</a>
-				<a href="#" target="_blank" id="help">About Survey</a>
+        <button id="comment">Comment</button>
+        <button id="share">Share</button>
+        <button onclick="window.open('https://youtu.be/IqiSf0eWtxQ?list=PLvVijDnlg_tXJJRJlEbRld0IOJCi5-vTD', '_blank')" id="video">Tutorial Videos</button>
+        <button onclick="" id="help">About Survey</button>
 
  </header>
 <!--
@@ -43,7 +45,7 @@
     }else if(query.file.endsWith(".cxml")){
       aboutPath = aboutPath + (query.file).replace('.cxml', '')+ "about.html";
     }
-    $("#help").attr("href", aboutPath);
+    $("#help").attr("onclick", "window.open('"+aboutPath+"','_blank')");
     $("<header>").load(aboutPath + " #about-title", function(){
       aboutTitle = "About " + $(this).text() + " Survey";
       $('.tagline').text($(this).text());
