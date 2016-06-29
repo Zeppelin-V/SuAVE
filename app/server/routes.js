@@ -225,7 +225,6 @@ module.exports = function(app) {
 			if (e){
 				res.status(400).send(e);
 			}	else{
-				res.status(200).send('ok');
 
 				req.body.name = req.body.name.replace(/ /g,"-");
 				SM.changeCollection(req, req.cookies.user, {"name": "default"},
