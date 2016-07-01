@@ -12,7 +12,7 @@ $(document).ready(function(){
   document.body.appendChild(suave_ifr);
 
   var aboutTitle;
-  var aboutPath = "surveys/";
+  var aboutPath = "../surveys/";
 
   if(query.file.endsWith(".csv")){
     aboutPath = aboutPath + (query.file).replace('.csv', '')+ "about.html";

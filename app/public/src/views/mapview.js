@@ -418,7 +418,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         var category, category1 = null, category2 = null;
         for (var i = 0; i < PivotCollection.categories.length; i++) {
             var category = PivotCollection.categories[i], name = category.name.toLowerCase();
-            if (name.indexOf("location") >= 0) {
+            if (name.indexOf("location@") >= 0) {
                 if (category.uiInit == false) PV.initUICategory(category);
                 break;
             }
@@ -435,7 +435,6 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
             var tile = this.filterList[i], c;
 
             if (!Settings.showMissing && tile.missing) continue;
-
             //Have we cached the item location?
             if (tile.loc == undefined) {
                 //First try to get co-ordinate information from the facets
@@ -470,26 +469,10 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                         var longitude = parseFloat(value.substring(value.indexOf(',')));
                         if (!isNaN(latitude) && !isNaN(longitude)) tile.loc = new L.LatLng(latitude, longitude);
                         else if (value.length > 1) {
-                            var geoLoc = value.replace('_', ' ').toUpperCase();
-
-                            // First add region and country to the location.
-                            for (var r = 0; r < tile.item.facets.length; r++) {
-                                if (tile.item.facets[r].name.toUpperCase().indexOf("REGION") >= 0) {
-                                    var region = tile.item.facets[r].values[0].value;
-                                    if (region.length > 1) geoLoc = geoLoc + ", " + region.replace('_', ' ').toUpperCase();
-                                    break;
-                                }
-                            }
-                            for (var c = 0; c < tile.item.facets.length; c++) {
-                                if (tile.item.facets[c].name.toUpperCase().indexOf("COUNTRY") >= 0) {
-                                    var country = tile.item.facets[c].values[0].value;
-                                    if (country.length > 1) geoLoc = geoLoc + ", " + country.replace('_', ' ').toUpperCase();
-                                    break;
-                                }
-                            }
+                            var geoLoc = value.toUpperCase();
                             // Is it in the cache?
                             if (this.locCache[geoLoc] != undefined) tile.loc = this.locCache[geoLoc];
-                            else if (this.localStorage) {
+                            else if (false) {
                                 // Now try the users persistent cache
                                 var loc = JSON.parse(localStorage.getItem(geoLoc));
                                 if (loc) {
@@ -509,7 +492,6 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                                         g++;
                                     }
                                     this.itemsToGeocode[geoLoc].push(tile);
-                                    break;
                                 }
                             }
                         }
@@ -517,7 +499,6 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                 }
             }
         }
-
         if (g > 0) this.getLocationsFromNames();
         $('.pv-mapview-canvas').css('height', this.height - 12 + 'px');
         $('.pv-mapview-canvas').css('width', this.width - 415 + 'px');
@@ -528,6 +509,49 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
     getViewName: function () { return 'Map View'; },
     makeGeocodeCallBack: function(locName) {
         var that = this;
+
+        var geocodeCallBack = function(data) {
+          results = data.results;
+          status = data.status;
+            var loc = new L.LatLng(0, 0);
+
+            if (status == google.maps.GeocoderStatus.OK) {
+                var googleLoc = results[0].geometry.location;
+                var lat = googleLoc.lat;
+                var long = googleLoc.lng;
+                if (lat && long) loc = new L.LatLng(lat, long);
+            }
+
+            // Add to local cache
+            that.locCache[locName] = loc;
+
+            // Add to persistent cache
+            if (that.localStorage) localStorage.setItem(locName, JSON.stringify(loc));
+
+            // Find items that have that location
+            for (var i = 0; i < that.itemsToGeocode[locName].length; i++) {
+                that.itemsToGeocode[locName][i].loc = loc;
+            }
+            delete that.itemsToGeocode[locName];
+
+            // If geocoding has taken more than 20 secs then try to set
+            // the bookmark.  Otherwise, if the time taken is more than
+            // 2 secs make the pins we have so far
+            var now = new Date();
+            if ((now.getTime() - that.geocodeZero.getTime())/1000 > 20) {
+                that.redrawMarkers();
+                that.startGeocode = new Date();
+            }
+            else if ((now.getTime() - that.startGeocode.getTime()) / 1000 > 2) {
+                that.redrawMarkers();
+                that.refitBounds();
+                that.getOverlay();
+                that.startGeocode = new Date();
+            }
+
+            if(Object.keys(that.itemsToGeocode).length == 0) that.createMap();
+        }
+        /*
         if (this.geocodeService == "Google"){
             var geocodeCallBack = function(results, status) {
                 var loc = new L.LatLng(0, 0);
@@ -610,10 +634,22 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                 if (Object.keys(that.itemsToGeocode).length == 0) that.createMap();
             }
 
-        }
+        }*/
         return geocodeCallBack;
     },
     geocode: function (locName, callbackFunction) {
+      console.log(encodeURIComponent(locName));
+      var that = this;
+      var nominatimUrl = "http://www.datasciencetoolkit.org/maps/api/geocode/json?sensor=false&address=" + encodeURIComponent(locName);
+      $.ajax({
+          type: "GET",
+          url: nominatimUrl,
+          dataType: 'jsonp',
+          success: function(data){
+            callbackFunction(data);
+          }
+      });
+      /*
         if (this.geocodeService == "Google"){
             var geocoder = new google.maps.Geocoder();
             geocoder.geocode( {address: locName}, this.makeGeocodeCallBack(locName));
@@ -626,11 +662,13 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                 url: nominatimUrl,
                 success: callbackFunction
             });
-        }
+        }*/
     },
     getLocationsFromNames: function () {
-        for (var key in Object.keys(this.itemsToGeocode)) {
-            this.geocode(key, this.makeGeocodeCallBack(key));
+      console.log(this.itemsToGeocode);
+        for (var e = 0; e < Object.keys(this.itemsToGeocode).length; e++) {
+            var t = Object.keys(this.itemsToGeocode)[e];
+            this.geocode(t, this.makeGeocodeCallBack(t))
         }
         this.startGeocode = new Date();
         this.startGeocode.setSeconds(this.startGeocode.getSeconds() + 2);
