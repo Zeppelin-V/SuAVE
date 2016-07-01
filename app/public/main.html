@@ -11,18 +11,19 @@
 <header id="earthcube-header">
  				<h1><a href="http://suave.sdsc.edu:3000" target="_blank" class="logo"><img src="./carnivora_files/suavelogo3-small-copy-e1438196105588.png"></a></h1>
                 <h2 class="tagline"></h2>
-        <button id="comment">Comment</button>
-        <button id="share">Share</button>
-        <button onclick="window.open('https://youtu.be/IqiSf0eWtxQ?list=PLvVijDnlg_tXJJRJlEbRld0IOJCi5-vTD', '_blank')" id="video">Tutorial Videos</button>
-        <button onclick="" id="help">About Survey</button>
+				<a href="https://youtu.be/IqiSf0eWtxQ?list=PLvVijDnlg_tXJJRJlEbRld0IOJCi5-vTD" target="_blank" id="video">Tutorial Videos</a>
+				<a href="#" target="_blank" id="help">About Survey</a>
 
-</header>
-
+ </header>
+<!--
+ <iframe src="http://maxim.ucsd.edu/suave/index.html?file=survey1544.zip" frameborder="0" style="width:100%;height:95%;margin:0;padding:0;border:0">
+  <p>Your browser does not support iframes.</p>
+</iframe>
+-->
 <script>
     var url = URI.parse(window.location.href);
     var query = URI.parseQuery(url.query);
     var suave_ifr = document.createElement('iframe')
-    console.log(url);
     suave_ifr.src = '/loading.html?'+url.query;
     suave_ifr.style.width="100%"
     suave_ifr.style.height="95%"
@@ -42,7 +43,7 @@
     }else if(query.file.endsWith(".cxml")){
       aboutPath = aboutPath + (query.file).replace('.cxml', '')+ "about.html";
     }
-    $("#help").attr("onclick", "window.open('"+aboutPath+"','_blank')");
+    $("#help").attr("href", aboutPath);
     $("<header>").load(aboutPath + " #about-title", function(){
       aboutTitle = "About " + $(this).text() + " Survey";
       $('.tagline').text($(this).text());
