@@ -27,7 +27,6 @@ var surveys = db.collection('surveys');
 exports.createNewSurvey = function(files, user, callback){
   surveys.findOne({"name": files.body.name, "user": user}, function(e, o){
 		if (o){
-      console.log(o);
 			callback("Name is taken");
 		}
     else{
@@ -91,27 +90,51 @@ exports.changeCollection = function(files, user, collection, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
 
-	//load csv data
-	var data;
-	loader.setCSV(filePath, collection, function(o){
-		if(o == "err"){
-			callback("Unable to read file");
-		}else{
-			data = o;
-			loader.saveCSV(filePath, data, function(e){
-				if(e){
-					callback("Unable to save file");
+
+	surveys.findOne({"name":files.body.name, "user": user}, function(e, o){
+		if (e){
+			callback(e);
+		}	else{
+			surveys.updateOne(
+	      { "_id" : o._id },
+	      { $set: { "collection": collection } },
+	      function(err, results) {
+	        if(err) callback(err);
+   		});
+			//load csv data
+			var data;
+			loader.setCSV(filePath, collection, function(o){
+				if(o == "err"){
+					callback("Unable to read file");
 				}else{
-					callback(null);
+					data = o;
+					loader.saveCSV(filePath, data, function(e){
+						if(e){
+							callback("Unable to save file");
+						}else{
+							callback(null);
+						}
+					});
 				}
 			});
 		}
 	});
+
+
 }
 
-exports.changeCollectionItemName = function(files, user, collection, callback){
+exports.changeCollectionItemName = function(files, user, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
+
+	surveys.findOne({"name":files.body.name, "user": user}, function(e, o){
+		if (e){
+			callback(e);
+		}	else{
+			o.collection.iName = files.body.iName;
+			surveys.save(o);
+		}
+	});
 
 	//load csv data
 	var data;

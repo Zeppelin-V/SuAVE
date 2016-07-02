@@ -1,3 +1,59 @@
+var colorIndex = {
+  "default":1,
+  "ivory": 2,
+  "beige":3,
+  "wheat":4,
+  "tan":5,
+  "khaki":6,
+  "silver":7,
+  "gray":8,
+  "charcoal":9,
+  "navy_blue":10,
+  "royal_blue":11,
+  "medium_blue":12,
+  "azure":13,
+  "cyan":14,
+  "aquamarine":15,
+  "teal":16,
+  "forest_green":17,
+  "olive":18,
+  "chartreuse":19,
+  "lime":20,
+  "golden":21,
+  "goldenrod":22,
+  "coral":23,
+  "salmon":24,
+  "hot_pink":25,
+  "fuchsia":26,
+  "puce":27,
+  "mauve":28,
+  "lavender":29,
+  "plum":30,
+  "indigo":31,
+  "crimson":32,
+  "maroon":33
+};
+
+
+var genderIndex = {
+  "male":1,
+  "female":2,
+  "agender":3
+};
+
+
+var objectIndex = {
+  "atom":1,
+  "battery":2,
+  "car":3,
+  "cloud":4,
+  "plane":5,
+  "spider":6,
+  "sun":7,
+  "tree":8,
+  "water":9
+};
+
 var colorImg = [
     {
         text: "Please select a color",

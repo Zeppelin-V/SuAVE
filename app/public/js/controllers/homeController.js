@@ -9,6 +9,10 @@ function HomeController()
 	var colorData=[];
 	var SID;
 
+//memory settings
+var cMemory = false;
+var sMemory = false;
+
 // handle user logout //
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
 	$('#btn-update').click(function(){ window.open('/update', "_self"); });
@@ -104,6 +108,29 @@ function HomeController()
 		});
 	}
 
+	var prepSetting = function(survey){
+
+		var c = survey.collection;
+		if( c.sColumn && c.sColumn != '^|'){
+			cMemory = true;
+			$('#column-select-1 option[value='+c.sColumn+']').prop('selected', true);
+			$('#collect-select option[value='+c.name+']').prop('selected', true);
+			collection['sColumn'] = parseInt($('#column-select-1').find(':selected').val());
+			that.fetchColVal($('#column-select-1').find(':selected').text(),
+					$('#collect-select').find(':selected').val());
+		}
+		if( c.cColumn && c.cColumn != '^|'){
+			sMemory = true;
+			$('#column-select-2 option[value='+c.cColumn+']').prop('selected', true);
+			collection['cColumn'] = parseInt($('#column-select-2').find(':selected').val());
+			that.fetchColVal($('#column-select-2').find(':selected').text(), "");
+		}
+		if(c.iName){
+			$('#column-select-3 option[value='+c.iName+']').prop('selected', true);
+		}
+
+	}
+
 	$(document).on('click', '.surveys-edit', function(){
 		$('.modal-select-collection').modal('show');
 		$('.modal-select-collection').css("width", "560px");
@@ -181,6 +208,7 @@ function HomeController()
 					$("#column-select-2").append($("<option></option>").val(i).html(column[i]));
 					$("#column-select-3").append($("<option></option>").val(i).html(column[i]));
 				}
+				if (survey.collection != 'default') prepSetting(survey);
 			},
 			error: function(jqXHR){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
@@ -253,6 +281,7 @@ function HomeController()
 		}
 
 		var iName = $('#column-select-3').find(':selected').val();
+		collection.iName = iName;
 
 		if(collection["cColumn"] != "|^" || collection["sColumn"] != "|^"){
 			$.ajax({
@@ -260,7 +289,6 @@ function HomeController()
 				type: "POST",
 				data: {"name" : surveys[SID].name, "user": user, "collection": collection},
 				success: function(data){
-					console.log(data);
 					if(iName != ''){
 						changeIname();
 					}
@@ -435,7 +463,6 @@ function HomeController()
 			}
 		}
 
-
 		$.ajax({
 			url: "/getColumnsOptions",
 			type: "POST",
@@ -463,6 +490,8 @@ function HomeController()
 
 					var count = 0;
 					var defaultIndex = 2;
+					var values = surveys[SID].collection.cValues;
+
 					for(var i = 0; i < data.length; i++){
 						//inflate collection dropdown
 						$('#column-drop2-'+i).append('<div style="width: 250px;background: '+
@@ -470,10 +499,18 @@ function HomeController()
 						'<a class="dd-selected"><label class="dd-selected-text" '+
 						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
 
-						if (count > 31){
+						if(values && cMemory){
+							var v = [];
+							for(var key in values) {
+									v.push(values[key]);
+							}
+							defaultIndex = colorIndex[v[i]];
+						}
+						else if (count > 31){
 							count = 0;
 							defaultIndex = 2;
 						}
+
 
 						$('#color-drop-'+i).ddslick({
 							data:colorImg,
@@ -485,6 +522,7 @@ function HomeController()
 						defaultIndex++;
 						count++;
 					}
+					cMemory = false;
 				}else{
 					shapeData = data;
 					//generate initial collect json
@@ -507,6 +545,7 @@ function HomeController()
 
 					var count = 0;
 					var defaultIndex = 1;
+					var values = surveys[SID].collection.sValues;
 
 					for(var i = 0; i < data.length; i++){
 
@@ -516,7 +555,18 @@ function HomeController()
 						'<a class="dd-selected"><label class="dd-selected-text" '+
 						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
 
-						if (count > 8 && collectVal == "object"){
+						if(values && sMemory){
+							var v = [];
+							for(var key in values) {
+									v.push(values[key]);
+							}
+							if(collectVal == "object"){
+								defaultIndex = objectIndex[v[i]];
+							}else{
+								defaultIndex = genderIndex[v[i]];
+							}
+						}
+						else if (count > 8 && collectVal == "object"){
 							count = 0;
 							defaultIndex = 1;
 						}else if (count > 2 && collectVal == "gender"){
@@ -535,6 +585,7 @@ function HomeController()
 						defaultIndex++;
 						count++;
 					}
+					sMemory = false;
 				}
 			},
 			error: function(jqXHR){

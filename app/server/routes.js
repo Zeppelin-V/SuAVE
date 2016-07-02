@@ -274,7 +274,7 @@ module.exports = function(app) {
 	});
 
 	app.post('/changeCollectionItemName', function(req, res){
-		SM.changeCollectionItemName(req, req.cookies.user, req.body.collection,
+		SM.changeCollectionItemName(req, req.cookies.user,
 			function(e){
 			if(e){
 				res.status(400).send(e);
@@ -393,7 +393,6 @@ module.exports = function(app) {
 
 
 	app.get('/getSurveys/:survey', function(req, res){
-		console.log(__dirname + '/surveys/');
 		res.sendFile(req.params.survey, {root: __dirname + '/../public/surveys/'});
 	});
 
