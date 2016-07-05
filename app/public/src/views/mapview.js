@@ -414,11 +414,13 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                 }
             }
         }
-
+        console.log(PivotCollection.categories);
         var category, category1 = null, category2 = null;
         for (var i = 0; i < PivotCollection.categories.length; i++) {
             var category = PivotCollection.categories[i], name = category.name.toLowerCase();
-            if (name.indexOf("location@") >= 0) {
+            console.log(name);
+            if (category.isLocation()) {
+                console.log("in here");
                 if (category.uiInit == false) PV.initUICategory(category);
                 break;
             }

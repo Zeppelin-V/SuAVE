@@ -22,12 +22,9 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
             $("#pv-primsortcontrols").before("<div id='pv-altsortcontrols' class='pv-toolbarpanel-sortcontrols'></div>");
             $("#pv-altsortcontrols").hide();
             $("#pv-primsort").clone(true).attr("id", "pv-altsort").appendTo($("#pv-altsortcontrols"));
-            PV.y_axis = $("#pv-altsort option:selected").html();
             $("#pv-altsort").on("change", function (e) {
                 if (that.bucketsY == undefined) return; //initialzing
                 that.sortCategory2 = $("#pv-altsort option:selected").html();
-                PV.y_axis = that.sortCategory2;
-
                 var category = PivotCollection.getCategoryByName(that.sortCategory2);
                 if (!category.uiInit) PV.initUICategory(category);
                 var filterList = that.filterList.slice(0).sort(tileSortBy(that.sortCategory2));
@@ -83,11 +80,11 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
         }
         else { //efficient resort
             var newFilterList2 = [];
-            if (this.filterList.length < this.filterList2.length) {
+            if (this.filterList.length < this.filterList2.length) {              
                 for (var i = 0; i < this.filterList2.length; i++) {
                     var tile = this.filterList2[i];
                     if (this.buckets.ids[tile.item.id] != undefined) newFilterList2.push(tile);
-                }
+                }              
             }
             else {
                 var addFilterList2 = [], category = PivotCollection.getCategoryByName(this.sortCategory2);
@@ -168,7 +165,7 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
             }
             var label = bkt.startRange == bkt.endRange || bkt.startLabel == bkt.endLabel ? label = "<div class='pv-bucket-label'>" + bkt.startLabel +
                 "</div>" : bkt.startLabel + "<br>to<br>" + bkt.endLabel;
-
+            
             uiElements += "<div class='pv-bucketview-overlay-buckettitle' style='top: " + (this.canvasHeightUIAdjusted + 4) + "';'><div class='pv-bucket-countbox'>" +
                 this.buckets[i].colCount + "<br>" + Math.round(this.buckets[i].colCount / this.filterList2.length * 100) + "%</div>" + label + "</div></div></div>";
 
@@ -200,12 +197,12 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
             var ratio = TileController._imageController.getRatio(this.filterList[i].item.img);
             if (ratio < this.maxRatio) this.maxRatio = ratio;
         }
-
+        
         var pt2Timeout = this.filterList.length == this.tiles.length ? 0 : 500, that = this;
         setTimeout(function () {
             // Clear selection
             var value = $('.pv-toolbarpanel-zoomslider').slider('option', 'value');
-            if (value > 0) {
+            if (value > 0) { 
                 that.selected = selectedTile = null;
                 //zoom out
                 that.currentOffsetX = that.offsetX;
@@ -243,12 +240,12 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
         // Clear all tile locations greater than 1
         for (var l = 0; l < this.tiles.length; l++) {
             this.tiles[l].firstFilterItemDone = false;
-            this.tiles[l]._locations = [this.tiles[l]._locations[0]];
+            this.tiles[l]._locations = [this.tiles[l]._locations[0]];   
         }
         var rowHeight = this.rowHeight * this.scale;
         for (var i = 0; i < this.buckets.length; i++) {
             var bucket = this.buckets[i];
-
+        
             for (var j = 0; j < bucket.subBuckets.length; j++) {
                 var sub = bucket.subBuckets[j], currentColumn = 0, currentRow = 0;
 

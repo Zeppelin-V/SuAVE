@@ -9,6 +9,10 @@ function HomeController()
 	var colorData=[];
 	var SID;
 
+//memory settings
+var cMemory = false;
+var sMemory = false;
+
 // handle user logout //
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
 	$('#btn-update').click(function(){ window.open('/update', "_self"); });
@@ -104,6 +108,28 @@ function HomeController()
 		});
 	}
 
+	var prepSetting = function(survey){
+		var c = JSON.parse(survey.collection);
+		if( c.sColumn != undefined && c.sColumn != '|^'){
+			sMemory = true;
+			$('#column-select-1 option[value='+c.sColumn+']').prop('selected', true);
+			$('#collect-select option[value='+c.name+']').prop('selected', true);
+			collection['sColumn'] = parseInt($('#column-select-1').find(':selected').val());
+			that.fetchColVal($('#column-select-1').find(':selected').text(),
+					$('#collect-select').find(':selected').val());
+		}
+		if( c.cColumn != undefined && c.cColumn != '|^'){
+			cMemory = true;
+			$('#column-select-2 option[value='+c.cColumn+']').prop('selected', true);
+			collection['cColumn'] = parseInt($('#column-select-2').find(':selected').val());
+			that.fetchColVal($('#column-select-2').find(':selected').text(), "");
+		}
+		if(c.iName){
+			$('#column-select-3 option[value='+c.iName+']').prop('selected', true);
+		}
+
+	};
+
 	$(document).on('click', '.surveys-edit', function(){
 		$('.modal-select-collection').modal('show');
 		$('.modal-select-collection').css("width", "560px");
@@ -160,7 +186,6 @@ function HomeController()
     if(views[3] == '1') $("#pv-qca").prop("checked", true);
     if(views[4] == '1') $("#pv-map").prop("checked", true);
 		if(views[5] == '1') $("#pv-r").prop("checked", true);
-
 		$('#column-select-1').empty();
 		$('#column-select-2').empty();
 		$('#column-select-3').empty();
@@ -180,6 +205,9 @@ function HomeController()
 					$("#column-select-1").append($("<option></option>").val(i).html(column[i]));
 					$("#column-select-2").append($("<option></option>").val(i).html(column[i]));
 					$("#column-select-3").append($("<option></option>").val(i).html(column[i]));
+				}
+				if (survey.collection.name != 'default') {
+					prepSetting(survey);
 				}
 			},
 			error: function(jqXHR){
@@ -253,14 +281,14 @@ function HomeController()
 		}
 
 		var iName = $('#column-select-3').find(':selected').val();
+		collection.iName = iName;
 
 		if(collection["cColumn"] != "|^" || collection["sColumn"] != "|^"){
 			$.ajax({
 				url: "/changeCollection",
 				type: "POST",
-				data: {"name" : surveys[SID].name, "user": user, "collection": collection},
+				data: {"name" : surveys[SID].name, "user": user, "collection": JSON.stringify(collection)},
 				success: function(data){
-					console.log(data);
 					if(iName != ''){
 						changeIname();
 					}
@@ -389,7 +417,7 @@ function HomeController()
 		var survey = surveys[id.slice(-1)];
 		var file = survey.name;
 		//Grid, bucket, crosstab, QGA, map
-		window.open(window.location+'/../main/file='+user+"_"+file+'.csv'+
+		window.open(window.location+'/../main.html?file='+user+"_"+file+'.csv'+
 			"&views="+survey.views+"&view="+survey.view);
 	});
 
@@ -435,7 +463,6 @@ function HomeController()
 			}
 		}
 
-
 		$.ajax({
 			url: "/getColumnsOptions",
 			type: "POST",
@@ -446,11 +473,7 @@ function HomeController()
 
 					//generate initial collect json
 					collection['cValues'] = {};
-					/*
-					for(var i = 0; i < data.length; i++){
-						collection.cValues[data[i]] = 'default';
-					}
-					*/
+
 					columnImg = generateImgJson(data);
 					Dlength = data.length;
 					$('#column-collect-color').append('<p>Please assign a color to each value:</p>');
@@ -463,17 +486,28 @@ function HomeController()
 
 					var count = 0;
 					var defaultIndex = 2;
+					var values;
+					if (surveys[SID].collection.name != "default"){
+						values = JSON.parse(surveys[SID].collection).cValues;
+					}
 					for(var i = 0; i < data.length; i++){
 						//inflate collection dropdown
 						$('#column-drop2-'+i).append('<div style="width: 250px;background: '+
 						'#eee;position: relative;height: 50px;border: solid 1px #ccc;"> '+
 						'<a class="dd-selected"><label class="dd-selected-text" '+
 						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
-
-						if (count > 31){
+						if(values && cMemory){
+							var v = [];
+							for(var key in values) {
+									v.push(values[key]);
+							}
+							defaultIndex = colorIndex[v[i]];
+						}
+						else if (count > 31){
 							count = 0;
 							defaultIndex = 2;
 						}
+
 
 						$('#color-drop-'+i).ddslick({
 							data:colorImg,
@@ -485,6 +519,7 @@ function HomeController()
 						defaultIndex++;
 						count++;
 					}
+					cMemory = false;
 				}else{
 					shapeData = data;
 					//generate initial collect json
@@ -507,6 +542,12 @@ function HomeController()
 
 					var count = 0;
 					var defaultIndex = 1;
+					var survey;
+					var values;
+					if (surveys[SID].collection.name != "default"){
+						survey = JSON.parse(surveys[SID].collection);
+						values = survey.sValues;
+					}
 
 					for(var i = 0; i < data.length; i++){
 
@@ -515,8 +556,18 @@ function HomeController()
 						'#eee;position: relative;height: 50px;border: solid 1px #ccc;"> '+
 						'<a class="dd-selected"><label class="dd-selected-text" '+
 						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
-
-						if (count > 8 && collectVal == "object"){
+						if(values && sMemory){
+							var v = [];
+							for(var key in values) {
+									v.push(values[key]);
+							}
+							if(collectVal == "object"){
+								defaultIndex = objectIndex[v[i]];
+							}else{
+								defaultIndex = genderIndex[v[i]];
+							}
+						}
+						else if (count > 8 && collectVal == "object"){
 							count = 0;
 							defaultIndex = 1;
 						}else if (count > 2 && collectVal == "gender"){
@@ -535,6 +586,7 @@ function HomeController()
 						defaultIndex++;
 						count++;
 					}
+					sMemory = false;
 				}
 			},
 			error: function(jqXHR){

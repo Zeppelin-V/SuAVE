@@ -78,7 +78,8 @@ PivotViewer.Models.Category = Object.subClass({
 	isNumber: function () { return this.type == PivotViewer.Models.FacetType.Number; },
 	isOrdinal: function () { return this.type == PivotViewer.Models.FacetType.Ordinal; },
 	isDateTime: function () { return this.type == PivotViewer.Models.FacetType.DateTime; },
-	isLink: function () { return this.type == PivotViewer.Models.FacetType.Link;}
+	isLink: function () { return this.type == PivotViewer.Models.FacetType.Link;},
+	isLocation: function () { return this.type == PivotViewer.Models.FacetType.Location;}
 });
 
 PivotViewer.Models.CategorySort = Object.subClass({
@@ -100,7 +101,7 @@ PivotViewer.Models.Item = Object.subClass({
 		}
     },
     getFacetByName: function (name) { return this._facetByName[name] }
-}); 
+});
 
 PivotViewer.Models.ItemLink = Object.subClass({
 	init: function (name, href) {
@@ -164,5 +165,6 @@ PivotViewer.Models.FacetType = {
 	Number: "Number",
 	DateTime: "DateTime",
 	Link: "Link",
-    Ordinal: "Ordinal"
+  Ordinal: "Ordinal",
+	Location: "Location"
 };

@@ -10,7 +10,7 @@ function GalleryController()
 		var survey = surveys[id.slice(-1)];
 		var file = survey.name;
 
-		window.open(window.location+'/../../main/file='+user+"_"+file+'.csv'+
+		window.open(window.location+'/../../main.html?file='+user+"_"+file+'.csv'+
 			"&views="+survey.views+"&view="+survey.view);
 	});
 
