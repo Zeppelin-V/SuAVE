@@ -89,34 +89,36 @@ exports.replaceSurvey = function(files, user, callback){
 exports.changeCollection = function(files, user, collection, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
-
-
 	surveys.findOne({"name":files.body.name, "user": user}, function(e, o){
 		if (e){
 			callback(e);
 		}	else{
-			surveys.updateOne(
-	      { "_id" : o._id },
-	      { $set: { "collection": collection } },
-	      function(err, results) {
-	        if(err) callback(err);
-   		});
-			//load csv data
-			var data;
-			loader.setCSV(filePath, collection, function(o){
-				if(o == "err"){
-					callback("Unable to read file");
-				}else{
-					data = o;
-					loader.saveCSV(filePath, data, function(e){
-						if(e){
-							callback("Unable to save file");
+			o.collection = collection;
+			surveys.save(o, function () {
+			//surveys.update(
+	      //{ "_id" : o._id },
+	      //{ $set: { "collection": collection } },
+	      //function(err, results) {
+	        //if(err) callback(err);
+					//load csv data
+					var data;
+					if(!collection.name) collection = JSON.parse(collection);
+					loader.setCSV(filePath, collection, function(o){
+						if(o == "err"){
+							callback("Unable to read file");
 						}else{
-							callback(null);
+							data = o;
+							loader.saveCSV(filePath, data, function(error){
+								if(error){
+									callback("Unable to save file");
+								}else{
+									callback(null);
+								}
+							});
 						}
 					});
-				}
-			});
+   		});
+
 		}
 	});
 

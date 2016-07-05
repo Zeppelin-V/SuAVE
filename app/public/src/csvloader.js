@@ -89,8 +89,11 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                     var j = 1;
                     this.collection.config.views = [];
                     while (this.data[j][i] != null && this.data[j][i] != "") this.collection.config.views.push(this.data[j++][i]);
+                }else if(categories[i] == "#textlocation"){
+
+                }else{
+                  continue;
                 }
-                continue;
             }
             var index, type, visible = true;
             if ((index = categories[i].indexOf("#")) !== -1) {
@@ -105,14 +108,19 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                 else if (categories[i].indexOf("#link", index) !== -1) {
                     type = PivotViewer.Models.FacetType.Link;
                     visible = false;
+                }else if (categories[i].indexOf("#textlocation", index) !== -1){
+                    type = PivotViewer.Models.FacetType.Location;
+                    index = categories[i].indexOf("#textlocation", index);
+                }else{
+                    type = PivotViewer.Models.FacetType.String;
                 }
-                else type = PivotViewer.Models.FacetType.String;
                 if (categories[i].indexOf("#hidden") !== -1) visible = false;
             }
             else {
                 type = PivotViewer.Models.FacetType.String;
                 index = categories[i].length;
             }
+
             var category = new PivotViewer.Models.Category(categories[i].substring(0, index), type, visible);
             category.column = i;
             this.collection.categories.push(category);

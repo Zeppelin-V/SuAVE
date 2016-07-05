@@ -109,18 +109,17 @@ var sMemory = false;
 	}
 
 	var prepSetting = function(survey){
-
-		var c = survey.collection;
-		if( c.sColumn && c.sColumn != '^|'){
-			cMemory = true;
+		var c = JSON.parse(survey.collection);
+		if( c.sColumn != undefined && c.sColumn != '|^'){
+			sMemory = true;
 			$('#column-select-1 option[value='+c.sColumn+']').prop('selected', true);
 			$('#collect-select option[value='+c.name+']').prop('selected', true);
 			collection['sColumn'] = parseInt($('#column-select-1').find(':selected').val());
 			that.fetchColVal($('#column-select-1').find(':selected').text(),
 					$('#collect-select').find(':selected').val());
 		}
-		if( c.cColumn && c.cColumn != '^|'){
-			sMemory = true;
+		if( c.cColumn != undefined && c.cColumn != '|^'){
+			cMemory = true;
 			$('#column-select-2 option[value='+c.cColumn+']').prop('selected', true);
 			collection['cColumn'] = parseInt($('#column-select-2').find(':selected').val());
 			that.fetchColVal($('#column-select-2').find(':selected').text(), "");
@@ -129,7 +128,7 @@ var sMemory = false;
 			$('#column-select-3 option[value='+c.iName+']').prop('selected', true);
 		}
 
-	}
+	};
 
 	$(document).on('click', '.surveys-edit', function(){
 		$('.modal-select-collection').modal('show');
@@ -187,7 +186,6 @@ var sMemory = false;
     if(views[3] == '1') $("#pv-qca").prop("checked", true);
     if(views[4] == '1') $("#pv-map").prop("checked", true);
 		if(views[5] == '1') $("#pv-r").prop("checked", true);
-
 		$('#column-select-1').empty();
 		$('#column-select-2').empty();
 		$('#column-select-3').empty();
@@ -208,7 +206,9 @@ var sMemory = false;
 					$("#column-select-2").append($("<option></option>").val(i).html(column[i]));
 					$("#column-select-3").append($("<option></option>").val(i).html(column[i]));
 				}
-				if (survey.collection != 'default') prepSetting(survey);
+				if (survey.collection.name != 'default') {
+					prepSetting(survey);
+				}
 			},
 			error: function(jqXHR){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
@@ -287,7 +287,7 @@ var sMemory = false;
 			$.ajax({
 				url: "/changeCollection",
 				type: "POST",
-				data: {"name" : surveys[SID].name, "user": user, "collection": collection},
+				data: {"name" : surveys[SID].name, "user": user, "collection": JSON.stringify(collection)},
 				success: function(data){
 					if(iName != ''){
 						changeIname();
@@ -473,11 +473,7 @@ var sMemory = false;
 
 					//generate initial collect json
 					collection['cValues'] = {};
-					/*
-					for(var i = 0; i < data.length; i++){
-						collection.cValues[data[i]] = 'default';
-					}
-					*/
+
 					columnImg = generateImgJson(data);
 					Dlength = data.length;
 					$('#column-collect-color').append('<p>Please assign a color to each value:</p>');
@@ -490,15 +486,16 @@ var sMemory = false;
 
 					var count = 0;
 					var defaultIndex = 2;
-					var values = surveys[SID].collection.cValues;
-
+					var values;
+					if (surveys[SID].collection.name != "default"){
+						values = JSON.parse(surveys[SID].collection).cValues;
+					}
 					for(var i = 0; i < data.length; i++){
 						//inflate collection dropdown
 						$('#column-drop2-'+i).append('<div style="width: 250px;background: '+
 						'#eee;position: relative;height: 50px;border: solid 1px #ccc;"> '+
 						'<a class="dd-selected"><label class="dd-selected-text" '+
 						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
-
 						if(values && cMemory){
 							var v = [];
 							for(var key in values) {
@@ -545,7 +542,12 @@ var sMemory = false;
 
 					var count = 0;
 					var defaultIndex = 1;
-					var values = surveys[SID].collection.sValues;
+					var survey;
+					var values;
+					if (surveys[SID].collection.name != "default"){
+						survey = JSON.parse(surveys[SID].collection);
+						values = survey.sValues;
+					}
 
 					for(var i = 0; i < data.length; i++){
 
@@ -554,7 +556,6 @@ var sMemory = false;
 						'#eee;position: relative;height: 50px;border: solid 1px #ccc;"> '+
 						'<a class="dd-selected"><label class="dd-selected-text" '+
 						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
-
 						if(values && sMemory){
 							var v = [];
 							for(var key in values) {
