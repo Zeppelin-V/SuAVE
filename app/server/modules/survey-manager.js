@@ -89,53 +89,37 @@ exports.replaceSurvey = function(files, user, callback){
 exports.changeCollection = function(files, user, collection, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
-	surveys.findOne({"name":files.body.name, "user": user}, function(e, o){
-		if (e){
-			callback(e);
-		}	else{
-			o.collection = collection;
-			surveys.save(o, function () {
-			//surveys.update(
-	      //{ "_id" : o._id },
-	      //{ $set: { "collection": collection } },
-	      //function(err, results) {
-	        //if(err) callback(err);
-					//load csv data
-					var data;
-					if(!collection.name) collection = JSON.parse(collection);
-					loader.setCSV(filePath, collection, function(o){
-						if(o == "err"){
-							callback("Unable to read file");
-						}else{
-							data = o;
-							loader.saveCSV(filePath, data, function(error){
-								if(error){
-									callback("Unable to save file");
-								}else{
-									callback(null);
-								}
-							});
-						}
-					});
-   		});
 
-		}
+	surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
+	{$set: {collection: collection}}, {new:true}, function(e, o){
+		if(e) callback(e);
 	});
 
-
+	var data;
+	if(!collection.name) collection = JSON.parse(collection);
+	loader.setCSV(filePath, collection, function(o){
+		if(o == "err"){
+			callback("Unable to read file");
+		}else{
+			data = o;
+			loader.saveCSV(filePath, data, function(error){
+				if(error){
+					callback("Unable to save file");
+				}else{
+					callback(null);
+				}
+			});
+		}
+	});
 }
 
 exports.changeCollectionItemName = function(files, user, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
 
-	surveys.findOne({"name":files.body.name, "user": user}, function(e, o){
-		if (e){
-			callback(e);
-		}	else{
-			o.collection.iName = files.body.iName;
-			surveys.save(o);
-		}
+	surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
+	{$set: {iName: files.body.iName}}, {new:true}, function(e, o){
+		if(e) callback(e);
 	});
 
 	//load csv data
