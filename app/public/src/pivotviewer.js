@@ -318,9 +318,6 @@ var ruleNums = 0;
         if(_currentView == 2) PARA.crosstab = 1;
         else PARA.crosstab = 0;
         console.log(PARA);
-        console.log(PARA.selected_Id);
-        console.log(_sortCategory);
-        console.log(PARA.y_axis);
     };
 
     PV.getCurrentView = function () { return _views[_currentView]; }
@@ -709,7 +706,6 @@ var ruleNums = 0;
 
     // Filters the collection of items and updates the views
     PV.filterCollection = function (filterChange) {
-
         PV.deselectInfoPanel();
         _selectedItem = null;
         var filterList = [], longStringFiltered = null, stringFilters, datetimeFilters, numericFilters, selectedFilters;
@@ -794,6 +790,7 @@ var ruleNums = 0;
             }
         }
         else {
+
             filterList = [];
             stringFilters = _stringFilters; datetimeFilters = _datetimeFilters;
             numericFilters = _numericFilters; selectedFilters = _selectedFilters;
@@ -875,19 +872,28 @@ var ruleNums = 0;
         //Find matching facet values in items
         for (var i = 0, _iLen = _tiles.length; i < _iLen; i++) {
             var tile = _tiles[i];
+            /*
             if (filterChange != undefined && (!filterChange.enlarge || tile.filtered)) {
                 if (!filterChange.enlarge && !tile.filtered) continue;
+
                 else if (filterChange.enlarge) { filterList.push(tile); continue; }
                 if (filterChange.category.isString() || filterChange.category.isLocation()) {
+
                     var facet = tile.item.getFacetByName(filterChange.category.name);
                     if (facet == undefined) {
                         if ((filterChange.value == "(no info)") == filterChange.clear) { tile.filtered = false; continue; }
                     }
                     else {
                         for (var m = 0; m < facet.values.length; m++) {
-                            if ((facet.values[m].value == filterChange.value) != filterChange.clear) break;
+                            if ((facet.values[m].value == filterChange.value) != filterChange.clear) {
+                                console.log("debug loop");
+                                break;
+                            }
                         }
-                        if (m == facet.values.length) { tile.filtered = false; continue; }
+                        console.log("debug break");
+                        console.log(facet.values);
+                        console.log(m);
+                        if (m == facet.values.length) { console.log("not added"); tile.filtered = false; continue; }
                     }
                 }
                 else if (filterChange.category.isNumber() || filterChange.category.isOrdinal()) {
@@ -925,7 +931,7 @@ var ruleNums = 0;
                 }
                 filterList.push(tile);
                 continue;
-            }
+            }*/
 
             if (longStringFiltered != null) {
                 if(!longStringFiltered[i]) {
@@ -2422,7 +2428,8 @@ var ruleNums = 0;
             if ($("input[itemfacet|='" + $(checkbox).attr("itemfacet") + "']:checked").length == 0) {
                 enlarge = true;
                 $(checkbox).parent().parent().parent().prev().find('.pv-filterpanel-accordion-heading-clear').trigger("click");
-                return
+                clear = true;
+                return;
             }
             else{
                 enlarge = false;
@@ -2431,7 +2438,9 @@ var ruleNums = 0;
 
         }
 
-        if (category.isString() || category.isLocation()) PV.filterCollection({ category: category, enlarge: enlarge, clear: clear, value: value });
+        if (category.isString() || category.isLocation()){
+            PV.filterCollection({ category: category, enlarge: enlarge, clear: clear, value: value });
+        }
         else {
             start = $(checkbox).attr('startdate');
             end = $(checkbox).attr('enddate');
