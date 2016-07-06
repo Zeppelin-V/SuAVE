@@ -19,8 +19,9 @@ var TileController = null;
 var Loader = null;
 var LoadSem = new Semaphore(1);
 var Settings = { showMissing: false, visibleCategories: undefined };
-
+var PARA = {};
 //set up rule filters
+//TODO: encapsulated in para.
 var A = [];
 var B = [];
 var D = [];
@@ -53,7 +54,7 @@ var ruleNums = 0;
 	    _datetimeFilters = [],
         _selectedFilters = [],
         _currentView = 0,
-        _sortCategory = null;
+        _sortCategory = null,
         _tiles = [],
         _filterList = [],
         _selectedItem = null,
@@ -65,6 +66,9 @@ var ruleNums = 0;
         _enabledView = [],
         _options = {},
         _rEnable = false;
+
+    PARA.y_axis = null;
+    PARA.selected_Id = -1;
 
     var methods = {
         // PivotViewer can be initialized with these options:
@@ -311,6 +315,12 @@ var ruleNums = 0;
 
         _currentView = number;
         if(_currentView == 1) PV.getBucketFilters();
+        if(_currentView == 2) PARA.crosstab = 1;
+        else PARA.crosstab = 0;
+        console.log(PARA);
+        console.log(PARA.selected_Id);
+        console.log(_sortCategory);
+        console.log(PARA.y_axis);
     };
 
     PV.getCurrentView = function () { return _views[_currentView]; }
@@ -833,7 +843,7 @@ var ruleNums = 0;
                 }
             }
             else {
-                if (category.isString()|| category.isLocation()) {
+                if (category.isString() || category.isLocation()) {
                     var stringFilter = stringFilters[category.name];
                     if (stringFilter != undefined) {
                         stringFilter.value[filterChange.value + "a"] = true;
@@ -1073,6 +1083,8 @@ var ruleNums = 0;
       BCs = [];
       ABCs = [];
 	    PV.filterViews();
+      PARA.string_filters = _stringFilters;
+      PARA.nume_filters = _numericFilters;
     };
 
     PV.initUICategory = function (category) {
@@ -1393,6 +1405,7 @@ var ruleNums = 0;
             category.recount = false;
             release();
         });
+        PARA.x_axis = _sortCategory;
     };
 
     PV.deselectInfoPanel = function () {
@@ -1995,7 +2008,7 @@ var ruleNums = 0;
             var input = PV.cleanName(this.value.toLowerCase());
             if (input != "") {
                 var category = PivotCollection.getCategoryByName(_nameMapping[$(".pv-facet").eq($('.pv-filterpanel-accordion').accordion('option', 'active')).attr("facet")]), search = [];
-                if (category.isString() || category.isLocation() && category.name.toLowerCase().indexOf(input) == -1) {
+                if ((category.isString() || category.isLocation()) && category.name.toLowerCase().indexOf(input) == -1) {
                     search = $('.pv-filterpanel-accordion-facet-list-item[id^="pv-facet-value-' + PV.cleanName(category.name) + '"]');
                     search.hide();
                     search = search.filter(function () {
@@ -2250,10 +2263,14 @@ var ruleNums = 0;
             PV.deselectInfoPanel();
             if (_selectedItem != null) _selectedItem.setSelected(false);
             _views[_currentView].setSelected(null);
+            //reset id parameter
+            PARA.selected_Id = -1;
             return;
         }
 
         var selectedItem = evt.item;
+        //takes in parameter
+        PARA.selected_Id = evt.item.item.id;
         if (selectedItem != null) {
             var alternate = true;
             $('.pv-infopanel-heading').empty();

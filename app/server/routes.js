@@ -219,6 +219,10 @@ module.exports = function(app) {
 		});
 	});
 
+	app.get('/main/:para', function(req, res){
+		res.render('main', {querys: req.params.para});
+	});
+
 //replace survey csv file
 	app.post('/replaceCSV', uploading.single('file'), function(req, res){
 		SM.replaceSurvey(req, req.cookies.user, function(e){
@@ -393,6 +397,7 @@ module.exports = function(app) {
 
 
 	app.get('/getSurveys/:survey', function(req, res){
+		console.log(__dirname + '/surveys/');
 		res.sendFile(req.params.survey, {root: __dirname + '/../public/surveys/'});
 	});
 

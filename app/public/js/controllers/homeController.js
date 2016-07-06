@@ -124,11 +124,8 @@ var sMemory = false;
 			collection['cColumn'] = parseInt($('#column-select-2').find(':selected').val());
 			that.fetchColVal($('#column-select-2').find(':selected').text(), "");
 		}
-		if(c.iName){
-			$('#column-select-3 option[value='+c.iName+']').prop('selected', true);
-		}
-
 	};
+
 
 	$(document).on('click', '.surveys-edit', function(){
 		$('.modal-select-collection').modal('show');
@@ -208,6 +205,9 @@ var sMemory = false;
 				}
 				if (survey.collection.name != 'default') {
 					prepSetting(survey);
+				}
+				if (survey.iName){
+					$('#column-select-3 option[value='+survey.iName+']').prop('selected', true);
 				}
 			},
 			error: function(jqXHR){
@@ -363,7 +363,7 @@ var sMemory = false;
 			type: "POST",
 			data: {"name" : surveys[SID].name, "iName": iName},
 			success: function(data){
-				setTimeout(function(){window.location.href = '/';}, 300);
+				setTimeout(function(){window.location.href = '/';}, 500);
 			},
 			error: function(jqXHR){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
@@ -417,7 +417,7 @@ var sMemory = false;
 		var survey = surveys[id.slice(-1)];
 		var file = survey.name;
 		//Grid, bucket, crosstab, QGA, map
-		window.open(window.location+'/../main.html?file='+user+"_"+file+'.csv'+
+		window.open(window.location+'/../main/file='+user+"_"+file+'.csv'+
 			"&views="+survey.views+"&view="+survey.view);
 	});
 
