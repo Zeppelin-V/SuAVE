@@ -865,6 +865,7 @@ var ruleNums = 0;
         //Find matching facet values in items
         for (var i = 0, _iLen = _tiles.length; i < _iLen; i++) {
             var tile = _tiles[i];
+            /*
             if (filterChange != undefined && (!filterChange.enlarge || tile.filtered)) {
                 if (!filterChange.enlarge && !tile.filtered) continue;
                 else if (filterChange.enlarge) { filterList.push(tile); continue; }
@@ -915,7 +916,7 @@ var ruleNums = 0;
                 }
                 filterList.push(tile);
                 continue;
-            }
+            }*/
 
             if (longStringFiltered != null) {
                 if(!longStringFiltered[i]) {
