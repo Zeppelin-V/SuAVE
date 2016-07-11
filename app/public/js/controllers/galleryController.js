@@ -31,7 +31,8 @@ function GalleryController()
 		});
 	}
 
-	this.displaySurveys = function(surveys){
+	this.displaySurveys = function(survey){
+		var surveys = survey.reverse();
 		for(i = 0; i < surveys.length; i++){
 			$("#main-container").append('<div class="row carousel-row"><div class="col-xs-8 col-xs-offset-2 slide-row">'+
 			'<div id="carousel-1" class="carousel slide slide-carousel" data-ride="carousel">'+
