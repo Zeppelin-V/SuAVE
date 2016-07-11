@@ -638,7 +638,8 @@ var sMemory = false;
 		});
 	}
 
-	this.displaySurveys = function(surveys){
+	this.displaySurveys = function(survey){
+		var surveys = survey.reverse();
 		for(i = 0; i < surveys.length; i++){
 			$("#main-container").append('<div class="row carousel-row"><div id="carousel-'+i+'" class="col-xs-8 col-xs-offset-2 slide-row">'+
 			'<div class="carousel slide slide-carousel" data-ride="carousel">'+
