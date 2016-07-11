@@ -452,7 +452,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                         if (longitude != null && latitude != null) {
                             if (typeof latitude == "string") latitude = parseFloat(latitude);
                             if (typeof longitude == "string") longitude = parseFloat(longitude);
-                            tile.loc = new L.LatLng(latitude, longitude);
+                            if(!isNaN(longitude) && !isNaN(latitude)) tile.loc = new L.LatLng(latitude, longitude);
                         }
                     }
                 }
