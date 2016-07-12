@@ -43,9 +43,16 @@ PivotViewer.Views.TileBasedView = PivotViewer.Views.IPivotViewerView.subClass({
         });
     },
     super_handleClick: function (evt) {
-        for (var i = 0; i < this.filterList.length; i++) {
-            var loc = this.filterList[i].contains(evt.x, evt.y);
-            if (loc >= 0) return this.filterList[i];
+        if(evt.type == "init"){
+          for (var i = 0; i < this.filterList.length; i++) {
+              var loc = this.filterList[i].item.id;
+              if (loc == evt.id) return this.filterList[i];
+          }
+        }else{
+          for (var i = 0; i < this.filterList.length; i++) {
+              var loc = this.filterList[i].contains(evt.x, evt.y);
+              if (loc >= 0) return this.filterList[i];
+          }
         }
     },
     handleClick: function (evt) { return this.super_handleClick(evt); },

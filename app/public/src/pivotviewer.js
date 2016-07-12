@@ -20,6 +20,7 @@ var Loader = null;
 var LoadSem = new Semaphore(1);
 var Settings = { showMissing: false, visibleCategories: undefined };
 var PARA = {};
+
 //set up rule filters
 //TODO: encapsulated in para.
 var A = [];
@@ -147,7 +148,7 @@ var ruleNums = 0;
         if (Loader == undefined) throw "Collection loader is undefined.";
         if (Loader instanceof PivotViewer.Models.Loaders.ICollectionLoader) Loader.loadCollection(PivotCollection);
         else throw "Collection loader does not inherit from PivotViewer.Models.Loaders.ICollectionLoader.";
-    };
+      };
 
     /// Create the individual controls for the facet
     PV._bucketizeDateTimeFacet = function (facetName, array1, array2) {
@@ -313,11 +314,12 @@ var ruleNums = 0;
         $('#pv-viewpanel-view-' + number + '-image').attr('src', _views[number].getButtonImageSelected());
         _views[number].activate();
 
+
         _currentView = number;
         if(_currentView == 1) PV.getBucketFilters();
-        if(_currentView == 2) PARA.crosstab = 1;
-        else PARA.crosstab = 0;
-        console.log(PARA);
+        var viewName = _views[number].getViewName().toLowerCase();
+        PARA.view = viewName.substr(0, viewName.indexOf("view")-1);
+
     };
 
     PV.getCurrentView = function () { return _views[_currentView]; }
@@ -742,7 +744,7 @@ var ruleNums = 0;
                     if (stringFilter != undefined) stringFilter.value[value + "a"] = true;
                     else {
                         stringFilter = { facet: name, value: [], index: i };
-                        //stringFilter.value[value + "a"]= true;
+                        stringFilter.value[value + "a"]= true;
                         stringFilter.value = _stringFilters[name].value;
                         stringFilters.push(stringFilter);
                         stringFilters[name] = stringFilter;
@@ -777,6 +779,7 @@ var ruleNums = 0;
                 if (PivotCollection.categories[i].type == PivotViewer.Models.FacetType.Number ||
                     PivotCollection.categories[i].type == PivotViewer.Models.FacetType.Ordinal) {
                     var s = $('#pv-filterpanel-category-numberitem-' + PV.cleanName(name)).find('.pv-facet-numericslider');
+
                     if (s.length > 0) {
                         var values = s.modSlider("values");
                         var max = s.modSlider('option', 'max'), min = s.modSlider('option', 'min');
@@ -1090,7 +1093,7 @@ var ruleNums = 0;
       ABCs = [];
 	    PV.filterViews();
       PARA.string_filters = _stringFilters;
-      PARA.nume_filters = _numericFilters;
+      PARA.num_filters = _numericFilters;
     };
 
     PV.initUICategory = function (category) {
@@ -1246,6 +1249,7 @@ var ruleNums = 0;
     // Filters the facet panel items and updates the counts
     PV._filterCategory = function (name) {
         var category = PivotCollection.getCategoryByName(_nameMapping[name.attr("facet")]);
+
         if (!category.isFilterVisible || !category.recount) return;
 
         if (!category.uiInit) PV.initUICategory(category);
@@ -1411,7 +1415,6 @@ var ruleNums = 0;
             category.recount = false;
             release();
         });
-        PARA.x_axis = _sortCategory;
     };
 
     PV.deselectInfoPanel = function () {
@@ -1656,6 +1659,7 @@ var ruleNums = 0;
             _views.push(view);
 
         }
+
 
         viewPanel.append("<div class='pv-viewpanel-view'></div>");
         for (var i = 0; i < _views.length; i++) {
@@ -1921,7 +1925,7 @@ var ruleNums = 0;
                       _filterList.push(_tiles[i]);
 
                 }
-
+                PARA.x_axis = PV.cleanName(_sortCategory.toLowerCase())
                 PV.filterViews();
                 release();
             });
@@ -2182,11 +2186,22 @@ var ruleNums = 0;
             return;
         });
 
+        if(_options.parameter){
+          var para = _options.parameter;
+
+          if(para.view){
+            _options.View = para.view;
+          }
+        }
+
         _sortCategory = $('#pv-primsort option').eq(0).html();
+        PARA.x_axis = PV.cleanName(_sortCategory.toLowerCase())
+
         var category = PivotCollection.getCategoryByName(_sortCategory);
         if (!category.uiInit) PV.initUICategory(category);
 
         LoadSem.acquire(function (release) {
+
             _tiles.sort(tileSortBy(_sortCategory, false, _stringFilters));
 
             for (var i = 0; i < _tiles.length; i++) {
@@ -2196,6 +2211,22 @@ var ruleNums = 0;
 
             PV.filterCollection();
 
+            if(_options.parameter){
+              var para = _options.parameter;
+
+              if(para.string_filters){
+                for(var i = 0; i < para.string_filters.length; i++){
+                  PV.presetStrFilters(para, i);
+                }
+              }
+
+              if(para.num_filters){
+                for(var i = 0; i < para.num_filters.length; i++){
+                  PV.presetNumFilters(para, i);
+                }
+              }
+            }
+
             if (Settings.visibleCategories.length < PivotCollection.categories.length)
                 $.publish("/PivotViewer/Settings/Changed", [Settings]);
             else $(".pv-facet").attr("visible", "visible");
@@ -2203,9 +2234,74 @@ var ruleNums = 0;
             if (_options.View != undefined) PV.selectView(_options.View);
             else PV.selectView(0);
             TileController.beginAnimation();
+
+            if(_options.parameter){
+              var para = _options.parameter;
+
+              if(para.x_axis){
+                $("#pv-primsort option[search='"+para.x_axis+"']").prop('selected', true);
+                $("#pv-primsort").trigger("change");
+              }
+
+              if(para.view == "crosstab"){
+                $("#pv-altsort option[search='"+para.y_axis+"']").prop('selected', true);
+                $("#pv-altmsort").trigger("change");
+              }
+
+              if(para.selected_Id != -1){
+                if(para.view == "map"){
+                  $(".pv-viewpanel-view").promise().done(function(){
+                    setTimeout(function(){
+                      for (var i = 0; i < _filterList.length; i++) {
+                          var loc = _filterList[i].item.id;
+                          if (loc == para.selected_Id){
+                            //$(_filterList[i].marker).trigger("click");
+                            $.publish("/PivotViewer/Views/Item/Selected", [{ item: _filterList[i]}]);
+                            break;
+                          }
+                      }
+                    }, 3000);
+                  });
+                }else{
+                  $(".pv-viewpanel-view").promise().done(function(){
+                    setTimeout(function(){
+                      PV.getCurrentView().handleClick({type: "init", id: para.selected_Id});
+                    }, 2500);
+                  });
+                }
+              }
+            }
             release();
         });
+
+
     });
+
+    PV.presetNumFilters = function(para, i){
+      setTimeout(function(){
+        var numFilter = para.num_filters[i];
+        $(".pv-facet[aria-controls='pv-cat-" + PV.cleanName(numFilter["facet"])+"']").trigger('click');
+
+        $("#pv-cat-"+PV.cleanName(numFilter["facet"])).promise().done(function(){
+          var s = $('#pv-facet-numericslider-' + PivotViewer.Utils.escapeMetaChars(PV.cleanName(numFilter.facet)));
+          PV.dragCategorySlider(s, numFilter.selectedMin, numFilter.selectedMax, true);
+        });
+      },1);
+    }
+
+    PV.presetStrFilters = function(para, i){
+      setTimeout(function(){
+        $(".pv-facet[aria-controls='pv-cat-" + PV.cleanName(para.string_filters[i]["facet"])+"']").trigger('click');
+        for(var v in para.string_filters[i]['value']){
+          setTimeout(PV.setStrFilterValues(para,v,i),10);
+        }
+      },1);
+    }
+
+    PV.setStrFilterValues = function(para, v, i){
+      $(".pv-facet-value[itemvalue='" + PV.cleanName(para.string_filters[i]['value'][v]) + "']").trigger("click");
+    }
+
 
     var oldValue = 0;
     PV.zoom = function (value, x, y) {

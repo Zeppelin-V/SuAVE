@@ -377,6 +377,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         //Got rid of multiple values for now
     },
     filter: function () {
+      console.log("debug filterer");
         var that = this;
         var g = 0;  //keeps track of the no. of geocode locations;
 
@@ -414,13 +415,12 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                 }
             }
         }
-        console.log(PivotCollection.categories);
+
         var category, category1 = null, category2 = null;
         for (var i = 0; i < PivotCollection.categories.length; i++) {
             var category = PivotCollection.categories[i], name = category.name.toLowerCase();
-            console.log(name);
+            console.log(category);
             if (category.isLocation()) {
-                console.log("in here");
                 if (category.uiInit == false) PV.initUICategory(category);
                 break;
             }
@@ -452,7 +452,8 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
                         if (longitude != null && latitude != null) {
                             if (typeof latitude == "string") latitude = parseFloat(latitude);
                             if (typeof longitude == "string") longitude = parseFloat(longitude);
-                            tile.loc = new L.LatLng(latitude, longitude);
+
+                            if(!isNaN(longitude) && !isNaN(latitude)) tile.loc = new L.LatLng(latitude, longitude);
                         }
                     }
                 }
@@ -640,7 +641,6 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         return geocodeCallBack;
     },
     geocode: function (locName, callbackFunction) {
-      console.log(encodeURIComponent(locName));
       var that = this;
       var nominatimUrl = "http://www.datasciencetoolkit.org/maps/api/geocode/json?sensor=false&address=" + encodeURIComponent(locName);
       $.ajax({
@@ -667,7 +667,6 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         }*/
     },
     getLocationsFromNames: function () {
-      console.log(this.itemsToGeocode);
         for (var e = 0; e < Object.keys(this.itemsToGeocode).length; e++) {
             var t = Object.keys(this.itemsToGeocode)[e];
             this.geocode(t, this.makeGeocodeCallBack(t))

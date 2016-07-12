@@ -288,19 +288,19 @@ PivotViewer.Utils.getTimeValueFn = function (min, max) {
 }
 
 PivotViewer.Utils.getTimeLabelFn = function (min, max) {
-    if (max.getFullYear() - min.getFullYear() + min.getFullYear() % 10 > 9) 
+    if (max.getFullYear() - min.getFullYear() + min.getFullYear() % 10 > 9)
         return function (value) { var year = new Date(value.value).getFullYear(); return (year - year % 10) + "s"; };
     else if (max.getFullYear() > min.getFullYear()) return function (value) { return new Date(value.value).getFullYear().toString(); };
-    else if (max.getMonth() > min.getMonth()) 
+    else if (max.getMonth() > min.getMonth())
         return function (value) { var date = new Date(value.value); return PivotViewer.Utils.getMonthName(date) + " " + date.getFullYear(); };
-    else if (max.getDate() > min.getDate()) 
+    else if (max.getDate() > min.getDate())
             return function (value) { var date = new Date(value.value); return PivotViewer.Utils.getMonthName(date) + " " + date.getDate() + ", " + date.getFullYear(); };
     else if (max.getHours() > min.getHours())
         return function (value) {
                 var date = new Date(value).value;
                 return PivotViewer.Utils.getMonthName(date) + " " + date.getDate() + ", " + date.getFullYear() + " " + PivotViewer.Utils.getHour(date) + " " + PivotViewer.Utils.getMeridian(date);
         };
-    else if (max.getMinutes() > min.getMinutes()) 
+    else if (max.getMinutes() > min.getMinutes())
         return function (value) {
                 var date = new Date(value.value);
                 return PivotViewer.Utils.getMonthName(date) + " " + date.getDate() + ", " + date.getFullYear() + " " + PivotViewer.Utils.getHour(date) + ":" + PivotViewer.Utils.getMinutes(date) + " " + PivotViewer.Utils.getMeridian(date);
@@ -320,7 +320,7 @@ PivotViewer.Utils.fillBuckets = function (bkts, filterList, category, valueFn) {
             var tile = filterList[i], facet = tile.item.getFacetByName(category.name);
             if (facet == undefined) break;
             if (tile.missing) continue;
-            
+
             var value = facet.values[0];
             while (valueFn(value) >= bkts[j].endRange && j < bkts.length - 1) j++;
             bkts[j].addTile(tile);

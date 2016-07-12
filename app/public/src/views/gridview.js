@@ -36,7 +36,7 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
             //Set the zoom time - the time it takes to zoom to the scale
             //if on a touch device where evt.scale != undefined then have no delay
             var zoomTime = evt.scale != undefined ? 0 : 1000;
-                        
+
             if (evt.scale != undefined) {
                 if (evt.scale >= 1) that.scale += (evt.scale - 1);
                 else {
@@ -58,7 +58,7 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
                 that.currentWidth = that.width;
                 that.currentHeight = that.height;
                 that.scale = 1;
-                // Reset the slider to zero 
+                // Reset the slider to zero
                 that.dontZoom = true;
                 PV.zoom(0);
                 that.recalibrateUISettings();
@@ -229,7 +229,8 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
     handleClick: function (evt) {
         var tile = this._super(evt);
         if (tile != null) tile.setSelected(true);
-
+        if(evt.type = "init") this.resetUISettings();
+        
         if(tile != null && this.selected != tile) this.centerOnTile(tile);
         else {
             this.selected = tile = null;

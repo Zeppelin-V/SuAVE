@@ -67,6 +67,16 @@ exports.replaceSurvey = function(files, user, callback){
 			callback("Survey does not exist!");
 		}
     else{
+			surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
+			{$set: {collection: "default"}}, {new:true}, function(e, o){
+				if(e) callback(e);
+			});
+
+			surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
+			{$set: {iName: ""}}, {new:true}, function(e, o){
+				if(e) callback(e);
+			});
+
       fs.readFile(files.file.path, function(err, data){
 				if (!fs.existsSync(__dirname + "/../../public/surveys")){
 			    fs.mkdirSync(__dirname + "/../../public/surveys");

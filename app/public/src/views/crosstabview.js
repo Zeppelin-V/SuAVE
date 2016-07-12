@@ -22,11 +22,12 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
             $("#pv-primsortcontrols").before("<div id='pv-altsortcontrols' class='pv-toolbarpanel-sortcontrols'></div>");
             $("#pv-altsortcontrols").hide();
             $("#pv-primsort").clone(true).attr("id", "pv-altsort").appendTo($("#pv-altsortcontrols"));
-            PV.y_axis = $("#pv-altsort option:selected").html();
+            PARA.y_axis = PV.cleanName($("#pv-altsort option:selected").html().toLowerCase());
+
             $("#pv-altsort").on("change", function (e) {
                 if (that.bucketsY == undefined) return; //initialzing
                 that.sortCategory2 = $("#pv-altsort option:selected").html();
-                PV.y_axis = that.sortCategory2;
+                PARA.y_axis = PV.cleanName(that.sortCategory2.toLowerCase());
 
                 var category = PivotCollection.getCategoryByName(that.sortCategory2);
                 if (!category.uiInit) PV.initUICategory(category);
@@ -389,6 +390,7 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
     handleClick: function (evt) {
         if (this.hasSubsets() && !PV.subsets.finalized) { PV.subsets.finalized = true; PV.filterViews(); return; }
         var tile = this.super_handleClick(evt);
+        if(evt.type = "init") this.resetUISettings();
         if (this.selected != null) this.selected.setSelected(false);
         if (tile != null) {
             if (this.selected != tile) {

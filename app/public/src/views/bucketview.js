@@ -634,6 +634,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
     handleClick: function (evt) {
         if (this.hasSubsets() && !PV.subsets.finalized) { PV.subsets.finalized = true; PV.filterViews(); return; }
         var tile = this._super(evt);
+        if(evt.type = "init") this.resetUISettings();
         if (this.selected != null) this.selected.setSelected(false);
         if (tile != null) {
             if (this.selected != tile) {
