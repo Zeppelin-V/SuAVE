@@ -1,4 +1,6 @@
 var paraStr;
+var user;
+var file;
 
 $(document).ready(function(){
   var mc = new MainController();
@@ -21,6 +23,11 @@ $(document).ready(function(){
 
   var aboutTitle;
   var aboutPath = "../surveys/";
+  var index = query.file.indexOf("_");
+
+  user= query.file.substring(0, index);
+  file = query.file.substring(index+1);
+  file = file.replace(".csv", "");
 
   if(query.file.endsWith(".csv")){
     aboutPath = aboutPath + (query.file).replace('.csv', '')+ "about.html";

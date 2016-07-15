@@ -2,6 +2,45 @@ function MainController()
 {
 // bind event listeners to button clicks //
 	var that = this;
+	var PARA;
+	var comments;
+	var displayComments = function(data){
+		for(var i = 0; i < data.length; i++){
+			$("#comments-body").append("<tr>");
+			$("#comments-body").append("<td width='7%'>"+(i+1)+"</td>");
+			$("#comments-body").append("<td>"+data[i].content+"</td>");
+			$("#comments-body").append("<td width='20%'>"+data[i].date+"</td>");
+			$("#comments-body").append("</tr>");
+		}
+	};
+
+	$("#add-comments").on("click", function(){
+		var newComment = $("#newComment").val();
+		if(newComment.length > 0){
+			$.ajax({
+				url: "/addCommentByParameters",
+				type: "POST",
+				data: {"user": user, "file": file, "para": PARA, "comment": newComment},
+				success: function(output){
+					$("#newComment").val("");
+					$("#comments-body").html("");
+					var temp = {};
+					/*
+					temp.content = newComment;
+					temp.date = (new Date()).toString();
+					output */
+					displayComments(output);
+				},
+				error: function(jqXHR){
+					console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+				}
+			});
+		}
+	});
+
+
+
+
 	google.charts.load("current", {packages:['corechart', 'geochart']});
 
 	var chart;
@@ -14,7 +53,22 @@ function MainController()
 
   $(document).on('click', '#comment', function(){
 		var graphPara = document.getElementById('pivot_window').contentWindow.graphPara;
+		PARA = document.getElementById('pivot_window').contentWindow.PARA;
+		$("#comments-body").html("");
 
+		$.ajax({
+			url: "/getCommentsByParameters",
+			type: "GET",
+			data: {"para": PARA},
+			success: function(output){
+				displayComments(output);
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
+
+		//According to the PARA, draw charts
 		if(graphPara.view == "bucket"){
 			chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
 			var dat = [];
@@ -178,20 +232,7 @@ function MainController()
 		}
 
 
-
-    //var PARA = document.getElementById('pivot_window').contentWindow.PARA;
-    //console.log(JSON.stringify(PARA));
-    /*
-    $.ajax({
-      url: "/getScreenshotByPara",
-      type: "GET",
-      data: {"url" : url, "para": PARA},
-      success: function(data){
-        //callback(data);
-      },
-      error: function(jqXHR){
-        console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
-      }
-    });*/
   });
+
+
 }

@@ -1,5 +1,6 @@
 var GL = require('./global');
 var AM = require('./modules/account-manager');
+var AN = require('./modules/annotation-manager');
 var EM = require('./modules/email-dispatcher');
 var SM = require('./modules/survey-manager');
 var CL = require('./modules/collection-loader');
@@ -403,6 +404,32 @@ module.exports = function(app) {
 		res.sendFile(req.params.survey, {root: __dirname + '/../public/surveys/'});
 	});
 
+	app.post('/addCommentByParameters', function(req, res){
+		AN.addCommentByParameters(req.body.file,
+			req.body.user, req.body.para, req.body.comment, function(e){
+				if(e){
+					res.status(400).send(e);
+				}else{
+					AN.getCommentsByParameters(req.body.para, function(e, o){
+						if(e){
+							res.status(400).send(e);
+						}else {
+							res.status(200).send(o);
+						}
+					});
+				}
+			});
+	});
+
+	app.get('/getCommentsByParameters', function(req, res){
+		AN.getCommentsByParameters(req.query.para, function(e, o){
+			if(e){
+				res.status(400).send(e);
+			}else {
+				res.status(200).send(o);
+			}
+		});
+	});
 
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
 
