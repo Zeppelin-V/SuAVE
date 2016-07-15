@@ -229,8 +229,7 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
     handleClick: function (evt) {
         var tile = this._super(evt);
         if (tile != null) tile.setSelected(true);
-        if(evt.type = "init") this.resetUISettings();
-        
+        if(evt["type"] == "init") this.resetUISettings();
         if(tile != null && this.selected != tile) this.centerOnTile(tile);
         else {
             this.selected = tile = null;

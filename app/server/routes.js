@@ -29,6 +29,7 @@ module.exports = function(app) {
 		}
 	});
 
+	//home page
 	app.post('/', function(req, res){
 		AM.manualLogin(req.body['user'], req.body['pass'], function(e, o){
 			if (!o){
@@ -60,8 +61,8 @@ module.exports = function(app) {
 		}
 	});
 
+	//info to update the account
 	app.get('/update', function(req, res) {
-
 		if (req.session.user == null){
 			res.redirect('/');
 		}	else{
@@ -73,6 +74,7 @@ module.exports = function(app) {
 		}
 	});
 
+	//update the account
 	app.post('/update', function(req, res){
 		if (req.session.user == null){
 			res.redirect('/');
@@ -98,6 +100,7 @@ module.exports = function(app) {
 		}
 	});
 
+	//logout
 	app.post('/logout', function(req, res){
 		res.clearCookie('user');
 		res.clearCookie('pass');
@@ -289,7 +292,6 @@ module.exports = function(app) {
 	});
 
 	app.post('/changeAboutFileByID', function(req, res){
-
 		CL.changeAboutFileByID(req.cookies.user, req.body.name, req.body.data,
 			function(e){
 				if(e){

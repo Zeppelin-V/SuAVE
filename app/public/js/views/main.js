@@ -1,15 +1,10 @@
-var paraStr = '{"y_axis":"awardnumber","selected_Id":78,"x_axis":"awardnumber","string_filters":[],"num_filters":[],"view":"map"}';
+var paraStr;
 
 $(document).ready(function(){
   var mc = new MainController();
   var query = URI.parseQuery(querys);
 
-  /*
-  if (window.location.href.indexOf('para=')>0)
-    var parts = window.location.href.split('para=', 2);
-    paraStr = parts[1].split('%20').join(' ');
-    paraStr = paraStr.split('%22').join('"');
-  */
+  /*set up iframe to load SuAVE*/
 
   var suave_ifr = document.createElement('iframe');
   suave_ifr.id = 'pivot_window';
@@ -21,6 +16,8 @@ $(document).ready(function(){
   suave_ifr.style.border="0";
   suave_ifr.frameborder ='0';
   document.body.appendChild(suave_ifr);
+
+  /*initialize banner*/
 
   var aboutTitle;
   var aboutPath = "../surveys/";

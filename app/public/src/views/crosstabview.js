@@ -23,7 +23,7 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
             $("#pv-altsortcontrols").hide();
             $("#pv-primsort").clone(true).attr("id", "pv-altsort").appendTo($("#pv-altsortcontrols"));
             PARA.y_axis = PV.cleanName($("#pv-altsort option:selected").html().toLowerCase());
-
+            PV.getGraphParameters();
             $("#pv-altsort").on("change", function (e) {
                 if (that.bucketsY == undefined) return; //initialzing
                 that.sortCategory2 = $("#pv-altsort option:selected").html();
@@ -42,6 +42,7 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
                 }
                 that.bucketsY = that.bucketize(that.filterList2, that.sortCategory2);
                 that.subbucketize();
+                PV.getGraphParameters();
                 that.activate();
             });
         }
@@ -390,7 +391,7 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
     handleClick: function (evt) {
         if (this.hasSubsets() && !PV.subsets.finalized) { PV.subsets.finalized = true; PV.filterViews(); return; }
         var tile = this.super_handleClick(evt);
-        if(evt.type = "init") this.resetUISettings();
+        if(evt.type == "init") this.resetUISettings();
         if (this.selected != null) this.selected.setSelected(false);
         if (tile != null) {
             if (this.selected != tile) {

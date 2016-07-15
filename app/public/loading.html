@@ -80,7 +80,10 @@
                 file = (query.file).replace('.zip', '.csv');
             if(query.views[5] == 1) initRSession("http://suave.sdsc.edu:3000/surveys/"+file);
         }
-        options.parameter = JSON.parse(parent.paraStr);
+        //initialize view with para
+        if(parent.paraStr) options.parameter = JSON.parse(parent.paraStr);
+
+        //set up the pivot viewer
         $(document).ready(function () { $('#pivotviewer').PivotViewer(options); });
     </script>
 </body>

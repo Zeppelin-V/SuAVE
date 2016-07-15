@@ -22,14 +22,21 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 	}
 });
 
-var surveys = db.collection('surveys');
+var surveys = db.collection('surveys_dev');
 
+/*Create a new survey
+para: 1. files: req parameter
+			2. user: user name
+			3. callback: callback function with an error parameter
+*/
 exports.createNewSurvey = function(files, user, callback){
+	//find the survey in database
   surveys.findOne({"name": files.body.name, "user": user}, function(e, o){
 		if (o){
 			callback("Name is taken");
 		}
     else{
+			//read the raw file
       fs.readFile(files.file.path, function(err, data){
 				if (!fs.existsSync(__dirname + "/../../public/surveys")){
 			    fs.mkdirSync(__dirname + "/../../public/surveys");
@@ -37,16 +44,19 @@ exports.createNewSurvey = function(files, user, callback){
 				var name = files.body.name.replace(/ /g,"-");
         var newPath = __dirname + "/../../public/surveys/"+user+"_"
           +name+".csv";
-        fs.writeFile(newPath, data, function(err){
+				//save the survey
+				fs.writeFile(newPath, data, function(err){
           if(err){
             callback(err);
           }else{
+						//save into the database
             surveys.insert({"name": name, "user": user,
             "csv": newPath, "view": "grid", "views": 111000, "collection": "default",
 						 "hidden": 0}, callback);
           }
         });
 
+				//initialize the about survey page
 				var aboutPath = __dirname + "/../../public/surveys/"+user+"_"
           +name+"about.html"
 					var aboutContent = GL.getAbout(1) + name + GL.getAbout(2)
@@ -61,12 +71,19 @@ exports.createNewSurvey = function(files, user, callback){
 	});
 }
 
+/*Replace a survey with a new csv
+para: 1. files: req parameter
+			2. user: user name
+			3. callback: callback function with 1) error 2) output
+*/
 exports.replaceSurvey = function(files, user, callback){
+	//find the survey in the database
   surveys.findOne({"name": files.body.name, "user": user}, function(e, o){
 		if (e){
 			callback("Survey does not exist!");
 		}
     else{
+			//reset the survey's paramters in database
 			surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
 			{$set: {collection: "default"}}, {new:true}, function(e, o){
 				if(e) callback(e);
@@ -77,6 +94,7 @@ exports.replaceSurvey = function(files, user, callback){
 				if(e) callback(e);
 			});
 
+			//read new raw csv file
       fs.readFile(files.file.path, function(err, data){
 				if (!fs.existsSync(__dirname + "/../../public/surveys")){
 			    fs.mkdirSync(__dirname + "/../../public/surveys");
@@ -84,6 +102,7 @@ exports.replaceSurvey = function(files, user, callback){
 				var name = files.body.name.replace(/ /g,"-");
         var newPath = __dirname + "/../../public/surveys/"+user+"_"
           +name+".csv";
+				//save the file
         fs.writeFile(newPath, data, function(err){
           if(err){
             callback(err);
@@ -96,15 +115,23 @@ exports.replaceSurvey = function(files, user, callback){
 	});
 }
 
+/*Change the image collection for a survey
+para: 1. files: req parameter
+			2. user: user name
+			3. collection: collection json
+			4. callback: callback function with an error parameter
+*/
 exports.changeCollection = function(files, user, collection, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
 
+	//modify the paras in database
 	surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
 	{$set: {collection: collection}}, {new:true}, function(e, o){
 		if(e) callback(e);
 	});
 
+	//modify and save the csv file
 	var data;
 	if(!collection.name) collection = JSON.parse(collection);
 	loader.setCSV(filePath, collection, function(o){
@@ -123,6 +150,11 @@ exports.changeCollection = function(files, user, collection, callback){
 	});
 }
 
+/*Change #name tag for the csv file
+para: 1. files: req parameter
+			2. user: user name
+			3. callback: callback function with an error parameter
+*/
 exports.changeCollectionItemName = function(files, user, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
@@ -150,6 +182,10 @@ exports.changeCollectionItemName = function(files, user, callback){
 	});
 }
 
+/*Get surveys for a user
+para: 1. username
+			2. callback: callback function with 1) error 2) output
+*/
 exports.getSurveyByUsername = function(username, callback)
 {
 	surveys.find({user: username}).toArray(function(e, o){
@@ -157,6 +193,10 @@ exports.getSurveyByUsername = function(username, callback)
 	});
 }
 
+/*Get unhidden surveys for public purpose
+para: 1. username
+			2. callback: callback function with 1) error 2) output
+*/
 exports.getPublicSurveyByUsername = function(username, callback)
 {
 	surveys.find({user: username, "hidden": 0}).toArray(function(e, o){
@@ -164,6 +204,9 @@ exports.getPublicSurveyByUsername = function(username, callback)
 	});
 }
 
+/*Delete all surveys
+para: 1. callback: callback function with 1) error
+*/
 exports.delAllRecords = function(callback)
 {
 	var tmp = __dirname + "/../surveys/*";
@@ -177,6 +220,10 @@ exports.delAllRecords = function(callback)
 	surveys.remove({}, callback);
 }
 
+/*Delete surveys for a user
+para: 1. user: username
+			2. callback: callback function with 1) error 2) output
+*/
 exports.deleteSurvey = function(user, callback)
 {
   var tmp = __dirname + "/../surveys/*";
@@ -190,6 +237,11 @@ exports.deleteSurvey = function(user, callback)
 	surveys.remove({"user": user}, callback);
 }
 
+/*Delete a survey
+para: 1. filename
+			2. user: username
+			2. callback: callback function with 1) error
+*/
 exports.deleteSurveyByName = function(filename, user, callback)
 {
   var tmp = __dirname + "/../surveys/*";
@@ -203,7 +255,11 @@ exports.deleteSurveyByName = function(filename, user, callback)
 	surveys.remove({"name": filename, "user": user}, callback);
 }
 
-
+/*Hide a survey by filename and user
+para: 1. filename
+			2. user: username
+			3. callback: callback function with 1) error 2) output
+*/
 exports.hideSurveyByNameID = function(filename, user, callback)
 {
 	surveys.findOne({"name":filename, "user": user}, function(e, o){
@@ -217,6 +273,12 @@ exports.hideSurveyByNameID = function(filename, user, callback)
 	});
 }
 
+/*Change a survey's default view
+para: 1. filename
+			2. user: username
+			3. view: default view to be updated
+			4. callback: callback function with 1) error 2) output
+*/
 exports.changeViewByNameID = function(filename, user, view, callback)
 {
 	surveys.findOne({"name":filename, "user": user}, function(e, o){
@@ -229,6 +291,12 @@ exports.changeViewByNameID = function(filename, user, view, callback)
 	});
 }
 
+/*Change a survey's view options
+para: 1. filename
+			2. user: username
+			3. view: view options to be updated
+			4. callback: callback function with 1) error 2) output
+*/
 exports.changeViewOptionsByNameID = function(filename, user, views, callback)
 {
 	surveys.findOne({"name":filename, "user": user}, function(e, o){
