@@ -71,6 +71,7 @@ exports.getParaIdByParamters = function(file, user, para, graphPara, callback){
 						if(error){
 		          callback(error, null);
 		        }else{
+							/*
 							snapshots.find({"para_id": para._id}).toArray(function(e, o){
 								if(e){
 									callback(error);
@@ -81,7 +82,7 @@ exports.getParaIdByParamters = function(file, user, para, graphPara, callback){
 								}else{
 									callback(null);
 								}
-							});
+							});*/
 
 		          callback(null, para._id);
 		        }

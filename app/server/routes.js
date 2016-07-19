@@ -416,7 +416,7 @@ module.exports = function(app) {
 
 	app.post('/addCommentByParameters', function(req, res){
 		AN.addCommentByParameters(req.body.file,
-			req.body.user, req.body.para, JSON.parse(req.body.graphPara), req.body.comment, function(e){
+			req.body.user, req.body.para, req.body.graphPara, req.body.comment, function(e){
 				if(e){
 					res.status(400).send(e);
 				}else{
