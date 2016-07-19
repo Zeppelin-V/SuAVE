@@ -1,0 +1,20 @@
+#comment-template{
+  margin-top: 20%;
+  overflow-y: auto;
+}
+
+#comments-table, #para-table{
+  overflow-y: auto;
+}
+#add-comments{
+  margin-top: 100%;
+}
+#share-dialog{
+  margin-top: 20%;
+}
+#button-group{
+  display: flex;                   /* establish flex container */
+  flex-direction: row;             /* default value; can be omitted */
+  flex-wrap: nowrap;               /* default value; can be omitted */
+  justify-content: space-between;
+}

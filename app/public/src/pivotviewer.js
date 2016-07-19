@@ -320,6 +320,10 @@ var graphPara = {};
         if(_currentView == 1) PV.getBucketFilters();
         var viewName = _views[number].getViewName().toLowerCase();
         PARA.view = viewName.substr(0, viewName.indexOf("view")-1);
+        //reset y_axis if it's not crosstab
+        if(PARA.view != "crosstab"){
+          PARA.y_axis = null;
+        }
 
         PV.getGraphParameters();
     };
@@ -2324,7 +2328,7 @@ var graphPara = {};
 
               if(para.view == "crosstab"){
                 $("#pv-altsort option[search='"+para.y_axis+"']").prop('selected', true);
-                $("#pv-altmsort").trigger("change");
+                $("#pv-altsort").trigger("change");
               }
 
               if(para.selected_id != -1){
@@ -2365,20 +2369,22 @@ var graphPara = {};
           var s = $('#pv-facet-numericslider-' + PivotViewer.Utils.escapeMetaChars(PV.cleanName(numFilter.facet)));
           PV.dragCategorySlider(s, numFilter.selectedMin, numFilter.selectedMax, true);
         });
-      },1);
+      },10);
     }
 
     PV.presetStrFilters = function(para, i){
       setTimeout(function(){
         $(".pv-facet[aria-controls='pv-cat-" + PV.cleanName(para.string_filters[i]["facet"])+"']").trigger('click');
         for(var v in para.string_filters[i]['value']){
-          setTimeout(PV.setStrFilterValues(para,v,i),10);
+          PV.setStrFilterValues(para,v,i);
         }
-      },1);
+      },10);
     }
 
     PV.setStrFilterValues = function(para, v, i){
-      $(".pv-facet-value[itemvalue='" + PV.cleanName(para.string_filters[i]['value'][v]) + "']").trigger("click");
+      var par = "#pv-facet-value-"+ PV.cleanName(para.string_filters[i]['facet']);
+      $(".pv-facet-value[itemvalue='" + PV.cleanName(para.string_filters[i]['value'][v]) + "']"+
+      "[itemfacet='"+PV.cleanName(para.string_filters[i]['facet'])+"']").trigger("click");
     }
 
 

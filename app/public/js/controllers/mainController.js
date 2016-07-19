@@ -2,7 +2,7 @@ function MainController()
 {
 // bind event listeners to button clicks //
 	var that = this;
-	var PARA;
+	var graphPara;
 	var comments;
 	var displayComments = function(data){
 		for(var i = 0; i < data.length; i++){
@@ -14,21 +14,39 @@ function MainController()
 		}
 	};
 
+	$("#share").on("click", function(){
+		graphPara = document.getElementById('pivot_window').contentWindow.graphPara;
+		PARA = document.getElementById('pivot_window').contentWindow.PARA;
+		$("#share-link").html("");
+
+		$.ajax({
+			url: "/getParaIdByParamters",
+			type: "GET",
+			data: {"user": user, "file": file, "para": PARA,
+				"graphPara":JSON.stringify(graphPara)},
+			success: function(output){
+				var pathArray = location.href.split( '/' );
+				$("#share-link").append("http://"+pathArray[2]+"/snapshot/"+output);
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
+
+	});
+
 	$("#add-comments").on("click", function(){
 		var newComment = $("#newComment").val();
 		if(newComment.length > 0){
 			$.ajax({
 				url: "/addCommentByParameters",
 				type: "POST",
-				data: {"user": user, "file": file, "para": PARA, "comment": newComment},
+				data: {"user": user, "file": file, "para": PARA,
+					"comment": newComment, "graphPara":JSON.stringify(graphPara)},
 				success: function(output){
 					$("#newComment").val("");
 					$("#comments-body").html("");
-					var temp = {};
-					/*
-					temp.content = newComment;
-					temp.date = (new Date()).toString();
-					output */
+
 					displayComments(output);
 				},
 				error: function(jqXHR){
@@ -52,7 +70,7 @@ function MainController()
 	});
 
   $(document).on('click', '#comment', function(){
-		var graphPara = document.getElementById('pivot_window').contentWindow.graphPara;
+		graphPara = document.getElementById('pivot_window').contentWindow.graphPara;
 		PARA = document.getElementById('pivot_window').contentWindow.PARA;
 		$("#comments-body").html("");
 
@@ -230,9 +248,5 @@ function MainController()
         chart.draw(data, options);
 			}
 		}
-
-
   });
-
-
 }

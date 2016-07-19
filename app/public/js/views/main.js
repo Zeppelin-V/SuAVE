@@ -1,9 +1,10 @@
-var paraStr;
+var PARA;
 var user;
 var file;
 
 $(document).ready(function(){
   var mc = new MainController();
+
   var query = URI.parseQuery(querys);
 
   /*set up iframe to load SuAVE*/
@@ -24,6 +25,22 @@ $(document).ready(function(){
   var aboutTitle;
   var aboutPath = "../surveys/";
   var index = query.file.indexOf("_");
+  var id = query.id;
+
+  if(query.id){
+    $.ajax({
+      url: "/getParaById",
+      type: "GET",
+      data: {"id" : query.id},
+      success: function(data){
+        PARA = data;
+      },
+      error: function(jqXHR){
+        console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+      }
+    });
+  }
+
 
   user= query.file.substring(0, index);
   file = query.file.substring(index+1);

@@ -308,3 +308,19 @@ exports.changeViewOptionsByNameID = function(filename, user, views, callback)
 		}
 	});
 }
+
+/*Get a survey's view options
+para: 1. filename
+			2. user: username
+			3. callback: callback function with 1) error 2) output
+*/
+exports.getViewOptionsByName = function(filename, user, callback)
+{
+	surveys.findOne({"name":filename, "user": user}, function(e, o){
+		if (e){
+			callback(e);
+		}	else{
+			callback(null, o.views);
+		}
+	});
+}

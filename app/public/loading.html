@@ -81,7 +81,7 @@
             if(query.views[5] == 1) initRSession("http://suave.sdsc.edu:3000/surveys/"+file);
         }
         //initialize view with para
-        if(parent.paraStr) options.parameter = JSON.parse(parent.paraStr);
+        if(parent.PARA) options.parameter = parent.PARA;
 
         //set up the pivot viewer
         $(document).ready(function () { $('#pivotviewer').PivotViewer(options); });

@@ -399,6 +399,16 @@ module.exports = function(app) {
 	});
 
 
+	app.get('/getViewOptionsByName', function(req, res) {
+		SM.getViewOptionsByName(req.query.file, req.query.user, function(e, o){
+			if(e) {
+				res.status(400).send(e);
+			}else{
+				res.status(200).send(o.toString());
+			}
+		})
+	});
+
 	app.get('/getSurveys/:survey', function(req, res){
 		console.log(__dirname + '/surveys/');
 		res.sendFile(req.params.survey, {root: __dirname + '/../public/surveys/'});
@@ -406,7 +416,7 @@ module.exports = function(app) {
 
 	app.post('/addCommentByParameters', function(req, res){
 		AN.addCommentByParameters(req.body.file,
-			req.body.user, req.body.para, req.body.comment, function(e){
+			req.body.user, req.body.para, JSON.parse(req.body.graphPara), req.body.comment, function(e){
 				if(e){
 					res.status(400).send(e);
 				}else{
@@ -430,6 +440,70 @@ module.exports = function(app) {
 			}
 		});
 	});
+
+	app.get('/getCommentsById', function(req, res){
+		AN.getCommentsById(req.query.id, function(e, o){
+			if(e){
+				res.status(400).send(e);
+			}else {
+				res.status(200).send(o);
+			}
+		});
+	});
+
+	app.post('/addCommentById', function(req, res){
+		AN.addCommentById(req.body.id, req.body.comment, function(e, o){
+			if(e){
+				res.status(400).send(e);
+			}else {
+				res.status(200).send(o);
+			}
+		});
+	});
+
+	app.get('/getParaIdByParamters', function(req, res){
+		AN.getParaIdByParamters(req.query.file,
+			req.query.user, req.query.para, req.query.graphPara, function(e, o){
+			if(e){
+				res.status(400).send(e);
+			}else {
+				res.status(200).send(o);
+			}
+		});
+	});
+
+	app.get('/snapshot/:id', function(req, res){
+		AN.getSnapshotById(req.params.id, function(e, o){
+			if(e || o == null){
+				res.render('404', { title: 'Page Not Found'});
+			}else{
+				res.render('snapshot');
+			}
+		});
+	});
+
+
+	app.get('/getSnapshotById', function(req, res){
+		AN.getSnapshotById(req.query.id, function(e, o){
+			if(e){
+				res.status(400).send(e);
+			}else{
+				res.status(200).send(o);
+			}
+		});
+	});
+
+	app.get('/getParaById', function(req, res){
+		AN.getParaById(req.query.id, function(e, o){
+			if(e){
+				res.status(400).send(e);
+			}else{
+				res.status(200).send(o);
+			}
+		});
+	});
+
+
 
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
 
