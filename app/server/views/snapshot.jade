@@ -12,7 +12,7 @@ html
             .row
               .col-xs-8.col-xs-offset-2
                 #button-group
-                  button.btn.btn-raised.btn-info.btn-responsive#show-snapshot(type='button') Show
+                  button.btn.btn-raised.btn-info#show-snapshot(type='button') Show
                   button.btn.btn-raised.btn-info#show-about(type='button') About
                   button.btn.btn-raised.btn-info#share-snapshot(type='button', data-toggle='modal', data-target='#share-dialog') Share
             .row#para-panel
@@ -26,7 +26,7 @@ html
             .row
               .col-xs-6.col-xs-offset-2
                 .form-group.label-floating#comment-part
-                  label.control-label(for='newComment') Add new comment:
+                  label.control-label(for='newComment' style="font-size:100%;") Add new comment:
                   textarea#newComment.form-control(style="width:100%; font-size:100%")
               .col-xs-1
                 button.btn.btn-raised.btn-info#add-comments(type='button' ) Add

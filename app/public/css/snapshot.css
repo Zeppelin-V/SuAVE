@@ -20,24 +20,26 @@
   flex-wrap: nowrap;               /* default value; can be omitted */
   justify-content: space-between;
 }
-.btn-responsiv{
-  font-size: 10vw;
-}
 
-@media screen and (max-width: 768px) {
-    h3,  body {
+
+@media screen and (max-width: 992px) {
+     body {
       font-size: 300%;
+    }
+    .panel-title{
+      font-size: 100%;
     }
 
     .btn{
-      font-size: 150%;
+      font-size: 90%;
     }
 
     h4{
-      font-size: 80%;
+      font-size: 100%;
     }
 }
 
+/*
 @media screen and (min-width: 768px) and (max-width: 992px) {
     h3,  body {
       font-size: 250%;
@@ -50,4 +52,4 @@
     h4{
       font-size: 80%;
     }
-}
+}*/
