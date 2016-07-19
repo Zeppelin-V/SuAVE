@@ -20,3 +20,34 @@
   flex-wrap: nowrap;               /* default value; can be omitted */
   justify-content: space-between;
 }
+.btn-responsiv{
+  font-size: 10vw;
+}
+
+@media screen and (max-width: 768px) {
+    h3,  body {
+      font-size: 300%;
+    }
+
+    .btn{
+      font-size: 150%;
+    }
+
+    h4{
+      font-size: 80%;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 992px) {
+    h3,  body {
+      font-size: 250%;
+    }
+
+    .btn{
+      font-size: 80%;
+    }
+
+    h4{
+      font-size: 80%;
+    }
+}

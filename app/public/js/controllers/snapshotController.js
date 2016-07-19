@@ -205,7 +205,6 @@ function SnapshotController()
   				dat.push(graphPara.xData[i]);
   			}
 
-        google.charts.setOnLoadCallback(drawChart);
   			function drawChart() {
   				var data = google.visualization.arrayToDataTable(dat);
 
@@ -229,6 +228,7 @@ function SnapshotController()
   				};
   				chart.draw(view, options);
   			}
+        google.charts.setOnLoadCallback(drawChart);
   		}else if(graphPara.view == "crosstab"){
   			var chart = new google.visualization.BubbleChart(document.getElementById('chart_div'));
 
@@ -260,7 +260,6 @@ function SnapshotController()
   				xLabels.push(temp);
   			}
 
-  			google.charts.setOnLoadCallback(drawSeriesChart);
 
   			function drawSeriesChart() {
 
@@ -288,6 +287,7 @@ function SnapshotController()
 
   				chart.draw(data, options);
       	}
+        google.charts.setOnLoadCallback(drawSeriesChart);
   		}else if(graphPara.view == "grid"){
   			var chart = new google.visualization.Histogram(document.getElementById('chart_div'));
 
@@ -308,7 +308,6 @@ function SnapshotController()
   				}
   			}
 
-  			google.charts.setOnLoadCallback(drawChart);
   			function drawChart() {
   				var data = google.visualization.arrayToDataTable(dat);
 
@@ -322,14 +321,13 @@ function SnapshotController()
 
   				chart.draw(data, options);
   			}
-
+        google.charts.setOnLoadCallback(drawChart);
   		}else if(graphPara.view == "map") {
 
 
   			var dat = graphPara.mData;
   			dat.unshift(["Latitude", "Longitude"]);
 
-  			google.charts.setOnLoadCallback(drawRegionsMap);
         function drawRegionsMap() {
 
           var data = google.visualization.arrayToDataTable(dat);
@@ -340,10 +338,10 @@ function SnapshotController()
 
           chart.draw(data, options);
         }
+        google.charts.setOnLoadCallback(drawRegionsMap);
   		}else{
   			var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
 
-  			google.charts.setOnLoadCallback(drawChart);
         function drawChart() {
 
           var data = google.visualization.arrayToDataTable([
@@ -357,6 +355,7 @@ function SnapshotController()
 
           chart.draw(data, options);
   			}
+        google.charts.setOnLoadCallback(drawChart);
   		}
     };
 

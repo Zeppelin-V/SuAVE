@@ -96,7 +96,6 @@ function MainController()
 				dat.push(graphPara.xData[i]);
 			}
 
-			google.charts.setOnLoadCallback(drawChart);
 			function drawChart() {
 				var data = google.visualization.arrayToDataTable(dat);
 
@@ -120,6 +119,7 @@ function MainController()
 				};
 				chart.draw(view, options);
 			}
+			google.charts.setOnLoadCallback(drawChart);
 		}else if(graphPara.view == "crosstab"){
 			chart = new google.visualization.BubbleChart(document.getElementById('chart_div'));
 
@@ -151,7 +151,6 @@ function MainController()
 				xLabels.push(temp);
 			}
 
-			google.charts.setOnLoadCallback(drawSeriesChart);
 
 			function drawSeriesChart() {
 
@@ -178,6 +177,7 @@ function MainController()
 
 				chart.draw(data, options);
     	}
+			google.charts.setOnLoadCallback(drawSeriesChart);
 		}else if(graphPara.view == "grid"){
 			chart = new google.visualization.Histogram(document.getElementById('chart_div'));
 
@@ -198,7 +198,6 @@ function MainController()
 				}
 			}
 
-			google.charts.setOnLoadCallback(drawChart);
 			function drawChart() {
 				var data = google.visualization.arrayToDataTable(dat);
 
@@ -212,14 +211,13 @@ function MainController()
 
 				chart.draw(data, options);
 			}
-
+			google.charts.setOnLoadCallback(drawChart);
 		}else if(graphPara.view == "map") {
 
 
 			var dat = graphPara.mData;
 			dat.unshift(["Latitude", "Longitude"]);
 
-			google.charts.setOnLoadCallback(drawRegionsMap);
       function drawRegionsMap() {
 
         var data = google.visualization.arrayToDataTable(dat);
@@ -230,10 +228,10 @@ function MainController()
 
         chart.draw(data, options);
       }
+			google.charts.setOnLoadCallback(drawRegionsMap);
 		}else{
 			chart = new google.visualization.PieChart(document.getElementById('chart_div'));
 
-			google.charts.setOnLoadCallback(drawChart);
       function drawChart() {
 
         var data = google.visualization.arrayToDataTable([
@@ -247,6 +245,7 @@ function MainController()
 
         chart.draw(data, options);
 			}
+			google.charts.setOnLoadCallback(drawChart);
 		}
   });
 }

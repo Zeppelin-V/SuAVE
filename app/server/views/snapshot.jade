@@ -8,11 +8,11 @@ html
         .col-xs-10.col-xs-offset-1.col-md-8.col-md-offset-2.col-lg-6.col-lg-offset-3
           .jumbotron#comment-template
             .row
-              #chart_div.col-xs-10.col-xs-offset-1.col-md-8.col-md-offset-2(style='display: block;')
+              #chart_div.col-xs-8.col-xs-offset-2(style='display: block;')
             .row
-              .col-xs-10.col-xs-offset-1.col-md-8.col-md-offset-2
+              .col-xs-8.col-xs-offset-2
                 #button-group
-                  button.btn.btn-raised.btn-info#show-snapshot(type='button') Show
+                  button.btn.btn-raised.btn-info.btn-responsive#show-snapshot(type='button') Show
                   button.btn.btn-raised.btn-info#show-about(type='button') About
                   button.btn.btn-raised.btn-info#share-snapshot(type='button', data-toggle='modal', data-target='#share-dialog') Share
             .row#para-panel
@@ -27,7 +27,7 @@ html
               .col-xs-6.col-xs-offset-2
                 .form-group.label-floating#comment-part
                   label.control-label(for='newComment') Add new comment:
-                  textarea#newComment.form-control(style="width:100%;")
+                  textarea#newComment.form-control(style="width:100%; font-size:100%")
               .col-xs-1
                 button.btn.btn-raised.btn-info#add-comments(type='button' ) Add
       #share-dialog.modal.fade
