@@ -1,6 +1,8 @@
 #comment-template{
   margin-top: 20%;
   overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 #comments-table, #para-table{

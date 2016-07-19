@@ -18,7 +18,7 @@ function SnapshotController()
           success: function(output){
             $("#newComment").val("");
             $("#panel-comments").html("");
-            console.log(output);
+
             that.displayComments(output);
           },
           error: function(jqXHR){
@@ -79,7 +79,7 @@ function SnapshotController()
       if(!$("#comments-table").length){
         $("#para-panel").after(
           '<div class="row">'+
-          '<div class="col-xs-8 col-xs-offset-2 col-lg-6 col-lg-offset-3">'+
+          '<div class="col-xs-8 col-xs-offset-2">'+
           '<div class="panel panel-info">'+
           '<div id="comments-table" style="text-align: center;" class="panel-body">'+
           '<table class="table table-striped table-hover">'+
@@ -175,7 +175,7 @@ function SnapshotController()
         data: {"id" : id},
         success: function(data){
           snapshotPara = data;
-          console.log(data);
+
           that.getViews();
           that.getComments(id);
           google.charts.setOnLoadCallback(that.getGraph);
@@ -192,8 +192,7 @@ function SnapshotController()
       var width = $(window).height()*0.45*0.9;
       var height = $(window).height()*0.3*0.9;
 
-      console.log(width);
-      console.log(height);
+
       graphPara = JSON.parse(snapshotPara.graph_para);
 
       //According to the PARA, draw charts
