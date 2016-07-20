@@ -28,6 +28,11 @@ function SnapshotController()
       }
     });
 
+    $("#copy-link").on("click", function(){
+      document.querySelector('#share-link').select();
+      document.execCommand('copy');
+    });
+
     $("#share-snapshot").on("click", function(){
   		$("#share-link").append(location.href);
 

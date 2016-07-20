@@ -37,9 +37,11 @@ html
               button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
               h4.modal-title Share
             .modal-body
-              p
-                | Link:
-              p#share-link
+              .row
+                .col-xs-8
+                  textarea(style="width:100%;")#share-link
+                .col-xs-2
+                  button.btn.btn-raised.btn-info#copy-link(type='button' ) Copy Link
             .modal-footer
               button.btn.btn-danger(type='button', data-dismiss='modal') Dismiss
 

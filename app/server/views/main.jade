@@ -14,40 +14,44 @@ html
         | Share
       button#video(onclick="window.open('https://youtu.be/IqiSf0eWtxQ?list=PLvVijDnlg_tXJJRJlEbRld0IOJCi5-vTD', '_blank')") Tutorial Videos
       button#help(onclick='') About Survey
-    #comment-dialog.modal.fade(tabindex='-1', style='display: block;')
+    #comment-dialog.modal.fade
       .modal-dialog
         .modal-content
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4.modal-title Comment
           .modal-body
-            #chart_div(style='display: block; margin-left:5%;')
+            .row
+              #chart_div.col-xs-10.col-xs-offset-1(style='display: block;')
             button.btn.btn-info#download(type='button' style='margin-left:35%;') Download
-            table.table.table-striped.table-hover#comment-block
-              tbody#comments-body
+            #comments-table
+              table.table.table-striped.table-hover#comment-block
+                tbody#comments-body
             #new-block
               .form-group.label-floating#comment-part
                 label.control-label(for='newComment') Add new comment:
                 textarea#newComment.form-control(style="width:100%;")
 
-              button.btn.btn-info#add-comments(type='button' ) Add
+              button.btn.btn-raised.btn-info#add-comments(type='button' ) Add
           .modal-footer
             button.btn.btn-danger(type='button', data-dismiss='modal') Dismiss
-    #share-dialog.modal.fade(tabindex='-1', style='display: block;')
+    #share-dialog.modal.fade
       .modal-dialog
         .modal-content
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4.modal-title Share
           .modal-body
-            p
-              | Link:
-            p#share-link
+            .row
+              .col-xs-8
+                textarea(style="width:100%;")#share-link
+              .col-xs-2
+                button.btn.btn-raised.btn-info#copy-link(type='button' ) Copy Link
           .modal-footer
             button.btn.btn-danger(type='button', data-dismiss='modal') Dismiss
 
 block scripts
-  link(rel='stylesheet', href='/vendor/bootstrap.min.css')
+  link(rel='stylesheet', href='/style/bootstrap.min.css')
   link(href='/vendor/bootstrap-material-design.min.css', rel='stylesheet', type='text/css')
   link(href='/style/headerstyle.css', rel='stylesheet', type='text/css')
   script(type='text/javascript', src='/vendor/gc-loader.js')

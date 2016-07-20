@@ -139,10 +139,13 @@ header#earthcube-header .tagline {
   border: 2px solid #bfbfbf;
 }
 
+#share-dialog{
+  margin-top: 20%;
+}
 
 #add-comments{
+  margin-top: -15%;
   width:20%;
-  margin-top:10%;
   margin-left: 5%;
   display:inline-block;
 }
@@ -157,6 +160,11 @@ header#earthcube-header .tagline {
   width: 95%;
 }
 
-.modal-body {
-    overflow-x: hidden;
+#comment-dialog {
+  margin-top: 10%; 
+  overflow-x: hidden;
+}
+
+#comments-table{
+  overflow-y: auto;
 }

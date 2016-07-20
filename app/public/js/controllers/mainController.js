@@ -14,6 +14,11 @@ function MainController()
 		}
 	};
 
+	$("#copy-link").on("click", function(){
+		document.querySelector('#share-link').select();
+		document.execCommand('copy');
+	});
+
 	$("#share").on("click", function(){
 		graphPara = document.getElementById('pivot_window').contentWindow.graphPara;
 		PARA = document.getElementById('pivot_window').contentWindow.PARA;
@@ -70,6 +75,8 @@ function MainController()
 	});
 
   $(document).on('click', '#comment', function(){
+		$('#comments-table').css('max-height',$(window).height()*0.2);
+
 		graphPara = document.getElementById('pivot_window').contentWindow.graphPara;
 		PARA = document.getElementById('pivot_window').contentWindow.PARA;
 		$("#comments-body").html("");
