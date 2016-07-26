@@ -72,7 +72,7 @@ html
                     a#create-account(href='/signup' target='_blank') Create An Account
 
     #get-credentials.modal.fade
-      .modal-dialog(style="margin-top:25%;max-width:450px;")
+      .modal-dialog(style="margin-top:15%;max-width:450px;")
         .modal-content
           .modal-header
             button.close(data-dismiss='modal') x
@@ -88,7 +88,16 @@ html
             button#cancel.btn-raised.btn.btn-default-(data-dismiss='modal') Cancel
             button#retrieve-password-submit.btn.btn-raised.btn-info(type='submit') Submit
 
-
+    .modal-alert.modal.fade
+      .modal-dialog(style="margin-top:15%;max-width:450px;")
+        .modal-content
+          .modal-header
+            button.close(data-dismiss='modal') x
+            h3
+          .modal-body
+            p
+          .modal-footer
+            button(data-dismiss="modal")#ok.btn.btn-raised.btn-danger OK
 
 block scripts
   script(type='text/javascript', src='/vendor/gc-loader.js')
