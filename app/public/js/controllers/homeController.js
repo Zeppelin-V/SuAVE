@@ -415,6 +415,7 @@ var sMemory = false;
 		var id = $(this).attr('id');
 		var survey = surveys[id.slice(-1)];
 		var file = survey.name;
+		
 		//Grid, bucket, crosstab, QGA, map
 		window.open(window.location+'/../main/file='+user+"_"+file+'.csv'+
 			"&views="+survey.views+"&view="+survey.view);

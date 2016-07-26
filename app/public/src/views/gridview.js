@@ -131,10 +131,12 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
             for (var i = 0; i < that.tiles.length; i++) {
                 //setup tiles
                 var tile = that.tiles[i];
+
                 tile._locations[0].startx = tile._locations[0].x;
                 tile._locations[0].starty = tile._locations[0].y;
                 tile.startwidth = tile.width;
                 tile.startheight = tile.height;
+
 
                 if (tile.filtered && (Settings.showMissing || !tile.missing)) continue;
                 tile.start = PivotViewer.Utils.now();
@@ -145,6 +147,7 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
                 tile.destinationwidth = 1;
                 tile.destinationheight = 1;
             }
+
 
             // recalculate max width of images in filterList
             that.maxRatio = TileController._imageController.getRatio(that.tiles[0].item.img);
@@ -191,6 +194,7 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
                 //setup tile initial positions
                 tile._locations[0].startx = tile._locations[0].x;
                 tile._locations[0].starty = tile._locations[0].y;
+
                 tile.startwidth = tile.width;
                 tile.startheight = tile.height;
             }

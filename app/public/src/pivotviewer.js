@@ -140,16 +140,16 @@ var graphPara = {};
 
 
 
-     PV._initCollectionLoader = function (options) {
-        //PV = this;
-        _self.append("<div class='pv-loading'><img src='images/loading.gif' alt='Loading' /><span>Loading...</span></div>");
-        $('.pv-loading').css('top', ($('.pv-wrapper').height() / 2) - 33 + 'px');
-        $('.pv-loading').css('left', ($('.pv-wrapper').width() / 2) - 43 + 'px');
+   PV._initCollectionLoader = function (options) {
+      //PV = this;
+      _self.append("<div class='pv-loading'><img src='images/loading.gif' alt='Loading' /><span>Loading...</span></div>");
+      $('.pv-loading').css('top', ($('.pv-wrapper').height() / 2) - 33 + 'px');
+      $('.pv-loading').css('left', ($('.pv-wrapper').width() / 2) - 43 + 'px');
 
-        if (Loader == undefined) throw "Collection loader is undefined.";
-        if (Loader instanceof PivotViewer.Models.Loaders.ICollectionLoader) Loader.loadCollection(PivotCollection);
-        else throw "Collection loader does not inherit from PivotViewer.Models.Loaders.ICollectionLoader.";
-      };
+      if (Loader == undefined) throw "Collection loader is undefined.";
+      if (Loader instanceof PivotViewer.Models.Loaders.ICollectionLoader) Loader.loadCollection(PivotCollection);
+      else throw "Collection loader does not inherit from PivotViewer.Models.Loaders.ICollectionLoader.";
+    };
 
     /// Create the individual controls for the facet
     PV._bucketizeDateTimeFacet = function (facetName, array1, array2) {
@@ -1597,6 +1597,7 @@ var graphPara = {};
         //Init Tile Controller and start animation loop
         TileController = new PivotViewer.Views.TileController(_imageController);
         _tiles = TileController.initTiles(PivotCollection.items, baseCollectionPath, canvasContext);
+
         //Init image controller
         _imageController.setup(baseCollectionPath.replace("\\", "/"));
     });
@@ -1644,6 +1645,7 @@ var graphPara = {};
     });
 
     $.subscribe("/PivotViewer/ImageController/Collection/Loaded", function (event) {
+
         var facets = ["<div class='pv-filterpanel-accordion'>"];
         var longSearch = ["<div id='pv-long-search-box'><br><select id='pv-long-search-cat'>"];
         var sort = [], activeNumber = 0;
@@ -1717,6 +1719,7 @@ var graphPara = {};
 
         var viewPanel = $('.pv-viewpanel');
         var width = _self.width();
+
         var height = $('.pv-mainpanel').height();
         var offsetX = $('.pv-filterpanel').width() + 18;
         var offsetY = 4;
@@ -2165,6 +2168,14 @@ var graphPara = {};
             $(".pv-facet[visible='visible']").show();
         });
 
+        var delay = (function(){
+          var timer = 0;
+          return function(callback, ms){
+            clearTimeout (timer);
+            timer = setTimeout(callback, ms);
+          };
+        })();
+
         var canvas = $('.pv-canvas');
         //mouseup event - used to detect item selection, or drag end
         canvas.mouseup(function (evt) {
@@ -2346,10 +2357,12 @@ var graphPara = {};
                     }, 3000);
                   });
                 }else{
+                  console.log(para);
+                  console.log(_filterList);
                   $(".pv-viewpanel-view").promise().done(function(){
                     setTimeout(function(){
                       PV.getCurrentView().handleClick({type: "init", id: para.selected_id});
-                    }, 2500);
+                    }, _filterList.length*7);
                   });
                 }
               }
@@ -2357,6 +2370,55 @@ var graphPara = {};
             release();
         });
 
+        //TODO: finsih the resizing part
+        /*
+        $( window ).resize(function() {
+          delay(function(){
+            var baseCollectionPath = PivotCollection.imageBase;
+            if (!(baseCollectionPath.indexOf('http', 0) >= 0 || baseCollectionPath.indexOf('www.', 0) >= 0))
+                baseCollectionPath = PivotCollection.base.substring(0, PivotCollection.base.lastIndexOf('/') + 1) + baseCollectionPath;
+            var canvasContext = $('.pv-canvas')[0].getContext("2d");
+
+            console.log(canvasContext);
+            //Init Tile Controller and start animation loop
+            var tiles = TileController.initTiles(PivotCollection.items, baseCollectionPath, canvasContext);
+
+            console.log(tiles);
+            //console.log(_imageController._items);
+            //$.publish("/PivotView/Models/Settings/Loaded");
+            var mainPanelHeight = $(window).height() - $('.pv-toolbarpanel').height() - 30;
+
+            //adjust mainPanel
+            $('.pv-mainpanel').css('height', mainPanelHeight + 'px');
+
+            //adjust infoPanel
+            var infoPanel = $('.pv-infopanel');
+            infoPanel.css('left', (($('.pv-mainpanel').offset().left + $('.pv-mainpanel').width()) - 205) + 'px').css('height', mainPanelHeight - 28 + 'px');
+
+            //adjust canvas
+            $('.pv-canvas').css('width', _self.width() );
+            //$('.pv-canvas').css('height', mainPanelHeight );
+
+            //adjust filterPanel
+            $('.pv-filterpanel').css('height', $(window).height() - $('.pv-toolbarpanel').height() - 30-13 + 'px');
+
+            var width = _self.width();
+            var height = $('.pv-mainpanel').height();
+            var offsetX = $('.pv-filterpanel').width() + 18;
+            var offsetY = 4;
+
+
+            for (var i = 0; i < _views.length; i++) {
+                if (_views[i] instanceof PivotViewer.Views.IPivotViewerView) {
+                    _views[i].setup(width, height, offsetX, offsetY, TileController.getMaxTileRatio());
+                }
+            }
+
+            _views[_currentView].activate();
+            //PV.filterCollection();
+            console.log(_tiles);
+          }, 300);
+        });*/
 
     });
 

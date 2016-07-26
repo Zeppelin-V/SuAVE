@@ -161,10 +161,27 @@ header#earthcube-header .tagline {
 }
 
 #comment-dialog {
-  margin-top: 10%; 
   overflow-x: hidden;
 }
 
 #comments-table{
   overflow-y: auto;
+}
+
+.comment-num{
+  width: 5%;
+}
+
+.comment-user{
+  width:15%;
+}
+
+.comment-content{
+  width:60%;
+  word-wrap:break-word;
+}
+
+.comment-date{
+  width: 25%;
+  word-wrap:break-word;
 }

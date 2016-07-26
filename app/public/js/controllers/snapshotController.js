@@ -7,14 +7,63 @@ function SnapshotController()
     //load google chart
     google.charts.load("current", {packages:['corechart', 'geochart']});
 
+    // bind event listeners to button clicks //
+    	$('#retrieve-password-submit').click(function(){ $('#get-credentials-form').submit();});
+    	$('#login-form #forgot-password').click(function(){
+    		$('#cancel').html('Cancel');
+    		$('#retrieve-password-submit').show();
+    		$('#get-credentials').modal('show');
+    	});
 
-    $("#add-comments").on("click", function(){
+    // automatically toggle focus between the email modal window and the login form //
+    	$('#get-credentials').on('shown', function(){ $('#email-tf').focus(); });
+    	$('#get-credentials').on('hidden', function(){ $('#user-tf').focus(); });
+
+
+    this.checkLogin = function(){
+  		$("#login-row").html("");
+      if(document.cookie.indexOf("pass") > 0 || remember == false){
+        $("#login-row").append(
+          '<div class="col-xs-6 col-xs-offset-2">'+
+            '<div id="comment-part" class="form-group label-floating">'+
+              '<label for="newComment" style="font-size:100%;" class="control-label">Add new comment:</label>'+
+              '<textarea id="newComment" style="width:100%; font-size:100%" class="form-control"></textarea>'+
+            '</div>'+
+          '</div>'+
+          '<div class="col-xs-1">'+
+            '<button id="add-comments" type="button" class="btn btn-raised btn-info">Add</button>'+
+          '</div>');
+      }else{
+        $("#login-row").append(
+          '<div class="col-xs-6 col-xs-offset-2">'+
+            '<div class="row">'+
+              '<div class="col-xs-6 col-xs-offset-2 col-md-8 col-md-offset-4">'+
+                '<button id="login" data-toggle="modal" data-target="#login-dialog" type="button" class="btn btn-raised btn-danger">Login to comment</button>'+
+              '</div>'+
+            '</div>'+
+          '</div>'
+        );
+      }
+    };
+
+    that.checkLogin();
+
+
+    $(document).on("click", "#add-comments", function(){
       var newComment = $("#newComment").val();
       if(newComment.length > 0){
+        var replyUser;
+        if(remember == false){
+          replyUser = user;
+        }else{
+          replyUser = document.cookie.substring(5, document.cookie.indexOf(';'));
+        }
         $.ajax({
           url: "/addCommentById",
           type: "POST",
-          data: {"id" : PARA._id, "comment": newComment},
+          data: {"id" : PARA._id,
+            "user": replyUser,
+            "comment": newComment},
           success: function(output){
             $("#newComment").val("");
             $("#panel-comments").html("");
@@ -70,8 +119,6 @@ function SnapshotController()
         data: {"id" : id},
         success: function(data){
           comments = data;
-          console.log(comments);
-
           if(comments.length > 0) that.displayComments(comments);
         },
         error: function(jqXHR){
@@ -86,8 +133,8 @@ function SnapshotController()
           '<div class="row">'+
           '<div class="col-xs-8 col-xs-offset-2">'+
           '<div class="panel panel-info">'+
-          '<div id="comments-table" style="text-align: center;" class="panel-body">'+
-          '<table class="table table-striped table-hover">'+
+          '<div id="comments-table" style="text-align: center;" class="panel-body table-responsive">'+
+          '<table class="table table-striped table-hover" style="table-layout: fixed;">'+
           '<tbody id="panel-comments"></tbody>'+
           '</table></div></div></div></div>'
         )
@@ -95,11 +142,13 @@ function SnapshotController()
       }
 
       for(var i = 0; i < comments.length; i++){
-        $("#panel-comments").append("<tr >");
-        $("#panel-comments").append("<td width='7%'>"+(i+1)+"</td>");
-        $("#panel-comments").append("<td>"+comments[i].content+"</td>");
-        $("#panel-comments").append("<td width='20%'>"+comments[i].date+"</td>");
-        $("#panel-comments").append("</tr>");
+        var dateString = comments[i].date.replace(/T/, ' ').replace(/\..+/, '');
+        $("#panel-comments").append("<tr>"+
+                                  "<td class='comment-num'>"+(i+1)+"</td>"+
+                                  "<td class='comment-user'>"+comments[i].user+"</td>"+
+                                  "<td class='comment-content'>"+comments[i].content+"</td>"+
+                                  "<td class='comment-date'>"+dateString+"</td>"+
+                                  "</tr>");
       }
     };
 
@@ -112,7 +161,6 @@ function SnapshotController()
         success: function(data){
           PARA = data;
           that.displayPara();
-          console.log(data);
         },
         error: function(jqXHR){
           console.log(jqXHR.responseText+' :: '+jqXHR.statusText);

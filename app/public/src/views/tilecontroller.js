@@ -35,7 +35,7 @@ PivotViewer.Views.TileController = Object.subClass({
         return item;
     },
     initTiles: function (pivotCollectionItems, baseCollectionPath, canvasContext) {
-        //Set the initial state for the tiles
+
         for (var i = 0; i < pivotCollectionItems.length; i++) {
             var tile = new PivotViewer.Views.Tile(this._imageController);
             tile.item = pivotCollectionItems[i];
@@ -45,6 +45,8 @@ PivotViewer.Views.TileController = Object.subClass({
             tile._locations.push(tileLocation);
             this._tiles.push(tile);
         }
+
+
         return this._tiles;
     },
 
@@ -64,25 +66,25 @@ PivotViewer.Views.TileController = Object.subClass({
                     end = this._tiles[i].end - this._tiles[i].start;
                     //use the easing function to determine the next position
                     if (now <= end) {
- 
+
                         //if the position is different from the destination position then zooming is happening
                         if (this._tiles[i]._locations[l].x != this._tiles[i]._locations[l].destinationx || this._tiles[i]._locations[l].y != this._tiles[i]._locations[l].destinationy)
                             isZooming = true;
- 
+
                         this._tiles[i]._locations[l].x = this._easing.ease(
                             now, 										// curr time
                             this._tiles[i]._locations[l].startx,                                                       // start position
                             this._tiles[i]._locations[l].destinationx - this._tiles[i]._locations[l].startx, // relative end position
                             end											// end time
                         );
- 
+
                         this._tiles[i]._locations[l].y = this._easing.ease(
                            now,
                            this._tiles[i]._locations[l].starty,
                            this._tiles[i]._locations[l].destinationy - this._tiles[i]._locations[l].starty,
                            end
                         );
- 
+
                         //if the width/height is different from the destination width/height then zooming is happening
                         if (this._tiles[i].width != this._tiles[i].destinationWidth || this._tiles[i].height != this._tiles[i].destinationHeight)
                             isZooming = true;
@@ -93,7 +95,7 @@ PivotViewer.Views.TileController = Object.subClass({
                             this._tiles[i].destinationwidth - this._tiles[i].startwidth,
                             end
                         );
- 
+
                         this._tiles[i].height = this._easing.ease(
                            now,
                            this._tiles[i].startheight,
@@ -106,10 +108,10 @@ PivotViewer.Views.TileController = Object.subClass({
                         this._tiles[i]._locations[l].y = this._tiles[i]._locations[l].destinationy;
                         this._tiles[i].width = this._tiles[i].destinationwidth;
                         this._tiles[i].height = this._tiles[i].destinationheight;
-                        // if now and end are numbers when we get here then the animation 
+                        // if now and end are numbers when we get here then the animation
                         // has finished
                     }
- 
+
                     //check if the destination will be in the visible area
                     if (this._tiles[i]._locations[l].destinationx + this._tiles[i].destinationwidth < 0 ||
                         this._tiles[i]._locations[l].destinationx > context.canvas.width ||
@@ -199,7 +201,7 @@ PivotViewer.Views.Tile = Object.subClass({
                 var completeImageHeight = TileController._imageController.getHeight(this.item.img);
                 var displayHeight = this.height - Math.ceil(this.height < 128 ? this.height / 16 : 8);
                 var displayWidth = Math.ceil(TileController._imageController.getWidthForImage(this.item.img, displayHeight));
-                //Narrower images need to be centered 
+                //Narrower images need to be centered
                 blankWidth = (this.width - 8) - displayWidth;
 
                 // Handle displaying the deepzoom image tiles (move to deepzoom.js)
@@ -211,21 +213,21 @@ PivotViewer.Views.Tile = Object.subClass({
                         var n = source.match(/[0-9]+_[0-9]+/g);
                         var xPosition = parseInt(n[n.length - 1].substring(0, n[n.length - 1].indexOf("_")));
                         var yPosition = parseInt(n[n.length - 1].substring(n[n.length - 1].indexOf("_") + 1));
-            
+
                         //Get image level
                         n = source.match (/_files\/[0-9]+\//g);
                         var imageLevel = parseInt(n[0].substring(7, n[0].length - 1));
                         var levelHeight = Math.ceil(completeImageHeight / Math.pow(2, TileController._imageController.getMaxLevel(this.item.img) - imageLevel));
-            
+
                         //Image will need to be scaled to get the displayHeight
                         var scale = displayHeight / levelHeight;
-                    
-                        // handle overlap 
+
+                        // handle overlap
                         overlap = TileController._imageController.getOverlap(this.item.img);
-            
+
                         var offsetx = (Math.floor(blankWidth/2)) + 4 + xPosition * Math.floor((tileSize - overlap)  * scale);
                         var offsety = 4 + Math.floor((yPosition * (tileSize - overlap)  * scale));
-            
+
                         var imageTileHeight = Math.ceil(this._images[i].height * scale);
                         var imageTileWidth = Math.ceil(this._images[i].width * scale);
                         this.context.drawImage(this._images[i], offsetx + this._locations[loc].x , offsety + this._locations[loc].y, imageTileWidth, imageTileHeight);
@@ -236,7 +238,7 @@ PivotViewer.Views.Tile = Object.subClass({
                     var offsety = 4;
                     this.context.drawImage(this._images[0], offsetx + this._locations[loc].x , offsety + this._locations[loc].y, displayWidth, displayHeight);
                 }
-                
+
                 if (this._selected) {
                     //draw a blue border
                     this.context.beginPath();

@@ -93,10 +93,10 @@ exports.getParaIdByParamters = function(file, user, para, graphPara, callback){
 	});
 };
 
-exports.addCommentByParameters = function(file, user, para, graphPara, comment, callback){
+exports.addCommentByParameters = function(file, user, para, graphPara, comment, replyUser, callback){
   parameters.findOne(para, function(e, o){
     if(o != null){
-      comments.insert({"content": comment, "para_id": o._id,
+      comments.insert({"user": replyUser, "content": comment, "para_id": o._id,
       "date": new Date()}, function(e, out){
         if(e){
           callback(e);
@@ -108,7 +108,7 @@ exports.addCommentByParameters = function(file, user, para, graphPara, comment, 
       parameters.insert(para, function(error, result){
         snapshots.insert({"file": file, "user": user,
         "para_id": para._id, "graph_para": graphPara, "date": new Date()});
-        comments.insert({"content": comment, "para_id": para._id,
+        comments.insert({"user": replyUser, "content": comment, "para_id": para._id,
         "date": new Date()}, function(e, o){
           if(e){
             callback(e);
@@ -159,10 +159,10 @@ exports.getCommentsById = function(id, callback){
 
 };
 
-exports.addCommentById = function(id, comment, callback){
+exports.addCommentById = function(id, user, comment, callback){
 	var newId = new ObjectId(id);
 
-	comments.insert({"content": comment, "para_id": newId,
+	comments.insert({"content": comment, "user": user, "para_id": newId,
 	"date": new Date()}, function(e, o){
 		if(e){
 			callback(e);

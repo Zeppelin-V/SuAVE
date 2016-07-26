@@ -46,6 +46,22 @@ module.exports = function(app) {
 		});
 	});
 
+	app.post('/login', function(req, res){
+		AM.manualLogin(req.body['user'], req.body['pass'], function(e, o){
+			if (!o){
+				res.status(400).send(e);
+			}	else{
+				req.session.user = o;
+				if (req.body['remember-me'] == 'true'){
+					res.cookie('user', o.user, { maxAge: 90000000 });
+					res.cookie('pass', o.pass, { maxAge: 90000000 });
+				}
+				res.status(200).send(o);
+			}
+		});
+	});
+
+
 // logged-in user homepage //
 
 	app.get('/home', function(req, res) {
@@ -416,7 +432,8 @@ module.exports = function(app) {
 
 	app.post('/addCommentByParameters', function(req, res){
 		AN.addCommentByParameters(req.body.file,
-			req.body.user, req.body.para, req.body.graphPara, req.body.comment, function(e){
+			req.body.user, req.body.para, req.body.graphPara, req.body.comment,
+			req.body.replyUser, function(e){
 				if(e){
 					res.status(400).send(e);
 				}else{
@@ -452,7 +469,7 @@ module.exports = function(app) {
 	});
 
 	app.post('/addCommentById', function(req, res){
-		AN.addCommentById(req.body.id, req.body.comment, function(e, o){
+		AN.addCommentById(req.body.id, req.body.user, req.body.comment, function(e, o){
 			if(e){
 				res.status(400).send(e);
 			}else {

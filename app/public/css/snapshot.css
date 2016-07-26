@@ -1,5 +1,5 @@
 #comment-template{
-  margin-top: 20%;
+  margin-top: 15%;
   overflow-y: auto;
   overflow-x: hidden;
   max-width: 100%;
@@ -8,12 +8,15 @@
 #comments-table, #para-table{
   overflow-y: auto;
 }
+
 #add-comments{
   margin-top: 100%;
 }
+
 #share-dialog{
   margin-top: 20%;
 }
+
 #button-group{
   display: flex;                   /* establish flex container */
   flex-direction: row;             /* default value; can be omitted */
@@ -21,6 +24,25 @@
   justify-content: space-between;
 }
 
+
+.comment-num{
+  width: 5%;
+}
+
+.comment-user{
+  width:15%;
+  word-wrap:break-word;
+}
+
+.comment-content{
+  width:55%;
+  word-wrap:break-word;
+}
+
+.comment-date{
+  width: 25%;
+  word-wrap:break-word;
+}
 
 @media screen and (max-width: 992px) {
      body {

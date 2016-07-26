@@ -4,13 +4,51 @@ function MainController()
 	var that = this;
 	var graphPara;
 	var comments;
+
+	// bind event listeners to button clicks //
+		$('#retrieve-password-submit').click(function(){ $('#get-credentials-form').submit();});
+		$('#login-form #forgot-password').click(function(){
+			$('#cancel').html('Cancel');
+			$('#retrieve-password-submit').show();
+			$('#get-credentials').modal('show');
+		});
+
+	// automatically toggle focus between the email modal window and the login form //
+		$('#get-credentials').on('shown', function(){ $('#email-tf').focus(); });
+		$('#get-credentials').on('hidden', function(){ $('#user-tf').focus(); });
+
+	this.checkLogin = function(){
+		$("#comment-template").html("");
+		if(document.cookie.indexOf("pass") > 0 || remember == false){
+			$("#comment-template").append(
+				'<div id="new-block">'+
+	  			'<div id="comment-part" class="form-group label-floating">'+
+	    			'<label for="newComment" class="control-label">Add new comment:</label>'+
+	    			'<textarea id="newComment" style="width:100%;" class="form-control"></textarea>'+
+	  			'</div>'+
+					'<button id="add-comments" type="button" class="btn btn-raised btn-info">Add</button>'+
+				'</div>');
+		}else{
+			$("#comment-template").append(
+					'<div class="col-xs-6 col-xs-offset-2">'+
+						'<div class="row">'+
+							'<div class="col-xs-6 col-xs-offset-3">'+
+								'<button id="login" data-toggle="modal" data-target="#login-dialog" type="button" class="btn btn-raised btn-danger">Login to comment</button>'+
+							'</div>'+
+						'</div>'
+			);
+		}
+	};
+
 	var displayComments = function(data){
 		for(var i = 0; i < data.length; i++){
-			$("#comments-body").append("<tr>");
-			$("#comments-body").append("<td width='7%'>"+(i+1)+"</td>");
-			$("#comments-body").append("<td>"+data[i].content+"</td>");
-			$("#comments-body").append("<td width='20%'>"+data[i].date+"</td>");
-			$("#comments-body").append("</tr>");
+			var dateString = data[i].date.replace(/T/, ' ').replace(/\..+/, '');
+			$("#comments-body").append("<tr>"+
+																"<td class='comment-num'>"+(i+1)+"</td>"+
+																"<td class='comment-user'>"+data[i].user+"</td>"+
+																"<td class='comment-content'>"+data[i].content+"</td>"+
+																"<td class='comment-date'>"+dateString+"</td>"+
+																"</tr>");
 		}
 	};
 
@@ -40,14 +78,25 @@ function MainController()
 
 	});
 
-	$("#add-comments").on("click", function(){
+	$(document).on("click", "#add-comments", function(){
+		console.log("clicked");
+		console.log(document.cookie.substring(5, document.cookie.indexOf(';')));
 		var newComment = $("#newComment").val();
 		if(newComment.length > 0){
+			var tempUser;
+
+			if(remember == true){
+				tempUser = document.cookie.substring(5, document.cookie.indexOf(';'));
+			}else{
+				tempUser = replyUser;
+			}
 			$.ajax({
 				url: "/addCommentByParameters",
 				type: "POST",
-				data: {"user": user, "file": file, "para": PARA,
-					"comment": newComment, "graphPara":JSON.stringify(graphPara)},
+				data: {"user": user,
+				 	"file": file, "para": PARA,
+					"comment": newComment, "graphPara":JSON.stringify(graphPara),
+					"replyUser": tempUser},
 				success: function(output){
 					$("#newComment").val("");
 					$("#comments-body").html("");
@@ -76,10 +125,13 @@ function MainController()
 
   $(document).on('click', '#comment', function(){
 		$('#comments-table').css('max-height',$(window).height()*0.2);
+		$("#newComment").val("");
 
 		graphPara = document.getElementById('pivot_window').contentWindow.graphPara;
 		PARA = document.getElementById('pivot_window').contentWindow.PARA;
 		$("#comments-body").html("");
+
+		that.checkLogin();
 
 		$.ajax({
 			url: "/getCommentsByParameters",
