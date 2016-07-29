@@ -478,6 +478,31 @@ module.exports = function(app) {
 		});
 	});
 
+	app.post('/deleteCommentsById', function(req, res){
+		AN.deleteCommentsById(req.body.id, function(e, o){
+			if(e){
+				res.status(400).send(e);
+			}else {
+				res.status(200).send(o);
+			}
+		});
+	});
+
+	app.get('/getCommentsByUser', function(req, res){
+		if (req.session.user == null){
+	// if user is not logged-in redirect back to login page //
+			res.redirect('/');
+		}	else{
+			AN.getCommentsByUser(req.query.user, function(e, o){
+				if(e){
+					res.status(400).send(e);
+				}else {
+					res.status(200).send(o);
+				}
+			});
+		}
+	});
+
 	app.get('/getParaIdByParamters', function(req, res){
 		AN.getParaIdByParamters(req.query.file,
 			req.query.user, req.query.para, req.query.graphPara, function(e, o){
@@ -521,6 +546,20 @@ module.exports = function(app) {
 	});
 
 
+//comments view
+	app.get('/comments', function(req, res) {
+		if (req.session.user == null){
+	// if user is not logged-in redirect back to login page //
+			res.redirect('/');
+		}	else{
+			res.render('comments', {
+				title : 'Gallery',
+				udata : JSON.stringify(req.session.user.user),
+				name : JSON.stringify(req.session.user.name)
+				}
+			);
+		}
+	});
 
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
 

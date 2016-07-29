@@ -37,7 +37,7 @@ function SnapshotController()
         $("#login-row").append(
           '<div class="col-xs-6 col-xs-offset-2">'+
             '<div class="row">'+
-              '<div class="col-xs-6 col-xs-offset-2 col-md-8 col-md-offset-4">'+
+              '<div class="col-xs-6 col-xs-offset-3 col-md-8 col-md-offset-4">'+
                 '<button id="login" data-toggle="modal" data-target="#login-dialog" type="button" class="btn btn-raised btn-danger">Login to comment</button>'+
               '</div>'+
             '</div>'+
@@ -56,18 +56,18 @@ function SnapshotController()
         if(remember == false){
           replyUser = user;
         }else{
-          replyUser = document.cookie.substring(5, document.cookie.indexOf(';'));
+          replyUser = document.cookie.substring(document.cookie.indexOf("user=")+5,
+      			document.cookie.indexOf('pass=')-2);
         }
         $.ajax({
           url: "/addCommentById",
           type: "POST",
-          data: {"id" : PARA._id,
+          data: {"id" : snapshotPara._id,
             "user": replyUser,
             "comment": newComment},
           success: function(output){
             $("#newComment").val("");
             $("#panel-comments").html("");
-
             that.displayComments(output);
           },
           error: function(jqXHR){
@@ -84,12 +84,11 @@ function SnapshotController()
 
     $("#share-snapshot").on("click", function(){
   		$("#share-link").append(location.href);
-
   	});
 
     $("#show-snapshot").on("click", function(){
       window.open(window.location+'/../../main/file='+snapshotPara.user+"_"+snapshotPara.file+'.csv'+
-        "&views="+views+"&view="+PARA.view+"&id="+PARA._id);
+        "&views="+views+"&view="+graphPara.view+"&id="+snapshotPara._id);
     });
 
     $("#show-about").on("click", function(){
@@ -152,40 +151,25 @@ function SnapshotController()
       }
     };
 
-    //get the paramters by the para Id
-    this.getPara = function(id){
-      $.ajax({
-        url: "/getParaById",
-        type: "GET",
-        data: {"id" : id},
-        success: function(data){
-          PARA = data;
-          that.displayPara();
-        },
-        error: function(jqXHR){
-          console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
-        }
-      });
-    };
 
     this.displayPara = function(){
       $('#para-table').css('max-height',$(window).height()*0.2);
 
-      if(PARA.y_axis){
+      if(snapshotPara.y_axis){
         $("#panel-para").append("<tr>");
-        $("#panel-para").append("<td>X axis: "+PARA.x_axis+"<br>Y axis: "+PARA.y_axis+"</td>");
+        $("#panel-para").append("<td>X axis: "+snapshotPara.x_axis+"<br>Y axis: "+snapshotPara.y_axis+"</td>");
         $("#panel-para").append("</tr>");
       }else{
         $("#panel-para").append("<tr>");
-        $("#panel-para").append("<td><h4>Category: </h4>"+PARA.x_axis+"</td>");
+        $("#panel-para").append("<td><h4>Category: </h4>"+snapshotPara.x_axis+"</td>");
         $("#panel-para").append("</tr>");
       }
 
-      if(PARA.string_filters){
+      if(snapshotPara.string_filters != "None"){
         $("#panel-para").append("<tr>");
         $("#panel-para").append("<h4>String filters:</h4>");
-        for(var i = 0; i < PARA.string_filters.length; i++){
-          var filter = PARA.string_filters[i];
+        for(var i = 0; i < snapshotPara.string_filters.length; i++){
+          var filter = snapshotPara.string_filters[i];
           if(i>0){
             $("#panel-para").append("<br>"+filter.facet+"(");
           }else{
@@ -202,11 +186,11 @@ function SnapshotController()
         $("#panel-para").append("</tr>");
       }
 
-      if(PARA.num_filters){
+      if(snapshotPara.num_filters != "None"){
         $("#panel-para").append("<tr>");
         $("#panel-para").append("<h4>Numeric filters:</h4>");
-        for(var i = 0; i < PARA.num_filters.length; i++){
-          var filter = PARA.num_filters[i];
+        for(var i = 0; i < snapshotPara.num_filters.length; i++){
+          var filter = snapshotPara.num_filters[i];
           if(i>0){
             $("#panel-para").append("<br>"+filter.facet+"(");
           }else{
@@ -228,7 +212,7 @@ function SnapshotController()
         data: {"id" : id},
         success: function(data){
           snapshotPara = data;
-
+          that.displayPara();
           that.getViews();
           that.getComments(id);
           google.charts.setOnLoadCallback(that.getGraph);

@@ -52,7 +52,7 @@ exports.createNewSurvey = function(files, user, callback){
 						//save into the database
             surveys.insert({"name": name, "user": user,
             "csv": newPath, "view": "grid", "views": 111000, "collection": "default",
-						 "hidden": 0}, callback);
+						 "hidden": 0, "date":new Date(), "originalname": files.file.originalname}, callback);
           }
         });
 

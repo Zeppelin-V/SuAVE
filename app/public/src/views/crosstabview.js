@@ -22,7 +22,7 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
             $("#pv-primsortcontrols").before("<div id='pv-altsortcontrols' class='pv-toolbarpanel-sortcontrols'></div>");
             $("#pv-altsortcontrols").hide();
             $("#pv-primsort").clone(true).attr("id", "pv-altsort").appendTo($("#pv-altsortcontrols"));
-            PARA.y_axis = PV.cleanName($("#pv-altsort option:selected").html().toLowerCase());
+            
             PV.getGraphParameters();
             $("#pv-altsort").on("change", function (e) {
                 if (that.bucketsY == undefined) return; //initialzing

@@ -1,4 +1,3 @@
-var PARA;
 var snapshotPara;
 var views;
 var comments;
@@ -13,7 +12,6 @@ $(document).ready(function(){
 
   sc.getSnapshotPara(hrefArray[4]);
 
-  sc.getPara(hrefArray[4]);
 
   $('#comment-template').css('max-height',$(window).height()*0.7);
 

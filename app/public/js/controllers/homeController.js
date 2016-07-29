@@ -14,11 +14,11 @@ var cMemory = false;
 var sMemory = false;
 
 // handle user logout //
-	$('#btn-logout').click(function(){ that.attemptLogout(); });
+	$('#btn-logout').click(function(){ console.log("debug logout");that.attemptLogout(); });
 	$('#btn-update').click(function(){ window.open('/update', "_self"); });
 
 //handle new survey
-	$('#btn-addNew').click(function(){$('.modal-new-survey').modal('show'); });
+	$('#btn-addNew').click(function(){$('#modal-new-survey').modal('show'); });
 
 //set listener on buttons
 	$(document).on('click', '#select-about-submit', function(){
@@ -45,36 +45,34 @@ var sMemory = false;
 
 	$(document).on('click', '#select-about', function(){
 		$('.modal-select-collection').empty();
-		$('.modal-select-collection').css("width", "800px");
-		$('.modal-select-collection').append('<div class="modal-header">'+
-		' <button data-dismiss="modal" class="close">x</button> '+
-		'<div class="container"> <div style="padding-left:90px;" class="row"> '+
-		'<div class="col-xs-2">'+
-		' <button id="select-icons" style="width:100%;" class="btn btn btn-default">View Options</button>'+
-		' </div> <div class="col-xs-2"> '+
-		'<button id="select-about" style="width:100%;" class="btn btn btn-default">Describe Survey</button> '+
-		' </div> <div class="col-xs-2"> '+
-		'<button id="select-reupload" style="width:100%;" class="btn btn btn-default">Reupload Data</button> '+
-		'</div>  </div> </div> <iframe height="450px" width="100%" src="/editor.html" id="editorFrame">'+
-		'</iframe><button id="select-about-submit" data-dismiss="modal" class="btn btn-raised btn-info">submit</button></div>');
+		//$('.modal-select-collection').css("width", "800px");
+		$('.modal-select-collection').append('<div class="modal-dialog"><div class="modal-content">'+
+		'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
+		' <div class="container" style="width:100%;"> <div  class="row"> '+
+		'<div class="col-xs-3" "> <button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
+		' <div class="col-xs-3" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
+		'<div class="col-xs-3" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+		'</div> </div> </div> <div class="modal-body"> <iframe height="450px" width="100%" src="/editor.html" id="editorFrame">'+
+		'</iframe><button id="select-about-submit" data-dismiss="modal" class="btn btn-raised btn-info">submit</button></div></div></div></div>');
 	});
 
 	$(document).on('click', '#select-reupload', function(){
 		$('.modal-select-collection').modal('show');
-		$('.modal-select-collection').css("width", "560px");
+		//$('.modal-select-collection').css("width", "560px");
 		$('.modal-select-collection').empty();
 		//upload file
-		$('.modal-select-collection').append('<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
-		' <div class="container"> <div style="padding-left:30px;" class="row"> '+
-		'<div class="col-xs-1" style="margin-right:5%;"> <button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
-		'<div class="col-xs-1" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
-		'<div class="col-xs-1" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
-		'</div> </div> </div> '+
-		'<div class="modal-body"> <h3>Select a new csv file to upload:</h3> '+
+		$('.modal-select-collection').append(
+			'<div class="modal-dialog"><div class="modal-content">'+
+			'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
+			' <div class="container" style="width:100%;"> <div  class="row"> '+
+			'<div class="col-xs-3" "> <button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
+			' <div class="col-xs-3" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
+			'<div class="col-xs-3" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+			'</div> </div> </div> <div class="modal-body"> <h3>Select a new csv file to upload:</h3> '+
 		'<form id="replace-survey" action="/replaceCSV" method="POST" enctype="multipart/form-data"> '+
 		'<hr/> <fieldset> <div class="control-group"> <input type="file" name="file" required="required"/> </div>'+
-		'<div class="form-buttons"> <button id="replace-survey-submit" type="submit" class="btn btn-raised btn-info">'+
-		'submit</button> </div> </fieldset> </form> </div>');
+		'<div class="form-buttons"> <hr><button id="replace-survey-submit" type="submit" class="btn btn-raised btn-info">'+
+		'submit</button> </div> </fieldset> </form> </div></div></div>');
 
 		$('#replace-survey').ajaxForm({
 			data: surveys[SID],
@@ -128,31 +126,33 @@ var sMemory = false;
 
 	$(document).on('click', '.surveys-edit', function(){
 		$('.modal-select-collection').modal('show');
-		$('.modal-select-collection').css("width", "560px");
+
 
 		$('.modal-select-collection').empty();
 		//insert collection selections
-		$('.modal-select-collection').append('<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
-		' <div class="container"> <div style="padding-left:30px;" class="row"> '+
-		'<div class="col-xs-1" style="margin-right:5%;"> <button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
-		' <div class="col-xs-1" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
-		'<div class="col-xs-1" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
-		'</div> </div> </div> <div class="modal-body"> <p>Public View Options:</p> <div id="pv-views" class="container"></div> '+
-		'<div class="container"> <div class="row"> '+
-		'<div class="col-xs-3">'+
-		'<p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1"></select> </div> '+
-		'<div class="col-xs-3"> <p class="subheading">Select a shape collection:</p> '+
-		'<select id="collect-select"> <option selected="" disabled="" hidden=""></option> <option value="gender">Gender</option>'+
+		$('.modal-select-collection').append(
+		'<div class="modal-dialog"><div class="modal-content">'+
+		'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
+		' <div class="container" style="width:100%;"> <div  class="row"> '+
+		'<div class="col-xs-3" "> <button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
+		' <div class="col-xs-3" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
+		'<div class="col-xs-3" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+		'</div> </div> </div> <div class="modal-body"> <p style="margin-left:20px;">Public View Options:</p> <div id="pv-views" class="container" style="width:100%;"></div> '+
+		'<div class="container" style="width:100%;"> <div class="row"> '+
+		'<div class="col-xs-6">'+
+		'<p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1" class="form-control"></select> </div> '+
+		'<div class="col-xs-6"> <p class="subheading">Select a shape collection:</p> '+
+		'<select id="collect-select" class="form-control"> <option selected="" disabled="" hidden=""></option> <option value="gender">Gender</option>'+
 		'<option value="object">Object</option> </select> </div> '+
 		'</div></div> '+
-		'<div id="column-collect-shape" class="container"></div> <hr/> <div class="container"> <div class="row"> '+
-		'<div class="col-xs-3"> <p class="subheading">Select a field to associate with colors:</p> <select id="column-select-2">'+
-		'</select> </div> </div> </div> <div id="column-collect-color" class="container"></div>'+
-		'<hr/> <div class="container"> <div class="row"> '+
-		'<div class="col-xs-3"> <p class="subheading">Select a field to associate with item names:</p> <select id="column-select-3">'+
+		'<div id="column-collect-shape" class="container" style="width:100%;"></div> <hr/> <div class="container" style="width:100%;"> <div class="row"> '+
+		'<div class="col-xs-6"> <p class="subheading">Select a field to associate with colors:</p> <select class="form-control" id="column-select-2">'+
+		'</select> </div> </div> </div> <div id="column-collect-color" class="container" style="width:100%;"> </div>'+
+		'<hr/> <div class="container" style="width:100%;"> <div class="row"> '+
+		'<div class="col-xs-6"> <p class="subheading">Select a field to associate with item names:</p> <select class="form-control" id="column-select-3">'+
 		'</select> </div> </div> </div>'+
 		' <div class="form-buttons"> '+
-		'<button id="select-collection-submit" data-dismiss="modal" class="btn btn-raised btn-info">submit</button> </div> </div>');
+		'<button id="select-collection-submit" data-dismiss="modal" class="btn btn-raised btn-primary">submit</button> </div> </div></div></div>');
 
 		var id = $(this).attr("id");
 		var i = id.slice(-1);
@@ -162,17 +162,17 @@ var sMemory = false;
 		//insert views checkboxes
 		$('#pv-views').empty();
 		$('#pv-views').append(
-			'<div class="row" ><div class="col-xs-2"><input id="pv-grid" class="checkbox-custom"  type="checkbox">'+
+			'<div class="row" ><div class="col-xs-4"><input id="pv-grid" class="checkbox-custom"  type="checkbox">'+
 			'<label for="pv-grid" class="checkbox-custom-label">Grid</label></div>'+
-			'<div class="col-xs-2"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-4"><input id="pv-bucket" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-bucket" class="checkbox-custom-label">Bucket</label></div>'+
-			'<div class="col-xs-2"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-4"> <input id="pv-crosstab" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-crosstab" class="checkbox-custom-label">Crosstab</label></div></div><div class="row">'+
-			'<div class="col-xs-2"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-4"> <input id="pv-qca" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-qca" class="checkbox-custom-label">QCA</label></div>'+
-			'<div class="col-xs-2"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-4"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-map" class="checkbox-custom-label">Map</label> </div>'+
-			'<div class="col-xs-2"><input id="pv-r" class="checkbox-custom" type="checkbox">'+
+			'<div class="col-xs-4"><input id="pv-r" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-r" class="checkbox-custom-label">R</label></div></div>'
 		);
 		var views = survey.views.toString();
@@ -370,8 +370,7 @@ var sMemory = false;
 		});
 	};
 
-	$(document).on('click', '.toggle-button', function() {
-		$(this).toggleClass('toggle-button-selected');
+	$(document).on('click', '.toggle', function() {
 		var id = $(this).attr("id");
 		var survey = surveys[id.slice(-1)];
 
@@ -386,6 +385,14 @@ var sMemory = false;
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
 			}
 		});
+	});
+
+	$(document).on('click', '.file-source', function() {
+
+		var id = $(this).attr("id");
+		var survey = surveys[id.slice(-1)];
+
+		window.open("/getSurveys/"+survey.user+"_"+survey.name+".csv", "_blank");
 
 	});
 
@@ -415,7 +422,7 @@ var sMemory = false;
 		var id = $(this).attr('id');
 		var survey = surveys[id.slice(-1)];
 		var file = survey.name;
-		
+
 		//Grid, bucket, crosstab, QGA, map
 		window.open(window.location+'/../main/file='+user+"_"+file+'.csv'+
 			"&views="+survey.views+"&view="+survey.view);
@@ -480,8 +487,8 @@ var sMemory = false;
 
 					for(var i = 0; i < data.length; i++){
 						$('#column-collect-color').append(
-							'<div class="row"><div class="col-xs-3"><div id="column-drop2-'+i+'"></div></div>'+
-							'<div class="col-xs-3"><div id="color-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
+							'<div class="row"><div class="col-xs-6"><div id="column-drop2-'+i+'"></div></div>'+
+							'<div class="col-xs-6"><div id="color-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
 					}
 
 					var count = 0;
@@ -536,8 +543,8 @@ var sMemory = false;
 					for(var i = 0; i < data.length; i++){
 						$('#column-collect-shape').append(
 							'<div class="row">'+
-							'<div class="col-xs-3"><div id="column-drop-'+i+'"></div></div>'+
-							'<div class="col-xs-3"><div id="collect-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
+							'<div class="col-xs-6"><div id="column-drop-'+i+'"></div></div>'+
+							'<div class="col-xs-6"><div id="collect-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
 					}
 
 					var count = 0;
@@ -641,45 +648,76 @@ var sMemory = false;
 	this.displaySurveys = function(survey){
 		var surveys = survey.reverse();
 		for(i = 0; i < surveys.length; i++){
-			$("#main-container").append('<div class="row carousel-row"><div id="carousel-'+i+'" class="col-xs-8 col-xs-offset-2 slide-row">'+
-			'<div class="carousel slide slide-carousel" data-ride="carousel">'+
-			'<div class="carousel-inner"><img src="/../img/blue.jpg" alt="Image"></div></div>'+
-			'<div class="slide-content"><h2>'+surveys[i].name+'</h2><div class="container"><div class="row" id="row-'+i+'">'
-		  +'</div></div></div>');
+			$('#display-surveys').append('<div class="col-md-4"> <div class="panel panel-default">  <div class="tab-content"> <div class="tab-pane fade in active" id="tab1-'+i+'"> </div> '+
+			'<div class="tab-pane fade" id="tab2-'+i+'"> </div> '+
+			'<div class="tab-pane fade" id="tab3-'+i+'" style="width:100%;"> </div> '+
+			'</div> <div class="panel-body tabs"> '+
+			'<ul class="nav nav-pills"> <li class="active">'+
+			'<a href="#tab1-'+i+'" data-toggle="tab">Info</a></li> '+
+			'<li><a href="#tab2-'+i+'" data-toggle="tab">Views</a></li> '+
+			'<li><a href="#tab3-'+i+'" data-toggle="tab">Edit</a></li> '+
+			'</ul></div> </div><!--/.panel--> </div>');
 
+			var dateString = surveys[i].date.replace(/T/, ' ').replace(/\..+/, '');
+
+			$('#tab1-'+i).append('<div class="row survey-title"> ');
+			$('#tab1-'+i).append('<div class="col-xs-6"><div id="icon-img">'+
+			'<img id="survey-'+i+'" class="surveys-click" src="/../img/blue.jpg" alt="Image" style="width:100%;"> </div></div>'+
+			'<div class="col-xs-6"><h4 style="text-align:center;">'+surveys[i].name+'</h4>'+
+			'<p style="text-align:center;">Cretaed from: </p>'+
+			'<a id="source-'+i+'" class="file-source" style="text-align:center;display:block;">'+surveys[i].originalname+'</a>'+
+			'<p style="text-align:center;">'+ dateString+'</p>'+
+			'</div>'+
+			' </div>');
 			var views = surveys[i].views.toString();
-
-			if(views[0] == '1') $('#row-'+i).append(
-				'<div class="col-xs-1"><input type="radio" name="radio-'+i+'" id="grid-button-'+i+'" class="radio"/>'+
+			if(views[0] == '1') $('#tab2-'+i).append(
+				'<div class="col-xs-6 col-lg-4" ><input type="radio" name="radio-'+i+'" id="grid-button-'+i+'" class="radio"/>'+
 				'<label id="grid-'+i+'" class="view-button" for="grid-button-'+i+'">Grid</label></div>');
-	    if(views[1] == '1') $('#row-'+i).append('<div class="col-xs-1">'+
+			if(views[1] == '1') $('#tab2-'+i).append('<div class="col-xs-6 col-lg-4">'+
 				'<input type="radio" name="radio-'+i+'" id="bucket-button-'+i+'" class="radio"/><label id="bucket-'+
 				i+'" class="view-button" for="bucket-button-'+i+'">Bucket</label></div>');
-	    if(views[2] == '1') $('#row-'+i).append('<div class="col-xs-1"> <input type="radio" name="radio-'
+			if(views[2] == '1') $('#tab2-'+i).append('<div class="col-xs-6 col-lg-4"> <input type="radio" name="radio-'
 			+i+'" id="crosstab-button-'+i+'" class="radio"/>'+
 			'<label id="crosstab-'+i+'" class="view-button" for="crosstab-button-'+i+'">Crosstab</label></div>');
-	    if(views[4] == '1') $('#row-'+i).append(
-				'<div class="col-xs-1"><input type="radio" name="radio-'+i+'" id="map-button-'+i+'" class="radio"/>'+
+			if(views[4] == '1') $('#tab2-'+i).append(
+				'<div class="col-xs-6 col-lg-4"><input type="radio" name="radio-'+i+'" id="map-button-'+i+'" class="radio"/>'+
 				'<label id="map-'+i+'" class="view-button" for="map-button-'+i+'">Map</label></div>');
 
-			$("#carousel-"+i).append(
-			'<div class="slide-footer"><div id="hidden-button" class="col-xs-1"><h4>Public: </h4></div>'+
-			'<div class="toggle-button" id="public-'+i+'"><button ></button></div>'+
-			'<span class="pull-right buttons">'+
-			'<button id="survey-'+i+'" class="btn btn-raised btn-sm btn btn-raised btn-info surveys-click"><i class="fa fa-fw fa-eye"></i> Show</button>'+
-			'<button id="edit-'+i+'" class="btn btn-raised btn-sm btn btn-raised btn-info surveys-edit"><i class="fa fa-map-o"></i> Edit</button>'+
-			'<button id="delete-'+i+'" class="btn btn-raised btn-sm btn-info surveys-delete"><i class="fa fa-fw fa-warning"></i> Delete</button>'+
-			'</span></div></div></div>'
+
+			$('#tab3-'+i).append(
+				'<div class="row" >'+
+				'<div class="col-xs-12">'+
+				'<div class="list-group">'+
+				//'<a class="list-group-item"><div class="toggle-button" id="public-'+i+'"><button ></button></div></a>'+
+				'<button id="public-'+i+'" style="text-align:center;" type="button" data-toggle="button" class="btn list-group-item toggle">Public</button>'+
+				/*'<button type="button" id="survey-'+i+'" class="btn  surveys-click list-group-item">Show</button>'+*/
+				'<button type="button" style="text-align:center;" id="edit-'+i+'" class="btn surveys-edit list-group-item list-group-item-success">Setting</button>'+
+				'<button type="button" style="text-align:center;" id="delete-'+i+'" class="btn  surveys-delete list-group-item list-group-item-danger"> Delete</button>'+
+				/*
+				'<div class="col-xs-4"><button id="survey-'+i+'" class="btn btn-sm btn-raised  btn-primary surveys-click"><i class="fa fa-fw fa-eye"></i> Show</button></div>'+
+				'<div class="col-xs-4"><button id="edit-'+i+'" class="btn btn-raised btn-sm btn-primary surveys-edit"><i class="fa fa-map-o"></i>CSV</button></div>'+
+				'<div class="col-xs-4"><button id="delete-'+i+'" class="btn btn-raised btn-sm btn-primary surveys-delete"><i class="fa fa-fw fa-warning"></i> Delete</button></div>'+
+				*/
+				'</div></div></div>'
 			);
+
+			var cw = $('.tab-content').width();
+			$('.tab-content').css({'height':0.6*cw+'px'});
+
 			if($('#'+surveys[i].view+'-'+i).length == 0){
 				$('#'+'grid-'+i).trigger('click');
 			}else{
 				$('#'+surveys[i].view+'-'+i).trigger("click");
 			}
-			if(parseInt(surveys[i].hidden) == 0) $("#public-"+i).toggleClass('toggle-button-selected');
-
+			if(parseInt(surveys[i].hidden) == 0) {
+				$("#public-"+i).button('toggle');
+			}
 		}
 	}
+	$(window).on('resize', function () {
+		var cw = $('.tab-content').width();
+		$('.tab-content').css({'height':0.6*cw+'px'});
+	});
 	// redirect to homepage on new survey creation
 		$('#help-button').click(function(){window.open("https://docs.google.com/document/d/1f4ABDP1YrEU3vRxYkIPHl9dyGTT4w3pqfRNI2Kn97Ic/edit#heading=h.vcpylem4gnc7")});
 

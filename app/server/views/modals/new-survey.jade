@@ -1,9 +1,8 @@
-html
-  body
-    .modal-new-survey.modal.hide.fade
+#modal-new-survey.modal.fade
+  .modal-dialog
+    .modal-content
       .modal-header
         button.close(data-dismiss='modal') x
-        h3
       .modal-body#new-survey-content
         h3 Select a csv file to upload:
         form#new-survey(action='/uploadCSV', method='POST', enctype='multipart/form-data')
@@ -18,7 +17,7 @@ html
               p#error-text(style='color:red;')
             hr
             .form-buttons
-              button#new-survey-submit.btn.btn-raised.btn-info(type='submit') submit
+              button#new-survey-submit.btn.btn-primary(type='submit') submit
       .modal-footer
-        h4(style="text-align: left; position: absolute; margin-top: 20px; margin-left:20px") Check out the format of uploading file:
+        h4(style="text-align: left; position: absolute; margin-left:10px") Check out the format of uploading file:
         button#help-button.btn.btn-raised.btn-default.btn-newSurvey Help

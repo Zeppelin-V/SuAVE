@@ -323,6 +323,8 @@ var graphPara = {};
         //reset y_axis if it's not crosstab
         if(PARA.view != "crosstab"){
           PARA.y_axis = null;
+        }else{
+          PARA.y_axis = PV.cleanName($("#pv-altsort option:selected").html().toLowerCase());
         }
 
         PV.getGraphParameters();

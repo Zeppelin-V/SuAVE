@@ -31,11 +31,13 @@ $(document).ready(function(){
 
   if(query.id){
     $.ajax({
-      url: "/getParaById",
+      url: "/getSnapshotById",
       type: "GET",
       data: {"id" : query.id},
       success: function(data){
         PARA = data;
+        if(PARA.string_filters == "None") PARA.string_filters = null;
+        if(PARA.num_filters == "None") PARA.num_filters = null;
       },
       error: function(jqXHR){
         console.log(jqXHR.responseText+' :: '+jqXHR.statusText);

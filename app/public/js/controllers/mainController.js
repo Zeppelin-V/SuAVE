@@ -61,7 +61,9 @@ function MainController()
 		graphPara = document.getElementById('pivot_window').contentWindow.graphPara;
 		PARA = document.getElementById('pivot_window').contentWindow.PARA;
 		$("#share-link").html("");
-
+		if(PARA.string_filters.length == 0) PARA.string_filters = "None";
+		if(PARA.num_filters.length == 0) PARA.num_filters = "None";
+		
 		$.ajax({
 			url: "/getParaIdByParamters",
 			type: "GET",
@@ -79,17 +81,21 @@ function MainController()
 	});
 
 	$(document).on("click", "#add-comments", function(){
-		console.log("clicked");
-		console.log(document.cookie.substring(5, document.cookie.indexOf(';')));
+
 		var newComment = $("#newComment").val();
 		if(newComment.length > 0){
 			var tempUser;
 
 			if(remember == true){
-				tempUser = document.cookie.substring(5, document.cookie.indexOf(';'));
+				tempUser = document.cookie.substring(document.cookie.indexOf("user=")+5,
+					document.cookie.indexOf('pass=')-2);
 			}else{
 				tempUser = replyUser;
 			}
+
+			if(PARA.string_filters.length == 0) PARA.string_filters = "None";
+			if(PARA.num_filters.length == 0) PARA.num_filters = "None";
+
 			$.ajax({
 				url: "/addCommentByParameters",
 				type: "POST",
@@ -132,6 +138,10 @@ function MainController()
 		$("#comments-body").html("");
 
 		that.checkLogin();
+
+
+		if(PARA.string_filters.length == 0) PARA.string_filters = "None";
+		if(PARA.num_filters.length == 0) PARA.num_filters = "None";
 
 		$.ajax({
 			url: "/getCommentsByParameters",

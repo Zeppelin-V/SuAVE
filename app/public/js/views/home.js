@@ -1,9 +1,9 @@
 var surveys;
 
 $(document).ready(function(){
-	$('.brand').text(name);
+	$('.navbar-brand').append("  "+name);
 	var hc = new HomeController();
-
+	
 	$('#new-survey').ajaxForm({
 		beforeSubmit : function(formData, jqForm, options){
 			var name = document.getElementById('new-file-name').value + ".csv";

@@ -23,11 +23,15 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 	}
 });
 
+//TODO: combine snapshots and parameters
+
 var surveys = db.collection('surveys_test');
 var snapshots = db.collection('snapshots_test');
 var comments = db.collection('comments_test');
-var parameters = db.collection('parameters_test');
 
+
+/*
+var parameters = db.collection('parameters_test');
 exports.getParaById = function(id, callback){
 	var newId = new ObjectId(id);
 
@@ -39,11 +43,12 @@ exports.getParaById = function(id, callback){
 		}
 	});
 };
+*/
 
 exports.getSnapshotById = function(id, callback){
 	var newId = new ObjectId(id);
 
-	snapshots.findOne({para_id: newId}, function(e, o){
+	snapshots.findOne({_id: newId}, function(e, o){
 		if(e){
 			callback(error, null);
 		}else{
@@ -54,39 +59,24 @@ exports.getSnapshotById = function(id, callback){
 
 
 exports.getParaIdByParamters = function(file, user, para, graphPara, callback){
-	parameters.findOne(para, function(e, o){
+	para.file = file;
+	snapshots.findOne(para, function(e, o){
 		if(e){
 			callback(e, null);
 		}
 		if(o != null){
       callback(null, o._id);
     }else{
-			parameters.insert(para, function(e, o){
+			para.file = file;
+			para.user = user;
+			para.graph_para = graphPara;
+			var date = new Date();
+			para.date = date.toString();
+			snapshots.insert(para, function(error, result){
 				if(e){
 					callback(e, null);
 				} else{
-					var snapshot = {"file": file, "user": user,
-	        "para_id": para._id, "graph_para": graphPara, "date": new Date()};
-	        snapshots.insert(snapshot, function(error, result){
-						if(error){
-		          callback(error, null);
-		        }else{
-							/*
-							snapshots.find({"para_id": para._id}).toArray(function(e, o){
-								if(e){
-									callback(error);
-								}
-
-								if(o == null){
-									callback("error");
-								}else{
-									callback(null);
-								}
-							});*/
-
-		          callback(null, para._id);
-		        }
-					});
+		      callback(null, para._id);
 				}
       });
 		}
@@ -94,10 +84,11 @@ exports.getParaIdByParamters = function(file, user, para, graphPara, callback){
 };
 
 exports.addCommentByParameters = function(file, user, para, graphPara, comment, replyUser, callback){
-  parameters.findOne(para, function(e, o){
+  snapshots.findOne(para, function(e, o){
+		var date = new Date();
     if(o != null){
       comments.insert({"user": replyUser, "content": comment, "para_id": o._id,
-      "date": new Date()}, function(e, out){
+      "date": date.toString()}, function(e, out){
         if(e){
           callback(e);
         }else{
@@ -105,11 +96,13 @@ exports.addCommentByParameters = function(file, user, para, graphPara, comment, 
         }
       });
     }else{
-      parameters.insert(para, function(error, result){
-        snapshots.insert({"file": file, "user": user,
-        "para_id": para._id, "graph_para": graphPara, "date": new Date()});
+			para.file = file;
+			para.user = user;
+			para.graph_para = graphPara;
+			para.date = date.toString();
+      snapshots.insert(para, function(error, result){
         comments.insert({"user": replyUser, "content": comment, "para_id": para._id,
-        "date": new Date()}, function(e, o){
+        "date": date.toString()}, function(e, o){
           if(e){
             callback(e);
           }else{
@@ -122,10 +115,12 @@ exports.addCommentByParameters = function(file, user, para, graphPara, comment, 
 };
 
 exports.getCommentsByParameters = function(para, callback){
-  parameters.findOne(para, function(e, o){
+	console.log(para);
+  snapshots.findOne(para, function(e, o){
 		if(e){
 			callback(e, null);
 		}else{
+			console.log(o);
 			//check if there exists such a paramter in the database
 			if(o == null){
 				callback(null, null);
@@ -156,14 +151,13 @@ exports.getCommentsById = function(id, callback){
 			callback(null, result);
 		}
   });
-
 };
 
 exports.addCommentById = function(id, user, comment, callback){
 	var newId = new ObjectId(id);
-
+	var date = new Date();
 	comments.insert({"content": comment, "user": user, "para_id": newId,
-	"date": new Date()}, function(e, o){
+	"date": date.toString()}, function(e, o){
 		if(e){
 			callback(e);
 		}else{
@@ -177,5 +171,101 @@ exports.addCommentById = function(id, user, comment, callback){
 		  });
 		}
 	});
+};
 
+exports.deleteCommentsById = function(id, callback){
+	var ids = [];
+	for(var i = 0; i < id.length; i++){
+		ids.push(new ObjectId(id[i]));
+	}
+	comments.remove({_id:{$in: ids}}, function(e, o){
+		if(e){
+			callback(e);
+		}else{
+			callback(null, o);
+		}
+	});
+};
+
+
+exports.getCommentsByUser = function(user, callback){
+
+	comments.aggregate([
+		{$lookup: {from: "snapshots_test",
+							localField: "para_id",
+							foreignField: "_id",
+							as: "snapshot" }},
+		{$match: {"user": user}}]).toArray(function(error, result){
+    if(error){
+			callback(error, null);
+		}else{
+
+			var comments = [];
+			for(var i = 0; i < result.length; i++){
+				var res = result[i]
+				var snapshot = res.snapshot[0];
+				var temp = {};
+				temp.comment_id = res._id;
+				temp.para_id = res.para_id;
+				temp.content = res.content;
+				temp.commenter = res.user;
+				temp.view = snapshot.view;
+				temp.file = snapshot.file;
+				if(snapshot.y_axis.length > 0){
+					temp.category = "X:<br>"+snapshot.x_axis+"<br> Y:<br> "+snapshot.y_axis;
+				}else{
+					temp.category = "X: <br>"+snapshot.x_axis;
+				}
+				temp.filters = "";
+				if(snapshot.string_filters != "None"){
+					var string_filters = snapshot.string_filters;
+					var filterString = " String filters: <br>";
+					for(var j = 0; j < string_filters.length; j++){
+						var filter = string_filters[j];
+						if(j>0){
+	            filterString = filterString +"<br>"+ filter.facet + "(";
+	          }else{
+	            filterString = filterString + filter.facet + "(";
+	          }
+
+						filterString = filterString +filter.value[0];
+						for(var k =1; k < filter.value.length; k++){
+							filterString = filterString +", "+filter.value[k];
+						}
+						filterString = filterString +")";
+					}
+						temp.filters += filterString;
+				}
+				if(snapshot.num_filters != "None"){
+					var num_filters = snapshot.num_filters;
+					var filterString = "";
+					if(temp.filters != ""){
+						filterString += "<br>Numeric filters: <br>";
+					}else{
+						filterString += "Numeric filters:<br>";
+					}
+					for(var j = 0; j < num_filters.length; j++){
+						var filter = num_filters[j];
+						if(j>0){
+	            filterString = filterString +"<br>"+ filter.facet + "(";
+	          }else{
+	            filterString = filterString + filter.facet + "(";
+	          }
+
+	          filterString = filterString + filter.selectedMin + " to " + filter.selectedMax;
+	          filterString = filterString + ")";
+					}
+					temp.filters += filterString;
+				}
+				if(temp.filters == "") temp.filters = "None";
+				temp.date = res.date.toString().replace(/T/, ' ').replace(/\..+/, '');
+
+				comments.push(temp);
+			}
+			console.log(comments);
+			callback(null, comments);
+			console.log(result[0].snapshot);
+			//callback(null, result);
+		}
+  });
 };

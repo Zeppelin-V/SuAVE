@@ -4,7 +4,7 @@ body {
   height: 100%;
 }
 #main-container {
-  margin: 50px auto auto 20px;
+  margin: 70px auto auto 0px;
 }
 #login-container {
   width: 340px;
@@ -78,33 +78,6 @@ body {
   margin-top: -4px;
   margin-right: 2px;
 }
-.modal-alert {
-  width: 400px;
-  margin: -200px 0 0 -150px;
-}
-#btn-addNew {
-  width: 150px;
-  top: 1px;
-  right: 330px;
-  position: absolute;
-}
-#btn-logout {
-  width: 120px;
-  top: 1px;
-  right: 8px;
-  position: absolute;
-}
-#btn-back {
-  width: 120px;
-  top: 1px;
-  right: 140px;
-  position: absolute;
-}
-#btn-update {
-  top: 1px;
-  right: 137px;
-  position: absolute;
-}
 #print {
   padding: 20px;
 }
@@ -128,10 +101,6 @@ body {
   float: right;
   margin-right: 30px;
 }
-.form-horizontal .form-buttons .btn {
-  width: 80px;
-  margin-left: 8px;
-}
 .form-horizontal input {
   width: 300px;
 }
@@ -147,7 +116,4 @@ label {
   -moz-text-shadow: -1px 1px 0 #fff;
   -webkit-text-shadow: -1px 1px 0 #fff;
   margin-top: 3px;
-}
-button i {
-  padding-left: 8px;
 }
