@@ -261,10 +261,8 @@ exports.getCommentsByUser = function(user, callback){
 
 				comments.push(temp);
 			}
-			console.log(comments);
+
 			callback(null, comments);
-			console.log(result[0].snapshot);
-			//callback(null, result);
 		}
   });
 };

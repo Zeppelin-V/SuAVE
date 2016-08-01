@@ -6,6 +6,10 @@ function CommentsController()
 {
   var that = this;
 
+  // handle user logout //
+	$('#btn-logout').click(function(){ that.attemptLogout(); });
+	$('#btn-update').click(function(){ window.open('/update', "_self"); });
+
   $("#copy-link").on("click", function(){
     document.querySelector('#share-link').select();
     document.execCommand('copy');
@@ -109,14 +113,14 @@ function CommentsController()
   });
 
 
-  this.getGraphPara = function(para_id){
+  this.getGraphPara = function(para_id, row){
     $.ajax({
       url: "/getSnapshotById",
       type: "GET",
       data: {"id" : para_id},
       success: function(data){
         snapshotId = data._id;
-        that.getGraph(data.graph_para);
+        that.getGraph(data.graph_para, row);
       },
       error: function(jqXHR){
         console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
@@ -125,12 +129,13 @@ function CommentsController()
   }
 
   //show the google chart
-  this.getGraph = function(data){
+  this.getGraph = function(data, row){
     var graphPara = JSON.parse(data);
-
+    var _width = $(window).height()*0.45*0.8;
+    var _height = $(window).height()*0.3*0.8;
     //According to the PARA, draw charts
     if(graphPara.view == "bucket"){
-      var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+      var chart = new google.visualization.ColumnChart(document.getElementById("chart_div_"+row.para_id));
       var dat = [];
       dat.push([graphPara.x, "Count"]);
 
@@ -163,7 +168,7 @@ function CommentsController()
       }
       google.charts.setOnLoadCallback(drawChart);
     }else if(graphPara.view == "crosstab"){
-      var chart = new google.visualization.BubbleChart(document.getElementById('chart_div'));
+      var chart = new google.visualization.BubbleChart(document.getElementById('chart_div_'+row.para_id));
 
       var dat = [];
       dat.push(["ID", graphPara.x, graphPara.y, "Paras", "Count"]);
@@ -222,7 +227,7 @@ function CommentsController()
       }
       google.charts.setOnLoadCallback(drawSeriesChart);
     }else if(graphPara.view == "grid"){
-      var chart = new google.visualization.Histogram(document.getElementById('chart_div'));
+      var chart = new google.visualization.Histogram(document.getElementById('chart_div_'+row.para_id));
 
       var dat = [];
       dat.push(["-", "-"]);
@@ -243,11 +248,12 @@ function CommentsController()
 
       function drawChart() {
         var data = google.visualization.arrayToDataTable(dat);
-
+        console.log(_width);
+        console.log(_height);
         var options = {
           title: graphPara.x,
-          width: 450,
-          height: 300,
+          width: _width,
+          height: _height,
           histogram: { bucketSize: 1},
           legend: 'none'
         };
@@ -256,7 +262,7 @@ function CommentsController()
       }
       google.charts.setOnLoadCallback(drawChart);
     }else if(graphPara.view == "map") {
-      var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+      var chart = new google.visualization.GeoChart(document.getElementById('chart_div_'+row.para_id));
       var dat = graphPara.mData;
       dat.unshift(["Latitude", "Longitude"]);
 
@@ -277,7 +283,7 @@ function CommentsController()
 
       google.charts.setOnLoadCallback(drawRegionsMap);
     }else{
-      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+      var chart = new google.visualization.PieChart(document.getElementById('chart_div_'+row.para_id));
 
       function drawChart() {
 

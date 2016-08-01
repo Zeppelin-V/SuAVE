@@ -14,7 +14,7 @@ var cMemory = false;
 var sMemory = false;
 
 // handle user logout //
-	$('#btn-logout').click(function(){ console.log("debug logout");that.attemptLogout(); });
+	$('#btn-logout').click(function(){ that.attemptLogout(); });
 	$('#btn-update').click(function(){ window.open('/update', "_self"); });
 
 //handle new survey

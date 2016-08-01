@@ -28,9 +28,8 @@ function detailFormatter(index, row) {
       overview = overview + '<p><b>filters :</b> ' + row.filters + '</p>';
       overview = overview + '<p><b>date:</b> ' + row.date + '</p>';
       var result =
-
       '<div class="row"><div class="col-xs-12 col-lg-6">'+
-      '<div id="chart_div" style="display: block;" class="col-xs-8 col-xs-offset-2"></div></div>'+
+      '<div id="chart_div_'+row.para_id+'" style="display: block;" class="col-xs-8 col-xs-offset-2"></div></div>'+
       '<div class="col-xs-12 col-lg-6">'+overview+"</div>"+
       '<div class="row">'+
       '<div class="col-xs-6 col-xs-offset-2">'+
@@ -43,7 +42,7 @@ function detailFormatter(index, row) {
       '<button id="add-comments" type="button" class="btn btn-primary" style="margin-top:35px;">Add</button>'+
       '</div>';
 
-      hc.getGraphPara(row.para_id);
+      hc.getGraphPara(row.para_id, row);
       return result;
       //return '<div class="row"><div id="chart_div" style="display: block;" class="col-xs-8 col-xs-offset-2"></div></div>';
 }
@@ -51,7 +50,7 @@ function detailFormatter(index, row) {
 
 $(document).ready(function(){
   $('.navbar-brand').append("  "+name);
-  
+
   hc = new CommentsController();
   $.ajax({
     url: "/getCommentsByUSer",
