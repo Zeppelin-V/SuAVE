@@ -11,6 +11,8 @@ html
     link(rel='stylesheet', href='/css/radio.css')
     // Icons
     script(src='/vendor/lumino.glyphs.js')
+    script(type='text/javascript', src='/vendor/gc-loader.js')
+    script(type='text/javascript', src='https://www.google.com/jsapi')
 
   body
     nav.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
@@ -52,28 +54,11 @@ html
             svg.glyph.stroked.app-window
               use(xlink:href='#stroked-app-window')
             |  Gallery
-        li.parent
-          a
-            span(data-toggle='collapse', href='#sub-item-1')
-              svg.glyph.stroked.plus.sign
-                use(xlink:href='#stroked-plus-sign')
-              |  Annotation
-          ul#sub-item-1.children.collapse.in
-            li.active
-              a(href='/comments')
-                svg.glyph.stroked.notepad
-                  use(xlink:href='#stroked-notepad')
-                |  Comment View
-            li
-              a(href='/snapshots')
-                svg.glyph.stroked.landscape
-                  use(xlink:href='#stroked-landscape')
-                |  Snapshot View
-        li
-          a(href='icons.html')
-            svg.glyph.stroked.star
-              use(xlink:href='#stroked-star')
-            |  Icons
+        li.active
+          a(href='/comments')
+            svg.glyph.stroked.notepad
+              use(xlink:href='#stroked-notepad')
+            |  Annotation
     // /.sidebar
     .col-sm-9.col-sm-offset-3.col-lg-10.col-lg-offset-2.main
 
@@ -85,18 +70,21 @@ html
         .col-lg-12
           .panel.panel-default
             .panel-body
-              #toolbar
-                button.btn.btn-danger Delete
+              #toolbar.row
+                .col-xs-5
+                  button.btn.btn-sm.btn-danger#delete-comments Delete
+                .col-xs-5
+                  button.btn.btn-sm.btn-primary#para-toggle Detailed
               table#comments-table(data-toolbar="#toolbar", data-toggle='table', data-detail-view='true', data-detail-formatter="detailFormatter", data-show-refresh='true', data-show-toggle='true', data-show-columns='true', data-search='true', data-select-item-name='toolbar1', data-pagination='true', data-sort-name='date', data-sort-order='desc')
                 thead
                   tr
                     th(data-checkbox='true')
+                    th(data-field='content', data-sortable='true') Comment
+                    th(data-field='commenter', data-sortable='true') User
                     th(data-field='file', data-sortable='true') File
-                    th(data-field='commenter', data-sortable='true') Commenter
-                    th(data-field='content', data-sortable='true') Content
-                    th(data-field='view', data-sortable='true') View
-                    th(data-field='category', data-sortable='true') Category
-                    th(data-field='filters', data-sortable='true') Filters
+                    th(data-field='view', data-sortable='true', data-visible='false') View
+                    th(data-field='category', data-sortable='true', data-visible='false') Category
+                    th(data-field='filters', data-sortable='true', data-visible='false') Filters
                     th(data-field='date', data-sortable='true') Date
                     th(data-field='action', data-formatter='actionFormatter', data-events='actionEvents') Action
 
@@ -111,6 +99,8 @@ html
     script(src='/js/controllers/commentsController.js')
 
     script.
+      var user=!{udata}
+      var name=!{name}
       !function ($) {
       $(document).on("click","ul.nav li.parent > a > span.icon", function(){
       $(this).find('em:first').toggleClass("glyphicon-minus");

@@ -691,7 +691,7 @@ var sMemory = false;
 				//'<a class="list-group-item"><div class="toggle-button" id="public-'+i+'"><button ></button></div></a>'+
 				'<button id="public-'+i+'" style="text-align:center;" type="button" data-toggle="button" class="btn list-group-item toggle">Public</button>'+
 				/*'<button type="button" id="survey-'+i+'" class="btn  surveys-click list-group-item">Show</button>'+*/
-				'<button type="button" style="text-align:center;" id="edit-'+i+'" class="btn surveys-edit list-group-item list-group-item-success">Setting</button>'+
+				'<button type="button" style="text-align:center;" id="edit-'+i+'" class="btn surveys-edit list-group-item list-group-item-success">Settings</button>'+
 				'<button type="button" style="text-align:center;" id="delete-'+i+'" class="btn  surveys-delete list-group-item list-group-item-danger"> Delete</button>'+
 				/*
 				'<div class="col-xs-4"><button id="survey-'+i+'" class="btn btn-sm btn-raised  btn-primary surveys-click"><i class="fa fa-fw fa-eye"></i> Show</button></div>'+

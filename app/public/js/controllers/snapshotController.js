@@ -226,9 +226,8 @@ function SnapshotController()
 
     //show the google chart
     this.getGraph = function(){
-      var width = $(window).height()*0.45*0.9;
-      var height = $(window).height()*0.3*0.9;
-
+      //var width = $(window).height()*0.45*0.9;
+      //var height = $(window).height()*0.3*0.9;
 
       graphPara = JSON.parse(snapshotPara.graph_para);
 
@@ -360,8 +359,7 @@ function SnapshotController()
   			}
         google.charts.setOnLoadCallback(drawChart);
   		}else if(graphPara.view == "map") {
-
-
+        var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
   			var dat = graphPara.mData;
   			dat.unshift(["Latitude", "Longitude"]);
 
@@ -369,12 +367,17 @@ function SnapshotController()
 
           var data = google.visualization.arrayToDataTable(dat);
 
-          var options = {};
-
-          var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+          var options = {
+            title: graphPara.x,
+  					width: 450,
+  					height: 300,
+            legend: 'none',
+            defaultColor: '#0074cc',
+          };
 
           chart.draw(data, options);
         }
+
         google.charts.setOnLoadCallback(drawRegionsMap);
   		}else{
   			var chart = new google.visualization.PieChart(document.getElementById('chart_div'));

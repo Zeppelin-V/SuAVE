@@ -47,7 +47,6 @@ exports.getParaById = function(id, callback){
 
 exports.getSnapshotById = function(id, callback){
 	var newId = new ObjectId(id);
-
 	snapshots.findOne({_id: newId}, function(e, o){
 		if(e){
 			callback(error, null);
@@ -115,12 +114,10 @@ exports.addCommentByParameters = function(file, user, para, graphPara, comment, 
 };
 
 exports.getCommentsByParameters = function(para, callback){
-	console.log(para);
   snapshots.findOne(para, function(e, o){
 		if(e){
 			callback(e, null);
 		}else{
-			console.log(o);
 			//check if there exists such a paramter in the database
 			if(o == null){
 				callback(null, null);
@@ -207,7 +204,7 @@ exports.getCommentsByUser = function(user, callback){
 				var temp = {};
 				temp.comment_id = res._id;
 				temp.para_id = res.para_id;
-				temp.content = res.content;
+				temp.content = "<div class='scroll-td'>" + res.content + "</div>";
 				temp.commenter = res.user;
 				temp.view = snapshot.view;
 				temp.file = snapshot.file;
@@ -219,7 +216,7 @@ exports.getCommentsByUser = function(user, callback){
 				temp.filters = "";
 				if(snapshot.string_filters != "None"){
 					var string_filters = snapshot.string_filters;
-					var filterString = " String filters: <br>";
+					var filterString = "<div class='scroll-td'>String filters: <br>";
 					for(var j = 0; j < string_filters.length; j++){
 						var filter = string_filters[j];
 						if(j>0){
@@ -242,7 +239,7 @@ exports.getCommentsByUser = function(user, callback){
 					if(temp.filters != ""){
 						filterString += "<br>Numeric filters: <br>";
 					}else{
-						filterString += "Numeric filters:<br>";
+						filterString += "<div>Numeric filters:<br>";
 					}
 					for(var j = 0; j < num_filters.length; j++){
 						var filter = num_filters[j];
@@ -258,7 +255,9 @@ exports.getCommentsByUser = function(user, callback){
 					temp.filters += filterString;
 				}
 				if(temp.filters == "") temp.filters = "None";
-				temp.date = res.date.toString().replace(/T/, ' ').replace(/\..+/, '');
+				else temp.filters += "</div>";
+				temp.date = "<div class='scroll-td'>"+
+					res.date.toString().replace(/T/, ' ').replace(/\..+/, '')+"</div>";
 
 				comments.push(temp);
 			}

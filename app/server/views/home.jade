@@ -53,28 +53,12 @@ html
             svg.glyph.stroked.app-window
               use(xlink:href='#stroked-app-window')
             |  Gallery
-        li.parent
-          a
-            span(data-toggle='collapse', href='#sub-item-1')
-              svg.glyph.stroked.plus.sign
-                use(xlink:href='#stroked-plus-sign')
-              |  Annotation
-          ul#sub-item-1.children.collapse
-            li
-              a(href='/comments')
-                svg.glyph.stroked.notepad
-                  use(xlink:href='#stroked-notepad')
-                |  Comment View
-            li
-              a(href='/snapshots')
-                svg.glyph.stroked.landscape
-                  use(xlink:href='#stroked-landscape')
-                |  Snapshot View
         li
-          a(href='icons.html')
-            svg.glyph.stroked.star
-              use(xlink:href='#stroked-star')
-            |  Icons
+          a(href='/comments')
+            svg.glyph.stroked.notepad
+              use(xlink:href='#stroked-notepad')
+            |  Annotation
+
     // /.sidebar
     .col-sm-9.col-sm-offset-3.col-lg-10.col-lg-offset-2.main
       .row

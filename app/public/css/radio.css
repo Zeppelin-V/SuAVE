@@ -106,23 +106,6 @@ input.radio:checked ~ label:before {
   max-height: 50px;
 }
 
-/*
-.modal-select-collection{
-  overflow-x: hidden;
-  position: fixed;
-  margin: -20% auto auto auto;
-  left:0;
-  right:0;
-  height: auto;
-  max-height: 580px;
-  width: auto;
-  max-width: 800px;
-}*/
-/*
-.modal-select-collection{
-  height: auto;
-  max-height: 1000px;
-}*/
 
 .modal-select-collection .modal-body{
   overflow-x: hidden;

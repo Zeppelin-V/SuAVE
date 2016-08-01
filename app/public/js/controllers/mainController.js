@@ -63,7 +63,7 @@ function MainController()
 		$("#share-link").html("");
 		if(PARA.string_filters.length == 0) PARA.string_filters = "None";
 		if(PARA.num_filters.length == 0) PARA.num_filters = "None";
-		
+
 		$.ajax({
 			url: "/getParaIdByParamters",
 			type: "GET",
@@ -282,7 +282,7 @@ function MainController()
 			}
 			google.charts.setOnLoadCallback(drawChart);
 		}else if(graphPara.view == "map") {
-
+			chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
 
 			var dat = graphPara.mData;
 			dat.unshift(["Latitude", "Longitude"]);
@@ -291,9 +291,13 @@ function MainController()
 
         var data = google.visualization.arrayToDataTable(dat);
 
-        var options = {};
-
-        chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+				var options = {
+					title: graphPara.x,
+					width: 450,
+					height: 300,
+					legend: 'none',
+					defaultColor: '#0074cc',
+				};
 
         chart.draw(data, options);
       }
