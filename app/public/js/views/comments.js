@@ -28,7 +28,7 @@ function detailFormatter(index, row) {
       overview = overview + '<p><b>filters :</b> ' + row.filters + '</p>';
       overview = overview + '<p><b>date:</b> ' + row.date + '</p>';
       var result =
-      '<div class="row"><div class="col-xs-12 col-lg-6">'+
+      '<div class="row"><div class="chart_container col-xs-12 col-lg-6">'+
       '<div id="chart_div_'+row.para_id+'" style="display: block;" class="col-xs-8 col-xs-offset-2"></div></div>'+
       '<div class="col-xs-12 col-lg-6">'+overview+"</div>"+
       '<div class="row">'+

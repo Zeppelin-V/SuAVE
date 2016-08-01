@@ -131,8 +131,11 @@ function CommentsController()
   //show the google chart
   this.getGraph = function(data, row){
     var graphPara = JSON.parse(data);
-    var _width = $(window).height()*0.45*0.8;
-    var _height = $(window).height()*0.3*0.8;
+    var _width = $('.chart_container').width()*0.7;
+    var _height = _width*2/3;
+
+    console.log($('.chart_container').width());
+
     //According to the PARA, draw charts
     if(graphPara.view == "bucket"){
       var chart = new google.visualization.ColumnChart(document.getElementById("chart_div_"+row.para_id));
