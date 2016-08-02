@@ -7,6 +7,7 @@ var fs = require('fs'); //file system
 var path = require('path');
 var loader = require('./collection-loader');
 var GL = require('../global');
+var AN = require('./annotation-manager');
 
 var dbPort 		= 27017;
 var dbHost 		= 'localhost';
@@ -235,7 +236,15 @@ exports.deleteSurvey = function(user, callback)
   fsx.remove(file, function(err){
     if(err) return console.error(err);
   });
-	surveys.remove({"user": user}, callback);
+
+	surveys.find({"user": user}, {name: 1}).toArray(function(error, survey){
+		for(var i = 0; i < survey.length; i++){
+			AN.deleteSnapshotsBySurvey(survey[i].name, user, function(e, o){
+				if(e) callback(e);
+			});
+		}
+		surveys.remove({"user": user}, callback);
+	});
 }
 
 /*Delete a survey
@@ -253,7 +262,11 @@ exports.deleteSurveyByName = function(filename, user, callback)
   fsx.remove(file, function(err){
     if(err) return console.error(err);
   });
-	surveys.remove({"name": filename, "user": user}, callback);
+	surveys.remove({"name": filename, "user": user});
+	AN.deleteSnapshotsBySurvey(filename, user, function(e, o){
+		if(e) callback(e);
+		else callback();
+	});
 }
 
 /*Hide a survey by filename and user

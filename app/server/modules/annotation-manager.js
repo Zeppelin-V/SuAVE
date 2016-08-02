@@ -9,6 +9,7 @@ var path = require('path');
 var loader = require('./collection-loader');
 var GL = require('../global');
 
+
 var dbPort 		= 27017;
 var dbHost 		= 'localhost';
 var dbName 		= 'suave';
@@ -167,6 +168,30 @@ exports.deleteCommentsById = function(id, callback){
 	});
 };
 
+exports.deleteSnapshotsBySurvey = function(filename, user, callback){
+
+	snapshots.find({"file": filename, "user": user}, {_id: 1}).toArray(function(error, ids){
+		var paraIds = [];
+
+		for(var i = 0; i < ids.length; i++){
+			paraIds.push(ids[i]._id);
+		}
+		snapshots.remove({"file": filename, "user": user}, function(e, o){
+			if(e){
+				callback(e);
+			}else{
+				comments.remove({"para_id":{$in: paraIds}}, function(e, o){
+					if(e){
+						callback(e);
+					}else{
+						callback(null, o);
+					}
+				});
+			}
+		});
+	});
+
+};
 
 exports.getCommentsByUser = function(user, callback){
 

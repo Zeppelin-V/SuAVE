@@ -647,6 +647,7 @@ var sMemory = false;
 
 	this.displaySurveys = function(survey){
 		var surveys = survey.reverse();
+
 		for(i = 0; i < surveys.length; i++){
 			$('#display-surveys').append('<div class="col-md-4"> <div class="panel panel-default">  <div class="tab-content"> <div class="tab-pane fade in active" id="tab1-'+i+'"> </div> '+
 			'<div class="tab-pane fade" id="tab2-'+i+'"> </div> '+
@@ -659,6 +660,7 @@ var sMemory = false;
 			'</ul></div> </div><!--/.panel--> </div>');
 
 			var dateString = surveys[i].date;
+
 
 			$('#tab1-'+i).append('<div class="row survey-title"> ');
 			$('#tab1-'+i).append('<div class="col-xs-6"><div id="icon-img">'+

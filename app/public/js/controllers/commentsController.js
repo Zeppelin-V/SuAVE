@@ -143,8 +143,6 @@ function CommentsController()
     var _width = $('.chart_container').width()*0.7;
     var _height = _width*2/3;
 
-    console.log($('.chart_container').width());
-
     //According to the PARA, draw charts
     if(graphPara.view == "bucket"){
       var chart = new google.visualization.ColumnChart(document.getElementById("chart_div_"+row.comment_id));
