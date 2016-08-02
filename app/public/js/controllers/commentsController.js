@@ -6,6 +6,15 @@ function CommentsController()
 {
   var that = this;
 
+
+  $(function () {
+      $('#toolbar').find('select').change(function () {
+          $("#comments-table").bootstrapTable('destroy').bootstrapTable({
+              exportDataType: $(this).val()
+          });
+      });
+  })
+
   // handle user logout //
 	$('#btn-logout').click(function(){ that.attemptLogout(); });
 	$('#btn-update').click(function(){ window.open('/update', "_self"); });

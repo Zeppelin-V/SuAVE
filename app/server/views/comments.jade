@@ -75,7 +75,7 @@ html
                   button.btn.btn-sm.btn-danger#delete-comments Delete
                 .col-xs-5
                   button.btn.btn-sm.btn-primary#para-toggle Detailed
-              table#comments-table(data-toolbar="#toolbar", data-toggle='table', data-detail-view='true', data-detail-formatter="detailFormatter", data-show-refresh='true', data-show-toggle='true', data-show-columns='true', data-search='true', data-select-item-name='toolbar1', data-pagination='true', data-sort-name='date', data-sort-order='desc')
+              table#comments-table(data-show-export="true", data-toolbar="#toolbar", data-toggle='table', data-detail-view='true', data-detail-formatter="detailFormatter", data-show-refresh='true', data-show-toggle='true', data-show-columns='true', data-search='true', data-select-item-name='toolbar1', data-pagination='true', data-sort-name='date', data-sort-order='desc')
                 thead
                   tr
                     th(data-checkbox='true')
@@ -92,6 +92,8 @@ html
 
     script(src='/vendor/jquery.min.js')
     script(src='/vendor/bootstrap-table.js')
+    script(src='/vendor/bootstrap-table-export.js')
+    script(src='/vendor/tableExport.js')
     script(src='/vendor/jquery.ddslick.min.js')
     script(src='/vendor/bootstrap.min.js')
     script(src='/vendor/jquery.form.js')
