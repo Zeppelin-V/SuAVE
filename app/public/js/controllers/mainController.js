@@ -47,7 +47,7 @@ function MainController()
 																"<td class='comment-num'>"+(i+1)+"</td>"+
 																"<td class='comment-user'>"+data[i].user+"</td>"+
 																"<td class='comment-content'>"+data[i].content+"</td>"+
-																"<td class='comment-date'>"+dateString+"</td>"+
+																"<td class='comment-date'>"+data[i].date+"</td>"+
 																"</tr>");
 		}
 	};
@@ -135,6 +135,7 @@ function MainController()
 
 		graphPara = document.getElementById('pivot_window').contentWindow.graphPara;
 		PARA = document.getElementById('pivot_window').contentWindow.PARA;
+
 		$("#comments-body").html("");
 
 		that.checkLogin();
@@ -282,22 +283,20 @@ function MainController()
 			}
 			google.charts.setOnLoadCallback(drawChart);
 		}else if(graphPara.view == "map") {
-			chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
-
 			var dat = graphPara.mData;
-			dat.unshift(["Latitude", "Longitude"]);
+			if(dat[0][0] != "Latitude") dat.unshift(["Latitude", "Longitude"]);
 
       function drawRegionsMap() {
 
         var data = google.visualization.arrayToDataTable(dat);
 
 				var options = {
-					title: graphPara.x,
 					width: 450,
 					height: 300,
 					legend: 'none',
 					defaultColor: '#0074cc',
 				};
+				var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
 
         chart.draw(data, options);
       }

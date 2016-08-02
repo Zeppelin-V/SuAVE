@@ -658,7 +658,7 @@ var sMemory = false;
 			'<li><a href="#tab3-'+i+'" data-toggle="tab">Edit</a></li> '+
 			'</ul></div> </div><!--/.panel--> </div>');
 
-			var dateString = surveys[i].date.replace(/T/, ' ').replace(/\..+/, '');
+			var dateString = surveys[i].date;
 
 			$('#tab1-'+i).append('<div class="row survey-title"> ');
 			$('#tab1-'+i).append('<div class="col-xs-6"><div id="icon-img">'+
@@ -702,7 +702,7 @@ var sMemory = false;
 			);
 
 			var cw = $('.tab-content').width();
-			$('.tab-content').css({'height':0.6*cw+'px'});
+			$('.tab-content').css({'height':0.65*cw+'px'});
 
 			if($('#'+surveys[i].view+'-'+i).length == 0){
 				$('#'+'grid-'+i).trigger('click');

@@ -141,7 +141,7 @@ function SnapshotController()
       }
 
       for(var i = 0; i < comments.length; i++){
-        var dateString = comments[i].date.replace(/T/, ' ').replace(/\..+/, '');
+        var dateString = comments[i].date;
         $("#panel-comments").append("<tr>"+
                                   "<td class='comment-num'>"+(i+1)+"</td>"+
                                   "<td class='comment-user'>"+comments[i].user+"</td>"+

@@ -49,10 +49,11 @@ exports.createNewSurvey = function(files, user, callback){
           if(err){
             callback(err);
           }else{
+						var date = new Date();
 						//save into the database
             surveys.insert({"name": name, "user": user,
             "csv": newPath, "view": "grid", "views": 111000, "collection": "default",
-						 "hidden": 0, "date":new Date(), "originalname": files.file.originalname}, callback);
+						 "hidden": 0, "date":date.toString(), "originalname": files.file.originalname}, callback);
           }
         });
 

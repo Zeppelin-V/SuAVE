@@ -138,7 +138,7 @@ function CommentsController()
 
     //According to the PARA, draw charts
     if(graphPara.view == "bucket"){
-      var chart = new google.visualization.ColumnChart(document.getElementById("chart_div_"+row.para_id));
+      var chart = new google.visualization.ColumnChart(document.getElementById("chart_div_"+row.comment_id));
       var dat = [];
       dat.push([graphPara.x, "Count"]);
 
@@ -157,8 +157,8 @@ function CommentsController()
                            role: "annotation" }]);
 
         var options = {
-          width: 450,
-          height: 300,
+          width: _width,
+          height: _height,
           bar: {groupWidth: "95%"},
           legend: { position: "none" },
           hAxis: {
@@ -171,7 +171,7 @@ function CommentsController()
       }
       google.charts.setOnLoadCallback(drawChart);
     }else if(graphPara.view == "crosstab"){
-      var chart = new google.visualization.BubbleChart(document.getElementById('chart_div_'+row.para_id));
+      var chart = new google.visualization.BubbleChart(document.getElementById('chart_div_'+row.comment_id));
 
       var dat = [];
       dat.push(["ID", graphPara.x, graphPara.y, "Paras", "Count"]);
@@ -207,8 +207,8 @@ function CommentsController()
         var data = google.visualization.arrayToDataTable(dat);
 
         var options = {
-          width: 450,
-          height: 300,
+          width: _width,
+          height: _height,
           sizeAxis: {minValue: 1, maxSize: 15},
           bar: {groupWidth: "95%"},
           legend: { position: "none"},
@@ -230,7 +230,7 @@ function CommentsController()
       }
       google.charts.setOnLoadCallback(drawSeriesChart);
     }else if(graphPara.view == "grid"){
-      var chart = new google.visualization.Histogram(document.getElementById('chart_div_'+row.para_id));
+      var chart = new google.visualization.Histogram(document.getElementById('chart_div_'+row.comment_id));
 
       var dat = [];
       dat.push(["-", "-"]);
@@ -251,8 +251,7 @@ function CommentsController()
 
       function drawChart() {
         var data = google.visualization.arrayToDataTable(dat);
-        console.log(_width);
-        console.log(_height);
+
         var options = {
           title: graphPara.x,
           width: _width,
@@ -265,19 +264,17 @@ function CommentsController()
       }
       google.charts.setOnLoadCallback(drawChart);
     }else if(graphPara.view == "map") {
-      var chart = new google.visualization.GeoChart(document.getElementById('chart_div_'+row.para_id));
+      var chart = new google.visualization.GeoChart(document.getElementById('chart_div_'+row.comment_id));
       var dat = graphPara.mData;
-      dat.unshift(["Latitude", "Longitude"]);
+      if(dat[0][0] != "Latitude") dat.unshift(["Latitude", "Longitude"]);
 
       function drawRegionsMap() {
 
         var data = google.visualization.arrayToDataTable(dat);
 
         var options = {
-          title: graphPara.x,
-          width: 450,
-          height: 300,
-          legend: 'none',
+          width: _width,
+          height: _height,
           defaultColor: '#0074cc',
         };
 
@@ -286,7 +283,7 @@ function CommentsController()
 
       google.charts.setOnLoadCallback(drawRegionsMap);
     }else{
-      var chart = new google.visualization.PieChart(document.getElementById('chart_div_'+row.para_id));
+      var chart = new google.visualization.PieChart(document.getElementById('chart_div_'+row.comment_id));
 
       function drawChart() {
 
@@ -296,6 +293,8 @@ function CommentsController()
         ]);
 
         var options = {
+          width: _width,
+          height: _height,
           title: graphPara.x
         };
 

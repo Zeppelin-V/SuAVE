@@ -23,27 +23,10 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 	}
 });
 
-//TODO: combine snapshots and parameters
-
 var surveys = db.collection('surveys_test');
 var snapshots = db.collection('snapshots_test');
 var comments = db.collection('comments_test');
 
-
-/*
-var parameters = db.collection('parameters_test');
-exports.getParaById = function(id, callback){
-	var newId = new ObjectId(id);
-
-	parameters.findOne({_id: newId}, function(e, o){
-		if(e){
-			callback(error, null);
-		}else{
-			callback(null, o);
-		}
-	});
-};
-*/
 
 exports.getSnapshotById = function(id, callback){
 	var newId = new ObjectId(id);
@@ -257,7 +240,7 @@ exports.getCommentsByUser = function(user, callback){
 				if(temp.filters == "") temp.filters = "None";
 				else temp.filters += "</div>";
 				temp.date = "<div class='scroll-td'>"+
-					res.date.toString().replace(/T/, ' ').replace(/\..+/, '')+"</div>";
+					res.date.toString()+"</div>";
 
 				comments.push(temp);
 			}

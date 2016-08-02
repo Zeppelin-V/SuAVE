@@ -12,24 +12,17 @@ function actionFormatter(value, row, index) {
 }
 
 function detailFormatter(index, row) {
-      /*var html = [];
-
-      $.each(row, function (key, value) {
-        console.log(key);
-        console.log(value);
-        html.push('<p><b>' + key + ':</b> ' + value + '</p>');
-      });*/
       var overview = '';
-      overview = overview + '<p><b>content:</b> ' + row.content + '</p>';
+      overview = overview + '<p><b>comment:</b> ' + row.content + '</p>';
       overview = overview + '<p><b>uer:</b> ' + row.commenter + '</p>';
       overview = overview + '<p><b>file:</b> ' + row.file + '</p>';
       overview = overview + '<p><b>view:</b> ' + row.view + '</p>';
-      overview = overview + '<p><b>category :</b> ' + row.category + '</p>';
+      overview = overview + '<p><b>category :</b><br>' + row.category + '</p>';
       overview = overview + '<p><b>filters :</b> ' + row.filters + '</p>';
       overview = overview + '<p><b>date:</b> ' + row.date + '</p>';
       var result =
       '<div class="row"><div class="chart_container col-xs-12 col-lg-6">'+
-      '<div id="chart_div_'+row.para_id+'" style="display: block;" class="col-xs-8 col-xs-offset-2"></div></div>'+
+      '<div id="chart_div_'+row.comment_id+'" style="display: block;" class="col-xs-8 col-xs-offset-2"></div></div>'+
       '<div class="col-xs-12 col-lg-6">'+overview+"</div>"+
       '<div class="row">'+
       '<div class="col-xs-6 col-xs-offset-2">'+
@@ -43,8 +36,8 @@ function detailFormatter(index, row) {
       '</div>';
 
       hc.getGraphPara(row.para_id, row);
+
       return result;
-      //return '<div class="row"><div id="chart_div" style="display: block;" class="col-xs-8 col-xs-offset-2"></div></div>';
 }
 
 
