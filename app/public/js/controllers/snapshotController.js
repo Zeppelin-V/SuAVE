@@ -3,7 +3,6 @@ function SnapshotController()
   // bind event listeners to button clicks //
   	var that = this;
     var graphPara;
-
     //load google chart
     google.charts.load("current", {packages:['corechart', 'geochart']});
 
@@ -212,6 +211,7 @@ function SnapshotController()
         data: {"id" : id},
         success: function(data){
           snapshotPara = data;
+          console.log(data);
           that.displayPara();
           that.getViews();
           that.getComments(id);

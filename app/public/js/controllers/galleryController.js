@@ -6,6 +6,7 @@ function GalleryController()
 	$(".page-header").append(" by "+user);
 
 //set listener on buttons
+
 	$(document).on('click', '.surveys-click', function(){
 		var id = $(this).attr('id');
 		var survey = surveys[id.slice(-1)];
