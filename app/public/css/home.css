@@ -956,3 +956,16 @@ Gallery view
 .nav-pills{
 	padding-top: 0px;
 }
+
+.btn-circle{
+	padding: 10px 16px;
+}
+
+/*
+gallery nav bar
+*/
+
+#contact-author{
+	margin-top: 9px;
+	margin-right: 7px;
+}

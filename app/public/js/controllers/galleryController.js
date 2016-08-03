@@ -3,6 +3,7 @@ function GalleryController()
 {
 // bind event listeners to button clicks //
 	var that = this;
+	$(".page-header").append(" by "+user);
 
 //set listener on buttons
 	$(document).on('click', '.surveys-click', function(){
@@ -14,7 +15,11 @@ function GalleryController()
 			"&views="+survey.views+"&view="+survey.view);
 	});
 
-	$(".page-header").append(" by "+user);
+	$(document).on('click', '#contact-author', function(){
+		$('.modal-contact').modal('toggle');
+	});
+
+
 
 	this.getSurveys = function(callback)
 	{
@@ -53,9 +58,9 @@ function GalleryController()
 
 			var dateString = surveys[i].date;
 
-			$('#tab1-'+i).append('<div class="row survey-title"> ');
-			$('#tab1-'+i).append('<div class="col-xs-6"><div id="icon-img">'+
-			'<img id="survey-'+i+'" class="surveys-click" src="/../img/blue.jpg" alt="Image" style="width:100%;"> </div></div>'+
+			$('#tab1-'+i).append('<div class="row survey-title"> '+
+			'<div class="col-xs-6"><div id="icon-img">'+
+			'<button id="survey-'+i+'" type="button" class="btn btn-primary btn-circle surveys-click" style="width:100%;"> show</button> </div></div>'+
 			'<div class="col-xs-6 survey-info"><h4 style="text-align:center;">'+surveys[i].name+'</h4>'+
 			'<p style="text-align:center;">Created from: </p>'+
 			'<a id="source-'+i+'" class="file-source" style="text-align:center;display:block;">'+surveys[i].originalname+'</a>'+
@@ -64,5 +69,10 @@ function GalleryController()
 			' </div>');
 
 		}
+
+		$('.btn-circle').css("width", $('#icon-img').width());
+		$('.btn-circle').css("height", $('#icon-img').width());
+		$('.btn-circle').css("border-radius", $('#icon-img').width()/6);
+		$('.btn-circle').css("font-size", $('#icon-img').width()/4);
 	}
 }
