@@ -4,7 +4,9 @@
 .toggle-button-selected button { left: 26px; top: 0; margin: 0; border: none; width: 24px; height: 24px; box-shadow: 0 0 4px rgba(0,0,0,0.1); }
 
 
-
+/*
+Main login page
+*/
 .alert-error b, .alert .alert-error{
   color:red;
 }
@@ -26,6 +28,9 @@
   padding-left: 16px;
 }
 
+/*
+comments table
+*/
 #comments-table td{
   word-wrap:break-word;
   max-width: 200px;

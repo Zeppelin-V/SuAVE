@@ -60,7 +60,7 @@ function CommentsController()
           $.ajax({
             url: "/getCommentsByUSer",
             type: "GET",
-            data: {"user": "lisided"},
+            data: {"user": user},
             success: function(output){
               $('#comments-table').bootstrapTable('load', output);
             },

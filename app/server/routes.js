@@ -232,7 +232,7 @@ module.exports = function(app) {
 	app.get('/gallery/:user', function(req, res){
 		AM.getAccountByUsername(req.params.user, function(o){
 			if(o){
-				res.render('../gallery/'+req.params.user);
+				res.render('gallery', {querys: req.params.user});
 			}else{
 				res.render('404', { title: 'Page Not Found'});
 			}

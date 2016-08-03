@@ -68,8 +68,8 @@ exports.addNewAccount = function(newData, callback)
 						newData.pass = hash;
 					// append date stamp when record was created //
 						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
-						fsx.copySync(path.resolve(__dirname+'/..', 'views/gallery_layout.jade'),
-								'./app/server/gallery/'+newData.user+'.jade');
+						//fsx.copySync(path.resolve(__dirname+'/..', 'views/gallery_layout.jade'),
+						//		'./app/server/gallery/'+newData.user+'.jade');
 						accounts.insert(newData, {safe: true}, callback);
 					});
 				}

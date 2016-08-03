@@ -937,6 +937,15 @@ h1.page-header {
 
 
 
+/*
+Gallery view
+*/
+@media (min-width: 992px) and (max-width: 1200px) {
+  .survey-info {
+    font-size: 11px;
+  }
+
+}
 .tab-content{
 	padding-bottom: 0px;
 	display: flex;
