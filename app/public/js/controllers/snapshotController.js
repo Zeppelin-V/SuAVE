@@ -3,6 +3,7 @@ function SnapshotController()
   // bind event listeners to button clicks //
   	var that = this;
     var graphPara;
+
     //load google chart
     google.charts.load("current", {packages:['corechart', 'geochart']});
 
@@ -23,7 +24,7 @@ function SnapshotController()
   		$("#login-row").html("");
       if(document.cookie.indexOf("pass") > 0 || remember == false){
         $("#login-row").append(
-          '<div class="col-xs-6 col-xs-offset-2">'+
+          '<div class="col-sm-6 col-sm-offset-2">'+
             '<div id="comment-part" class="form-group label-floating">'+
               '<label for="newComment" style="font-size:100%;" class="control-label">Add new comment:</label>'+
               '<textarea id="newComment" style="width:100%; font-size:100%" class="form-control"></textarea>'+
@@ -34,9 +35,9 @@ function SnapshotController()
           '</div>');
       }else{
         $("#login-row").append(
-          '<div class="col-xs-6 col-xs-offset-2">'+
+          '<div class="col-sm-6 col-sm-offset-2">'+
             '<div class="row">'+
-              '<div class="col-xs-6 col-xs-offset-3 col-md-8 col-md-offset-4">'+
+              '<div class="col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-4">'+
                 '<button id="login" data-toggle="modal" data-target="#login-dialog" type="button" class="btn btn-raised btn-danger">Login to comment</button>'+
               '</div>'+
             '</div>'+
@@ -129,10 +130,10 @@ function SnapshotController()
       if(!$("#comments-table").length){
         $("#para-panel").after(
           '<div class="row">'+
-          '<div class="col-xs-8 col-xs-offset-2">'+
+          '<div class="col-sm-8 col-sm-offset-2">'+
           '<div class="panel panel-info">'+
           '<div id="comments-table" style="text-align: center;" class="panel-body table-responsive">'+
-          '<table class="table table-striped table-hover" style="table-layout: fixed;">'+
+          '<table class="table table-striped table-hover" style="table-layout: fixed; width:100%;">'+
           '<tbody id="panel-comments"></tbody>'+
           '</table></div></div></div></div>'
         )
@@ -226,8 +227,13 @@ function SnapshotController()
 
     //show the google chart
     this.getGraph = function(){
-      //var width = $(window).height()*0.45*0.9;
-      //var height = $(window).height()*0.3*0.9;
+      var _width;
+      if ($(window).width() <= 767) {
+        _width = $('#comment-template').width()
+      }else{
+        _width = $('#comment-template').width()*5/6;
+      }
+      var _height = _width*2/3;
 
       graphPara = JSON.parse(snapshotPara.graph_para);
 
@@ -252,8 +258,8 @@ function SnapshotController()
   													 role: "annotation" }]);
 
   				var options = {
-  					width: 450,
-  					height: 300,
+            width: _width,
+            height: _height,
   					bar: {groupWidth: "95%"},
   					legend: { position: "none" },
   					hAxis: {
@@ -302,8 +308,8 @@ function SnapshotController()
   	      var data = google.visualization.arrayToDataTable(dat);
 
   	      var options = {
-  					width: 450,
-  					height: 300,
+            width: _width,
+            height: _height,
   					sizeAxis: {minValue: 1, maxSize: 15},
   					bar: {groupWidth: "95%"},
   					legend: { position: "none"},
@@ -349,8 +355,8 @@ function SnapshotController()
 
   				var options = {
             title: graphPara.x,
-  					width: 450,
-  					height: 300,
+            width: _width,
+            height: _height,
   					histogram: { bucketSize: 1},
             legend: 'none'
           };
@@ -369,8 +375,8 @@ function SnapshotController()
 
           var options = {
             title: graphPara.x,
-  					width: 450,
-  					height: 300,
+            width: _width,
+            height: _height,
             legend: 'none',
             defaultColor: '#0074cc',
           };
@@ -390,6 +396,8 @@ function SnapshotController()
           ]);
 
           var options = {
+            width: _width,
+            height: _height,
             title: graphPara.x
           };
 
@@ -399,5 +407,5 @@ function SnapshotController()
   		}
     };
 
-
+    if ($(window).width() <= 767) $('.btn-info').addClass('btn-sm')
 }

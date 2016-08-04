@@ -86,6 +86,22 @@ html
             p
           .modal-footer
             button(data-dismiss="modal")#ok.btn.btn-raised.btn-danger OK
+    #get-credentials.modal.fade
+      .modal-dialog(style="margin-top:15%;max-width:450px;")
+        .modal-content
+          .modal-header
+            button.close(data-dismiss='modal') x
+            h3 Retrieve Password
+          .modal-body
+            .form-group
+              form#get-credentials-form.well.span5(method='post')
+                p(style='color: black;') Please enter the email address associated with your account
+                input#email-tf.span5.required(type='text', name='email', style="width:100%;")
+                .alert.alert-error.hide
+                button.close(data-dismiss='alert')
+          .modal-footer(style='padding:10px 15px 10px;')
+            button#cancel.btn-raised.btn.btn-default-(data-dismiss='modal') Cancel
+            button#retrieve-password-submit.btn.btn-raised.btn-info(type='submit') Submit
 
 block scripts
   link(rel='stylesheet', href='/style/bootstrap.min.css')

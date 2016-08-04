@@ -12,9 +12,6 @@ $(document).ready(function(){
 
   sc.getSnapshotPara(hrefArray[4]);
 
-
-  $('#comment-template').css('max-height',$(window).height()*0.7);
-
 	$('#rememember-me').click(function(e) {
 		var icon = $(this).find('#check-icon');
 		if (icon.hasClass('fa-circle-o')){

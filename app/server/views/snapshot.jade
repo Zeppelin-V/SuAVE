@@ -7,18 +7,18 @@ html
   body
     .container-fluid
       .row
-        .col-xs-10.col-xs-offset-1.col-md-8.col-md-offset-2.col-lg-6.col-lg-offset-3
+        .col-sm-10.col-sm-offset-1.col-md-8.col-md-offset-2.col-lg-6.col-lg-offset-3
           .jumbotron#comment-template
             .row
-              #chart_div.col-xs-8.col-xs-offset-2(style='display: block;')
+              #chart_div.col-sm-10.col-sm-offset-1(style='display: block;')
             .row
-              .col-xs-8.col-xs-offset-2
+              .col-sm-8.col-sm-offset-2
                 #button-group
                   button.btn.btn-raised.btn-info#show-snapshot(type='button') Show
                   button.btn.btn-raised.btn-info#show-about(type='button') About
                   button.btn.btn-raised.btn-info#share-snapshot(type='button', data-toggle='modal', data-target='#share-dialog') Share
             .row#para-panel
-              .col-xs-8.col-xs-offset-2
+              .col-sm-8.col-sm-offset-2
                 .panel.panel-info
                   .panel-heading(style="text-align: center;")
                     h3.panel-title
@@ -44,6 +44,7 @@ html
 
       #login-dialog.modal.fade
         .modal-dialog.login-modal
+          .row
           .modal-content
             .modal-header
               button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
