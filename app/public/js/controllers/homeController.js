@@ -492,7 +492,7 @@ var sMemory = false;
 					}
 
 					var count = 0;
-					var defaultIndex = 2;
+					var defaultIndex = 33;
 					var values;
 					if (surveys[SID].collection.name != "default"){
 						values = JSON.parse(surveys[SID].collection).cValues;
@@ -512,7 +512,7 @@ var sMemory = false;
 						}
 						else if (count > 31){
 							count = 0;
-							defaultIndex = 2;
+							defaultIndex = 33;
 						}
 
 
@@ -523,7 +523,7 @@ var sMemory = false;
 							background: '#ffffff',
 							imagePosition:"right"
 						});
-						defaultIndex++;
+						defaultIndex--;
 						count++;
 					}
 					cMemory = false;
@@ -704,6 +704,7 @@ var sMemory = false;
 
 			$('.btn-circle').css("width", $('#icon-img').width());
 			$('.btn-circle').css("height", $('#icon-img').width());
+			$('.btn-circle').css("width", $('#icon-img').width());
 			$('.btn-circle').css("border-radius", $('#icon-img').width()/6);
 			$('.btn-circle').css("font-size", $('#icon-img').width()/4);
 
