@@ -40,9 +40,11 @@ exports.getAboutFileByID = function(user, name, callback){
     if (err) {
       callback("Unable to read survey info", null);
     } else {
-      var index = data.indexOf(GL.getAbout(3))+GL.getAbout(3).length;
-
-      callback(null, data.substring(index));
+      var startIndex = data.indexOf(GL.getAbout(3))+GL.getAbout(3).length;
+      var endIndex = data.indexOf(GL.getAbout(5));
+      console.log(startIndex);
+      console.log(endIndex);
+      callback(null, data.substring(startIndex, endIndex));
     }
   });
 }

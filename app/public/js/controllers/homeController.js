@@ -53,7 +53,7 @@ var sMemory = false;
 		' <div class="col-xs-3" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
 		'<div class="col-xs-3" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
 		'</div> </div> </div> <div class="modal-body"> <iframe height="450px" width="100%" src="/editor.html" id="editorFrame">'+
-		'</iframe><button id="select-about-submit" data-dismiss="modal" class="btn btn-raised btn-info">submit</button></div></div></div></div>');
+		'</iframe><button id="select-about-submit" data-dismiss="modal" class="btn btn-primary">submit</button></div></div></div></div>');
 	});
 
 	$(document).on('click', '#select-reupload', function(){
@@ -71,7 +71,7 @@ var sMemory = false;
 			'</div> </div> </div> <div class="modal-body"> <h3>Select a new csv file to upload:</h3> '+
 		'<form id="replace-survey" action="/replaceCSV" method="POST" enctype="multipart/form-data"> '+
 		'<hr/> <fieldset> <div class="control-group"> <input type="file" name="file" required="required"/> </div>'+
-		'<div class="form-buttons"> <hr><button id="replace-survey-submit" type="submit" class="btn btn-raised btn-info">'+
+		'<div class="form-buttons"> <hr><button id="replace-survey-submit" type="submit" class="btn btn-primary">'+
 		'submit</button> </div> </fieldset> </form> </div></div></div>');
 
 		$('#replace-survey').ajaxForm({
