@@ -25,7 +25,8 @@ html
           .modal-body
             .row
               #chart_div.col-xs-10.col-xs-offset-1(style='display: block;')
-            button.btn.btn-info#download(type='button' style='margin-left:35%;') Download
+            .row
+              .operation-btn(style="text-align:center")
             #comments-table
               table.table.table-striped.table-hover#comment-block(style="table-layout: fixed;")
                 tbody#comments-body

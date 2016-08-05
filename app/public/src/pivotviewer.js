@@ -324,7 +324,7 @@ var graphPara = {};
         if(PARA.view != "crosstab"){
           PARA.y_axis = null;
         }else{
-          PARA.y_axis = PV.cleanName($("#pv-altsort option:selected").html().toLowerCase());
+          PARA.y_axis = $("#pv-altsort option:selected").html();
         }
 
         PV.getGraphParameters();
@@ -2013,7 +2013,7 @@ var graphPara = {};
                       _filterList.push(_tiles[i]);
 
                 }
-                PARA.x_axis = PV.cleanName(_sortCategory.toLowerCase())
+                PARA.x_axis = _sortCategory;
                 PV.filterViews();
                 release();
             });
@@ -2291,7 +2291,7 @@ var graphPara = {};
         }
 
         _sortCategory = $('#pv-primsort option').eq(0).html();
-        PARA.x_axis = PV.cleanName(_sortCategory.toLowerCase())
+        PARA.x_axis = _sortCategory;
 
         var category = PivotCollection.getCategoryByName(_sortCategory);
         if (!category.uiInit) PV.initUICategory(category);
@@ -2335,12 +2335,12 @@ var graphPara = {};
               var para = _options.parameter;
 
               if(para.x_axis){
-                $("#pv-primsort option[search='"+para.x_axis+"']").prop('selected', true);
+                $("#pv-primsort option[search='"+PV.cleanName(para.x_axis.toLowerCase())+"']").prop('selected', true);
                 $("#pv-primsort").trigger("change");
               }
 
               if(para.view == "crosstab"){
-                $("#pv-altsort option[search='"+para.y_axis+"']").prop('selected', true);
+                $("#pv-altsort option[search='"+PV.cleanName(para.y_axis.toLowerCase())+"']").prop('selected', true);
                 $("#pv-altsort").trigger("change");
               }
 

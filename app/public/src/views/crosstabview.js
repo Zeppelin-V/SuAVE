@@ -22,12 +22,12 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
             $("#pv-primsortcontrols").before("<div id='pv-altsortcontrols' class='pv-toolbarpanel-sortcontrols'></div>");
             $("#pv-altsortcontrols").hide();
             $("#pv-primsort").clone(true).attr("id", "pv-altsort").appendTo($("#pv-altsortcontrols"));
-            
+
             PV.getGraphParameters();
             $("#pv-altsort").on("change", function (e) {
                 if (that.bucketsY == undefined) return; //initialzing
                 that.sortCategory2 = $("#pv-altsort option:selected").html();
-                PARA.y_axis = PV.cleanName(that.sortCategory2.toLowerCase());
+                PARA.y_axis = that.sortCategory2;
 
                 var category = PivotCollection.getCategoryByName(that.sortCategory2);
                 if (!category.uiInit) PV.initUICategory(category);

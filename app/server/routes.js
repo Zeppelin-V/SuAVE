@@ -458,6 +458,16 @@ module.exports = function(app) {
 		});
 	});
 
+	app.get('/getCommentsByParametersWithoutFilters', function(req, res){
+		AN.getCommentsByParametersWithoutFilters(req.query.para, function(e, o){
+			if(e){
+				res.status(400).send(e);
+			}else {
+				res.status(200).send(o);
+			}
+		});
+	});
+
 	app.get('/getCommentsById', function(req, res){
 		AN.getCommentsById(req.query.id, function(e, o){
 			if(e){

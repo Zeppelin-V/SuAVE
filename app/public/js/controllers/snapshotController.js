@@ -77,6 +77,36 @@ function SnapshotController()
       }
     });
 
+    $(document).on('click', '#toggle-filter', function(){
+      $("#panel-comments").html("");
+      if($('#toggle-filter').text() == 'See all comments'){
+        $('#toggle-filter').text('Less')
+        var para = {};
+        para.file = snapshotPara.file;
+        para.user = snapshotPara.user;
+        para.view = snapshotPara.view;
+        para.x_axis = snapshotPara.x_axis;
+        para.y_axis = snapshotPara.y_axis;
+
+        $.ajax({
+          url: "/getCommentsByParametersWithoutFilters",
+          type: "GET",
+          data: {"para": para},
+          success: function(output){
+            that.displayPara("on");
+            that.displayComments(output);
+          },
+          error: function(jqXHR){
+            console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+          }
+        });
+      }else{
+        $('#toggle-filter').text('See all comments');
+        that.getComments(snapshotPara._id);
+        that.displayPara();
+      }
+    });
+
     $("#copy-link").on("click", function(){
       document.querySelector('#share-link').select();
       document.execCommand('copy');
@@ -94,6 +124,7 @@ function SnapshotController()
     $("#show-about").on("click", function(){
       window.open(window.location+'/../../surveys/'+snapshotPara.user+"_"+snapshotPara.file+'about.html');
     });
+
 
     //get view options for the survey
     this.getViews = function(){
@@ -152,9 +183,9 @@ function SnapshotController()
     };
 
 
-    this.displayPara = function(){
+    this.displayPara = function(filter){
       $('#para-table').css('max-height',$(window).height()*0.2);
-
+      $("#panel-para").html("");
       if(snapshotPara.y_axis){
         $("#panel-para").append("<tr>");
         $("#panel-para").append("<td>X axis: "+snapshotPara.x_axis+"<br>Y axis: "+snapshotPara.y_axis+"</td>");
@@ -165,7 +196,7 @@ function SnapshotController()
         $("#panel-para").append("</tr>");
       }
 
-      if(snapshotPara.string_filters != "None"){
+      if(snapshotPara.string_filters != "None" && !filter){
         $("#panel-para").append("<tr>");
         $("#panel-para").append("<h4>String filters:</h4>");
         for(var i = 0; i < snapshotPara.string_filters.length; i++){
@@ -186,7 +217,7 @@ function SnapshotController()
         $("#panel-para").append("</tr>");
       }
 
-      if(snapshotPara.num_filters != "None"){
+      if(snapshotPara.num_filters != "None" && !filter){
         $("#panel-para").append("<tr>");
         $("#panel-para").append("<h4>Numeric filters:</h4>");
         for(var i = 0; i < snapshotPara.num_filters.length; i++){
@@ -212,12 +243,15 @@ function SnapshotController()
         data: {"id" : id},
         success: function(data){
           snapshotPara = data;
-          console.log(data);
+
           that.displayPara();
           that.getViews();
           that.getComments(id);
           google.charts.setOnLoadCallback(that.getGraph);
           $(".panel-title").append("File: "+data.file+" User: "+data.user);
+          if(data.num_filters != "None" || data.string_filters != "None"){
+            $('#switch-filter').append('<button id="toggle-filter" type="button" class="btn btn-info">See all comments</button>')
+          }
         },
         error: function(jqXHR){
           console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
@@ -226,7 +260,7 @@ function SnapshotController()
     };
 
     //show the google chart
-    this.getGraph = function(){
+    this.getGraph = function(data){
       var _width;
       if ($(window).width() <= 767) {
         _width = $('#comment-template').width()
@@ -407,5 +441,6 @@ function SnapshotController()
   		}
     };
 
-    if ($(window).width() <= 767) $('.btn-info').addClass('btn-sm')
+    if ($(window).width() <= 767) $('.btn-info').addClass('btn-sm');
+
 }

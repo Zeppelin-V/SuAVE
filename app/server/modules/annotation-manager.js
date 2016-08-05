@@ -122,6 +122,32 @@ exports.getCommentsByParameters = function(para, callback){
 	});
 };
 
+exports.getCommentsByParametersWithoutFilters = function(para, callback){
+  snapshots.find(para, {_id:1}).toArray(function(e, o){
+		if(e){
+			callback(e, null);
+		}else{
+
+			var ids = [];
+			for(var i = 0; i < o.length; i++){
+				ids.push(o[i]._id);
+			}
+			comments.find({para_id:{$in: ids}}).toArray(function(error, result){
+        if(error){
+					callback(error, null);
+				}else if(result.length == 0){
+					//check if there exists at least one comment in the database
+					callback(null, null);
+				}else{
+					//found any
+					callback(null, result);
+				}
+      });
+
+		}
+	});
+};
+
 exports.getCommentsById = function(id, callback){
 	var newId = new ObjectId(id);
 	comments.find({para_id: newId}).toArray(function(error, result){

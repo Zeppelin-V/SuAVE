@@ -5,6 +5,9 @@ function MainController()
 	var graphPara;
 	var comments;
 
+	google.charts.load("current", {packages:['corechart', 'geochart']});
+	var chart;
+
 	// bind event listeners to button clicks //
 		$('#retrieve-password-submit').click(function(){ $('#get-credentials-form').submit();});
 		$('#login-form #forgot-password').click(function(){
@@ -50,6 +53,20 @@ function MainController()
 																"<td class='comment-date'>"+data[i].date+"</td>"+
 																"</tr>");
 		}
+	};
+
+	var getComments = function(){
+		$.ajax({
+			url: "/getCommentsByParameters",
+			type: "GET",
+			data: {"para": PARA},
+			success: function(output){
+				displayComments(output);
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
 	};
 
 	$("#copy-link").on("click", function(){
@@ -116,17 +133,38 @@ function MainController()
 		}
 	});
 
-
-
-
-	google.charts.load("current", {packages:['corechart', 'geochart']});
-
-	var chart;
-
 	// Wait for the chart to finish drawing before calling the getImageURI() method.
 	$(document).on('click', '#download', function(){
 		//window.open(chart.getImageURI(), 'Download');
 		window.open(chart.getImageURI(), "_blank")
+	});
+
+	$(document).on('click', '#toggle-filter', function(){
+		$("#comments-body").html("");
+		if($('#toggle-filter').text() == 'See all comments'){
+			$('#toggle-filter').text('Less')
+			var para = {};
+			para.file = PARA.file;
+			para.user = PARA.user;
+			para.view = PARA.view;
+			para.x_axis = PARA.x_axis;
+			para.y_axis = PARA.y_axis;
+			console.log(para);
+			$.ajax({
+				url: "/getCommentsByParametersWithoutFilters",
+				type: "GET",
+				data: {"para": para},
+				success: function(output){
+					displayComments(output);
+				},
+				error: function(jqXHR){
+					console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+				}
+			});
+		}else{
+			$('#toggle-filter').text('See all comments');
+			getComments();
+		}
 	});
 
   $(document).on('click', '#comment', function(){
@@ -144,17 +182,15 @@ function MainController()
 		if(PARA.string_filters.length == 0) PARA.string_filters = "None";
 		if(PARA.num_filters.length == 0) PARA.num_filters = "None";
 
-		$.ajax({
-			url: "/getCommentsByParameters",
-			type: "GET",
-			data: {"para": PARA},
-			success: function(output){
-				displayComments(output);
-			},
-			error: function(jqXHR){
-				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
-			}
-		});
+		$('.operation-btn').html("");
+		if(PARA.num_filters != "None" || PARA.string_filters != "None"){
+			$('.operation-btn').append('<button id="download" type="button" class="btn btn-info">Download</button>');
+			$('.operation-btn').append('<button id="toggle-filter" type="button" class="btn btn-info">See all comments</button>')
+		}else{
+			$('.operation-btn').append('<button id="download" type="button" class="btn btn-info">Download</button>');
+		}
+
+		getComments();
 
 		//According to the PARA, draw charts
 		if(graphPara.view == "bucket"){
