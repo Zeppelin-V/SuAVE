@@ -24,9 +24,9 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 	}
 });
 
-var surveys = db.collection('surveys_test');
-var snapshots = db.collection('snapshots_test');
-var comments = db.collection('comments_test');
+var surveys = db.collection('surveys');
+var snapshots = db.collection('snapshots');
+var comments = db.collection('comments');
 
 
 exports.getSnapshotById = function(id, callback){
