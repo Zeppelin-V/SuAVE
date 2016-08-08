@@ -20,7 +20,7 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 		console.log(e);
 	}
 });
-var accounts = db.collection('accounts_test');
+var accounts = db.collection('accounts');
 
 /* login validation methods */
 
