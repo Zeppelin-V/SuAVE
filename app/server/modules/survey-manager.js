@@ -23,7 +23,7 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 	}
 });
 
-var surveys = db.collection('surveys_test');
+var surveys = db.collection('surveys');
 
 /*Create a new survey
 para: 1. files: req parameter
