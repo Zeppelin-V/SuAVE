@@ -59,7 +59,7 @@ $(document).ready(function(){
   }
   $("#help").attr("onclick", "window.open('"+aboutPath+"','_blank')");
   $("<header>").load(aboutPath + " #about-title", function(){
-    aboutTitle = "About " + $(this).text() + " Survey";
+    //aboutTitle = "About " + $(this).text() + " Survey";
     $('.tagline').text($(this).text());
   });
 

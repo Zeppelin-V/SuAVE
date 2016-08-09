@@ -47,6 +47,7 @@
     $("#help").attr("href", aboutPath);
     $("<header>").load(aboutPath + " #about-title", function(){
       aboutTitle = "About " + $(this).text() + " Survey";
+      console.log($(this).text());
       $('.tagline').text($(this).text());
     });
 </script>

@@ -27,8 +27,8 @@ var sMemory = false;
 			$.ajax({
 				url: "/changeAboutFileByID",
 				type: "POST",
-				data: {"name" : surveys[SID].name, "user": user,
-					"data": data},
+				data: {"name" : surveys[SID].name, "fullname": surveys[SID].fullname,
+				 "user": user, "data": data},
 				success: function(code){
 				},
 				error: function(jqXHR){
@@ -673,7 +673,7 @@ var sMemory = false;
 			$('#tab1-'+i).append('<div class="row survey-title"> '+
 			'<div class="col-xs-6"><div class="icon-img">'+
 			'<button id="survey-'+i+'" type="button" class="btn btn-primary btn-circle surveys-click" style="width:100%;"> show</button> </div></div>'+
-			'<div class="col-xs-6 survey-info"><h4 style="text-align:center;">'+surveys[i].name+'</h4>'+
+			'<div class="col-xs-6 survey-info"><h4 style="text-align:center;">'+surveys[i].fullname+'</h4>'+
 			'<p style="text-align:center;">Created from: </p>'+
 			'<a id="source-'+i+'" class="file-source" style="text-align:center;display:block;">'+surveys[i].originalname+'</a>'+
 			'<p style="text-align:center;">'+ dateString+'</p>'+

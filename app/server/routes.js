@@ -272,7 +272,7 @@ module.exports = function(app) {
 			}	else{
 				//Set the default collection for new survey
 				var defaultCol = 1;
-				req.body.name = req.body.name.replace(/ /g,"-");
+				req.body.name = req.body.name.replace(/[^\w]/gi, '_');
 				SM.changeCollection(req, req.cookies.user, {"name": "default"},
 					function(e){
 					if(e){
@@ -309,7 +309,7 @@ module.exports = function(app) {
 	});
 
 	app.post('/changeAboutFileByID', function(req, res){
-		CL.changeAboutFileByID(req.cookies.user, req.body.name, req.body.data,
+		CL.changeAboutFileByID(req.cookies.user, req.body.name, req.body.fullname, req.body.data,
 			function(e){
 				if(e){
 					res.status(400).send(e);

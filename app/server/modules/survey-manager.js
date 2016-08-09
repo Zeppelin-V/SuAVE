@@ -32,7 +32,9 @@ para: 1. files: req parameter
 */
 exports.createNewSurvey = function(files, user, callback){
 	//find the survey in database
-  surveys.findOne({"name": files.body.name, "user": user}, function(e, o){
+	var name = files.body.name.replace(/[^\w]/gi, '_');
+  surveys.findOne({"name": name, "user": user}, function(e, o){
+		console.log(o);
 		if (o){
 			callback("Name is taken");
 		}
@@ -42,7 +44,7 @@ exports.createNewSurvey = function(files, user, callback){
 				if (!fs.existsSync(__dirname + "/../../public/surveys")){
 			    fs.mkdirSync(__dirname + "/../../public/surveys");
 			  }
-				var name = files.body.name.replace(/ /g,"-");
+
         var newPath = __dirname + "/../../public/surveys/"+user+"_"
           +name+".csv";
 				//save the survey
@@ -52,7 +54,7 @@ exports.createNewSurvey = function(files, user, callback){
           }else{
 						var date = new Date();
 						//save into the database
-            surveys.insert({"name": name, "user": user,
+            surveys.insert({"fullname":files.body.name ,"name": name, "user": user,
             "csv": newPath, "view": "grid", "views": 111000, "collection": "default",
 						 "hidden": 0, "date":date.toString(), "originalname": files.file.originalname}, callback);
           }
@@ -61,7 +63,7 @@ exports.createNewSurvey = function(files, user, callback){
 				//initialize the about survey page
 				var aboutPath = __dirname + "/../../public/surveys/"+user+"_"
           +name+"about.html"
-					var aboutContent = GL.getAbout(1) + name + GL.getAbout(2)
+					var aboutContent = GL.getAbout(1) + files.body.name + GL.getAbout(2)
 					+ GL.getAbout(3) + GL.getAbout(4) + GL.getAbout(5);
 				fs.writeFile(aboutPath, aboutContent, function(err){
           if(err){
@@ -87,20 +89,23 @@ exports.replaceSurvey = function(files, user, callback){
     else{
 			//reset the survey's paramters in database
 			surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
-			{$set: {collection: "default"}}, {new:true}, function(e, o){
+			{$set: {collection: "default", iName: "", "originalname": files.file.originalname}},
+			{new:true}, function(e, o){
 				if(e) callback(e);
 			});
 
+			/*
 			surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
 			{$set: {iName: ""}}, {new:true}, function(e, o){
 				if(e) callback(e);
-			});
+			});*/
 
 			//read new raw csv file
       fs.readFile(files.file.path, function(err, data){
 				if (!fs.existsSync(__dirname + "/../../public/surveys")){
 			    fs.mkdirSync(__dirname + "/../../public/surveys");
 			  }
+
 				var name = files.body.name.replace(/ /g,"-");
         var newPath = __dirname + "/../../public/surveys/"+user+"_"
           +name+".csv";

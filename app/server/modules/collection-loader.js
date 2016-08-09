@@ -7,6 +7,7 @@ var spawn = require('child_process').spawn;
 var GL = require('../global');
 //var sharp = require('sharp');
 
+
 //load csv file by path
 exports.loadCSV = function(filePath, callback){
   fs.readFile(filePath, 'utf-8', function (err, data) {
@@ -20,16 +21,15 @@ exports.loadCSV = function(filePath, callback){
   });
 };
 
-exports.changeAboutFileByID = function(user, name, data, callback){
+exports.changeAboutFileByID = function(user, name, fullname, data, callback){
   var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+"about.html";
-
-  var newData = GL.getAbout(1) + name + GL.getAbout(2) + GL.getAbout(3) + data +GL.getAbout(5);
+  var newData = GL.getAbout(1) + fullname + GL.getAbout(2) + GL.getAbout(3) + data +GL.getAbout(5);
 
   fs.writeFile(filePath, newData, function(err) {
     if (err) {
       callback(err);
     }else{
-      console.log("successful");
+      console.log("successfully rewrote about file");
     }
   });
 }
