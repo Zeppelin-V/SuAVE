@@ -2383,9 +2383,9 @@ var graphPara = {};
 
             console.log(canvasContext);
             //Init Tile Controller and start animation loop
-            var tiles = TileController.initTiles(PivotCollection.items, baseCollectionPath, canvasContext);
+            //var tiles = TileController.initTiles(PivotCollection.items, baseCollectionPath, canvasContext);
 
-            console.log(tiles);
+            //console.log(tiles);
             //console.log(_imageController._items);
             //$.publish("/PivotView/Models/Settings/Loaded");
             var mainPanelHeight = $(window).height() - $('.pv-toolbarpanel').height() - 30;
@@ -2417,7 +2417,7 @@ var graphPara = {};
             }
 
             _views[_currentView].activate();
-            //PV.filterCollection();
+            PV.filterCollection();
             console.log(_tiles);
           }, 300);
         });*/

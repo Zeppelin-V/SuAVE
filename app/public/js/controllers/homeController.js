@@ -433,6 +433,15 @@ var sMemory = false;
 		var file = surveys[id.slice(-1)].name;
 
 		var that = this;
+		$('.modal-confirm').modal('toggle');
+		$('.modal-confirm .modal-header h3').text('Warning!');
+		$('.modal-confirm p').append("Are you sure to delete this survey along with all its annotations?");
+		$('.confirm-delete').attr('id', file);
+	});
+
+	$(document).on('click', '.confirm-delete', function(){
+		var file = $(this).attr('id');
+		$('.modal-confirm').modal('toggle');
 		$.ajax({
 			url: "/deleteSurvey",
 			type: "POST",
@@ -662,7 +671,7 @@ var sMemory = false;
 			var dateString = surveys[i].date;
 
 			$('#tab1-'+i).append('<div class="row survey-title"> '+
-			'<div class="col-xs-6"><div id="icon-img">'+
+			'<div class="col-xs-6"><div class="icon-img">'+
 			'<button id="survey-'+i+'" type="button" class="btn btn-primary btn-circle surveys-click" style="width:100%;"> show</button> </div></div>'+
 			'<div class="col-xs-6 survey-info"><h4 style="text-align:center;">'+surveys[i].name+'</h4>'+
 			'<p style="text-align:center;">Created from: </p>'+
@@ -702,11 +711,11 @@ var sMemory = false;
 				'</div></div></div>'
 			);
 
-			$('.btn-circle').css("width", $('#icon-img').width());
-			$('.btn-circle').css("height", $('#icon-img').width());
-			$('.btn-circle').css("width", $('#icon-img').width());
-			$('.btn-circle').css("border-radius", $('#icon-img').width()/6);
-			$('.btn-circle').css("font-size", $('#icon-img').width()/4);
+			var width = $('.tab-content').width()/2-30;
+			$('.btn-circle').css("width", width);
+			$('.btn-circle').css("height", width);
+			$('.btn-circle').css("border-radius", width/6);
+			$('.btn-circle').css("font-size", width/4);
 
 			var cw = $('.tab-content').width();
 			$('.tab-content').css({'height':0.65*cw+'px'});
@@ -723,12 +732,14 @@ var sMemory = false;
 	}
 
 	$(window).on('resize', function () {
-		$('.btn-circle').css("width", $('#icon-img').width());
-		$('.btn-circle').css("height", $('#icon-img').width());
-		$('.btn-circle').css("border-radius", $('#icon-img').width()/6);
-		$('.btn-circle').css("font-size", $('#icon-img').width()/4);
 		var cw = $('.tab-content').width();
 		$('.tab-content').css({'height':0.6*cw+'px'});
+		var width = $('.tab-content').width()/2-30;
+		$('.btn-circle').css("width", width);
+		$('.btn-circle').css("height", width);
+		$('.btn-circle').css("border-radius", width/6);
+		$('.btn-circle').css("font-size", width/4);
+
 	});
 	// redirect to homepage on new survey creation
 		$('#help-button').click(function(){window.open("https://docs.google.com/document/d/1f4ABDP1YrEU3vRxYkIPHl9dyGTT4w3pqfRNI2Kn97Ic/edit#heading=h.vcpylem4gnc7")});
