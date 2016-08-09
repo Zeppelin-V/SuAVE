@@ -522,8 +522,11 @@ var sMemory = false;
 						else if (count > 31){
 							count = 0;
 							defaultIndex = 33;
+						}else if(data.length <= 10){
+							console.log(defaultIndex);
+							defaultIndex = brightColorSet[i];
 						}
-
+						console.log(data.length);
 
 						$('#color-drop-'+i).ddslick({
 							data:colorImg,

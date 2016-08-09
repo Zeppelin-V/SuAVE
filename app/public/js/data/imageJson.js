@@ -34,6 +34,7 @@ var colorIndex = {
   "maroon":33
 };
 
+var brightColorSet = [32, 28, 24, 21, 20, 15, 13, 9, 7, 3];
 
 var genderIndex = {
   "male":1,
