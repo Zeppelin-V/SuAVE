@@ -17,7 +17,6 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
         this.csvUriNoProxy = csvUri;
         if (proxy) this.csvUri = proxy + csvUri;
         else this.csvUri = csvUri;
-        console.log(csvUri);
     },
     loadCollection: function (collection) {
         this.collection = collection;

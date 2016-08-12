@@ -42,8 +42,6 @@ exports.getAboutFileByID = function(user, name, callback){
     } else {
       var startIndex = data.indexOf(GL.getAbout(3))+GL.getAbout(3).length;
       var endIndex = data.indexOf(GL.getAbout(5));
-      console.log(startIndex);
-      console.log(endIndex);
       callback(null, data.substring(startIndex, endIndex));
     }
   });

@@ -296,6 +296,7 @@ var graphPara = {};
 
     /// Set the current view
     PV.selectView = function (view) {
+
         var number;
         if (typeof view == 'string' || view instanceof String) {
             for (var i = 0; i < _views.length; i++) {
@@ -314,7 +315,6 @@ var graphPara = {};
 
         $('#pv-viewpanel-view-' + number + '-image').attr('src', _views[number].getButtonImageSelected());
         _views[number].activate();
-
 
         _currentView = number;
         if(_currentView == 1) PV.getBucketFilters();
@@ -1713,7 +1713,7 @@ var graphPara = {};
 
         // Minus an extra 25 to leave room for the version number to be added underneath
         $(".pv-filterpanel-accordion").css('height', ($(".pv-filterpanel").height() - $(".pv-filterpanel-search").height() - 75) -
-            $("#pv-long-search-box").height() + "px");
+        $("#pv-long-search-box").height() + "px");
 
         $(".pv-filterpanel-accordion").accordion({ icons: false});
         $('#pv-primsortcontrols').append('<select id="pv-primsort" class="pv-toolbarpanel-sort">' + sort.join('') + '</select>');
@@ -2329,8 +2329,8 @@ var graphPara = {};
 
             if (_options.View != undefined) PV.selectView(_options.View);
             else PV.selectView(0);
+            //return;
             TileController.beginAnimation();
-
             if(_options.parameter){
               var para = _options.parameter;
 
@@ -2359,8 +2359,6 @@ var graphPara = {};
                     }, 3000);
                   });
                 }else{
-                  console.log(para);
-                  console.log(_filterList);
                   $(".pv-viewpanel-view").promise().done(function(){
                     setTimeout(function(){
                       PV.getCurrentView().handleClick({type: "init", id: para.selected_id});
@@ -2369,25 +2367,13 @@ var graphPara = {};
                 }
               }
             }
+
             release();
         });
 
-        //TODO: finsih the resizing part
-        /*
+        //set up window resizing listener
         $( window ).resize(function() {
           delay(function(){
-            var baseCollectionPath = PivotCollection.imageBase;
-            if (!(baseCollectionPath.indexOf('http', 0) >= 0 || baseCollectionPath.indexOf('www.', 0) >= 0))
-                baseCollectionPath = PivotCollection.base.substring(0, PivotCollection.base.lastIndexOf('/') + 1) + baseCollectionPath;
-            var canvasContext = $('.pv-canvas')[0].getContext("2d");
-
-            console.log(canvasContext);
-            //Init Tile Controller and start animation loop
-            //var tiles = TileController.initTiles(PivotCollection.items, baseCollectionPath, canvasContext);
-
-            //console.log(tiles);
-            //console.log(_imageController._items);
-            //$.publish("/PivotView/Models/Settings/Loaded");
             var mainPanelHeight = $(window).height() - $('.pv-toolbarpanel').height() - 30;
 
             //adjust mainPanel
@@ -2399,10 +2385,18 @@ var graphPara = {};
 
             //adjust canvas
             $('.pv-canvas').css('width', _self.width() );
-            //$('.pv-canvas').css('height', mainPanelHeight );
+            $('.pv-canvas').css('height', mainPanelHeight );
 
             //adjust filterPanel
-            $('.pv-filterpanel').css('height', $(window).height() - $('.pv-toolbarpanel').height() - 30-13 + 'px');
+            var filterPanel = $('.pv-filterpanel');
+            filterPanel.css('height', mainPanelHeight - 13 + 'px');
+            $('.pv-filterpanel-search').css('width', filterPanel.width() - 15 + 'px');
+            $(".pv-filterpanel-accordion").css('height', ($(".pv-filterpanel").height() - $(".pv-filterpanel-search").height() - 75) -
+            $("#pv-long-search-box").height() + "px");
+
+            $(".pv-filterpanel-accordion").accordion({ icons: false});
+
+            //$('.pv-filterpanel').css('height', $(window).height() - $('.pv-toolbarpanel').height() - 30-13 + 'px');
 
             var width = _self.width();
             var height = $('.pv-mainpanel').height();
@@ -2418,9 +2412,8 @@ var graphPara = {};
 
             _views[_currentView].activate();
             PV.filterCollection();
-            console.log(_tiles);
           }, 300);
-        });*/
+        });
 
     });
 

@@ -356,6 +356,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
 
         for (var i = 0; i < this.tiles.length; i++) {
             var tile = this.tiles[i];
+            this.currentWidth = $('.pv-canvas').width();
             tile._locations[0].startx = tile._locations[0].x;
             tile._locations[0].starty = tile._locations[0].y;
             tile.startwidth = tile.width;
@@ -426,7 +427,8 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
                 var tile = bucket.tiles[i];
 
                 if (!tile.firstFilterItemDone) {
-                    if (initTiles) {
+
+                    if (true) {
                         tile._locations[0].startx = tile._locations[0].x;
                         tile._locations[0].starty = tile._locations[0].y;
                         tile.startwidth = tile.width;

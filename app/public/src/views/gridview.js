@@ -127,6 +127,7 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
             this.setTilePositions(this.rowscols, this.tiles, this.currentOffsetX, this.currentOffsetY, true, false, 1000);
             pt1Timeout = 1000;
         }
+
         setTimeout(function () {
             for (var i = 0; i < that.tiles.length; i++) {
                 //setup tiles
@@ -137,7 +138,6 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
                 tile.startwidth = tile.width;
                 tile.startheight = tile.height;
 
-
                 if (tile.filtered && (Settings.showMissing || !tile.missing)) continue;
                 tile.start = PivotViewer.Utils.now();
                 tile.end = tile.start + 1000;
@@ -147,7 +147,6 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
                 tile.destinationwidth = 1;
                 tile.destinationheight = 1;
             }
-
 
             // recalculate max width of images in filterList
             that.maxRatio = TileController._imageController.getRatio(that.tiles[0].item.img);
@@ -170,6 +169,7 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
                     tile.origwidth = that.rowscols.TileHeight / TileController._imageController.getRatio(tile.item.img);
                     tile.origheight = that.rowscols.TileHeight;
                 }
+
                 that.setTilePositions(that.rowscols, that.filterList, that.offsetX, that.offsetY, false, false, 1000);
             }, pt2Timeout);
 
@@ -181,6 +181,7 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
 
     /// Sets the tiles position based on the calculateDimensions layout function
     setTilePositions: function (rowscols, tiles, offsetX, offsetY, initTiles, keepColsRows, milliseconds) {
+
         //re-use previous columns
         var columns = (keepColsRows && this.rowscols)  ? this.rowscols.Columns : rowscols.Columns;
         if (!keepColsRows) this.rowscols = rowscols;

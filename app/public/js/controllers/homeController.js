@@ -40,7 +40,7 @@ var sMemory = false;
 	});
 
 	$(document).on('click', '#select-icons', function(){
-		$('.surveys-edit').click();
+		$('#edit-'+SID).click();
 	});
 
 	$(document).on('click', '#select-about', function(){
@@ -523,10 +523,8 @@ var sMemory = false;
 							count = 0;
 							defaultIndex = 33;
 						}else if(data.length <= 10){
-							console.log(defaultIndex);
 							defaultIndex = brightColorSet[i];
 						}
-						console.log(data.length);
 
 						$('#color-drop-'+i).ddslick({
 							data:colorImg,

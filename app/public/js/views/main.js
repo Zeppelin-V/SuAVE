@@ -21,7 +21,8 @@ $(document).ready(function(){
   suave_ifr.style.border="0";
   suave_ifr.frameborder ='0';
   document.body.appendChild(suave_ifr);
-
+  //$('.embed-responsive').append(suave_ifr);
+  $('#pivot_window').addClass('embed-responsive-item');
   /*initialize banner*/
 
   var aboutTitle;

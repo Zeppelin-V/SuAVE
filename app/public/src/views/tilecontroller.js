@@ -35,7 +35,6 @@ PivotViewer.Views.TileController = Object.subClass({
         return item;
     },
     initTiles: function (pivotCollectionItems, baseCollectionPath, canvasContext) {
-
         for (var i = 0; i < pivotCollectionItems.length; i++) {
             var tile = new PivotViewer.Views.Tile(this._imageController);
             tile.item = pivotCollectionItems[i];
@@ -45,8 +44,6 @@ PivotViewer.Views.TileController = Object.subClass({
             tile._locations.push(tileLocation);
             this._tiles.push(tile);
         }
-
-
         return this._tiles;
     },
 
@@ -57,6 +54,9 @@ PivotViewer.Views.TileController = Object.subClass({
 
         if (this._tiles.length > 0 && this._tiles[0].context != null) {
             context = this._tiles[0].context;
+            //update canvas information while window size changes
+            context.canvas.width = $('.pv-canvas').width();
+            context.canvas.height = $('.pv-canvas').height();
             var isZooming = false;
             //Set tile properties
             for (var i = 0; i < this._tiles.length; i++) {
@@ -128,7 +128,6 @@ PivotViewer.Views.TileController = Object.subClass({
             this._isZooming = isZooming;
             $.publish("/PivotViewer/ImageController/Zoom", [this._isZooming]);
         }
-
         //Clear drawing area
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         //once properties set then draw
