@@ -8,6 +8,7 @@ function HomeController()
 	var shapeData=[];
 	var colorData=[];
 	var columns; //tags memory
+	var oldText; //tag name
 	var SID;
 
 //memory settings
@@ -55,7 +56,7 @@ var sMemory = false;
 			'<div class="btn-group" role="group">'+
 			'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
 			'<div class="btn-group" role="group">'+
-			'<button id="select-tags"  class="btn btn btn-default">Edit Tags</button> </div>'+
+			'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
 			'<div class="btn-group" role="group">'+
 			'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
 			'<div class="btn-group" role="group">'+
@@ -77,7 +78,7 @@ var sMemory = false;
 			'<div class="btn-group" role="group">'+
 			'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
 			'<div class="btn-group" role="group">'+
-			'<button id="select-tags"  class="btn btn btn-default">Edit Tags</button> </div>'+
+			'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
 			'<div class="btn-group" role="group">'+
 			'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
 			'<div class="btn-group" role="group">'+
@@ -93,6 +94,7 @@ var sMemory = false;
 			type: "GET",
 			data: {"name" : surveys[SID].name, "user": user},
 			success: function(result){
+
 				columns = result.columns;
 				var tags = result.tags;
 				var tagNames = [];
@@ -116,7 +118,9 @@ var sMemory = false;
 					'</div>'
 				);
 
+
 				for(var i = 0; i < tags.length; i++){
+					/*
 					$('#tag-list').append(
 						'<a class="list-group-item">'+
 						'<button class="close close-tag">x</button>'+
@@ -124,8 +128,39 @@ var sMemory = false;
 						'<input type="text" value="'+tags[i].values.join()+'"data-role="tagsinput">'+
 						'</a>'
 					);
+					tagNames.push(tags[i].name);*/
+					$('#tag-list').append(
+						'<a class="list-group-item">'+
+							'<button class="close close-tag">x</button>'+
+							'<h4 id="tag-header-'+i+'" class="list-group-item-heading">'+tags[i].name+'</h4>'+
+							'<select id="tag-'+i+'" class="selectpicker" data-width="100%" multiple>'+
+							  '<optgroup label="Column Data Type" data-max-options="1">'+
+							    '<option data-subtext="will be shown as a histogram and a slider in the filter panel">#number</option>'+
+							    '<option data-subtext="will be shown to support filtering by dates, in the filter panel">#date</option>'+
+							    '<option data-subtext="the filter panel will include a search box for such variables at the top of the panel">#long</option>'+
+									'<option data-subtext="will be shown as a link to an external resource in the information panel">#link</option>'+
+									'<option data-subtext="will be shown as a special type of histogram in the filter panel.">#ordinal</option>'+
+									'<option data-subtext="expects a well-formatted address that will be geocoded on the fly">#textlocation</option>'+
+									'<option data-subtext="URL to be invoked as user clicks on the title">#href</option>'+
+							  '</optgroup>'+
+							  '<optgroup label="Hidden in Filter Panel" data-max-options="1">'+
+							    '<option data-subtext="won’t appear in the filter panel or in the sorting dropdown list">#hidden</option>'+
+							  '</optgroup>'+
+							'</select>'+
+						'</a>'
+					);
+					$('#tag-'+i).selectpicker('show');
 					tagNames.push(tags[i].name);
+					//select options
+					$('#tag-'+i).selectpicker('val', tags[i].values);
+					$('#tag-header-'+i).editable();
 				}
+
+				//listeners on column name changes
+				$('.list-group-item-heading').on('save', function(e, params) {
+					var index = columns.indexOf(oldText);
+					columns[index] = params.newValue;
+				});
 
 				for(var i = 0; i < columns.length; i++){
 					if(tagNames.indexOf(columns[i]) == -1 && columns[i] != '#img' && columns[i] != '#name'){
@@ -134,7 +169,6 @@ var sMemory = false;
 						);
 					}
 				}
-				turnOnTag('.list-group-item > input');
 			},
 			error: function(jqXHR){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
@@ -145,18 +179,44 @@ var sMemory = false;
 
 	});
 
+
 //tags listeners
+$(document).on('click', '.list-group-item-heading', function(){
+	oldText = $(this).text();
+});
+
+
 $(document).on('click', '#tag-item-select li', function(){
 	var text = $('a', this).html();
 	$('#tag-list').prepend(
 		'<a class="list-group-item">'+
-		'<button class="close close-tag">x</button>'+
-		'<h4 class="list-group-item-heading">'+text+'</h4>'+
-		'<input id="'+cleanName(text)+'" type="text" data-role="tagsinput">'+
+			'<button class="close close-tag">x</button>'+
+			'<h4 id="tag'+cleanName(text)+'" class="list-group-item-heading">'+text+'</h4>'+
+			'<select id="'+cleanName(text)+'" class="selectpicker" data-width="100%" multiple>'+
+				'<optgroup label="Column Data Type" data-max-options="1">'+
+					'<option data-subtext="will be shown as a histogram and a slider in the filter panel">#number</option>'+
+					'<option data-subtext="will be shown to support filtering by dates, in the filter panel">#date</option>'+
+					'<option data-subtext="the filter panel will include a search box for such variables at the top of the panel">#long</option>'+
+					'<option data-subtext="will be shown as a link to an external resource in the information panel">#link</option>'+
+					'<option data-subtext="will be shown as a special type of histogram in the filter panel.">#ordinal</option>'+
+					'<option data-subtext="expects a well-formatted address that will be geocoded on the fly">#textlocation</option>'+
+					'<option data-subtext="URL to be invoked as user clicks on the title">#href</option>'+
+				'</optgroup>'+
+				'<optgroup label="Hidden in Filter Panel" data-max-options="1">'+
+					'<option data-subtext="won’t appear in the filter panel or in the sorting dropdown list">#hidden</option>'+
+				'</optgroup>'+
+			'</select>'+
 		'</a>'
 	);
 
-	turnOnTag('#'+cleanName(text));
+	$('#tag'+cleanName(text)).editable();
+	$('#'+cleanName(text)).selectpicker('show');
+	//listeners on column name changes
+	$('#tag'+cleanName(text)).on('save', function(e, params) {
+		var index = columns.indexOf(oldText);
+		columns[index] = params.newValue;
+	});
+
 	$(this).remove();
 });
 
@@ -175,10 +235,8 @@ $(document).on('click', '.close-tag', function(){
 $(document).on('click', '#select-tags-submit',  function(){
 	$("#tag-list").children('.list-group-item').each(function() {
 			var index = columns.indexOf($('h4', this).html());
-			$('.bootstrap-tagsinput', this).children('span').each(function() {
-				columns[index] += $(this).text();
-			});
-
+			var text = $('.dropdown-toggle', this).children('.filter-option').text().replace(',','');
+			if(text != 'Nothing selected') columns[index] += text;
 	});
 
 	$.ajax({
@@ -208,7 +266,7 @@ $(document).on('click', '#select-tags-submit',  function(){
 			'<div class="btn-group" role="group">'+
 			'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
 			'<div class="btn-group" role="group">'+
-			'<button id="select-tags"  class="btn btn btn-default">Edit Tags</button> </div>'+
+			'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
 			'<div class="btn-group" role="group">'+
 			'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
 			'<div class="btn-group" role="group">'+
@@ -285,7 +343,7 @@ $(document).on('click', '#select-tags-submit',  function(){
 		'<div class="btn-group" role="group">'+
 		'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
 		'<div class="btn-group" role="group">'+
-		'<button id="select-tags"  class="btn btn btn-default">Edit Tags</button> </div>'+
+		'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
 		'<div class="btn-group" role="group">'+
 		'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
 		'<div class="btn-group" role="group">'+

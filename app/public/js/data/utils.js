@@ -377,6 +377,7 @@ function generateImgJson(options){
   return result;
 }
 
+/*
 function turnOnTag(element){
   $(element).tagsinput({
     typeahead: {
@@ -398,7 +399,7 @@ function turnOnTag(element){
       $('.bootstrap-tagsinput > input').val('');
     }, 10);
   });
-}
+}*/
 
 function cleanName(uncleanName){
   var name = uncleanName.replace(/[^\w]/gi, '_');
