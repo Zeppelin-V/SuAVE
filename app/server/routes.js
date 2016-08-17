@@ -571,6 +571,27 @@ module.exports = function(app) {
 		}
 	});
 
+//tags
+app.get('/getColumnsAndTags', function(req, res){
+	CL.getColumnsAndTags(req.query.user, req.query.name, function(e, o){
+		if(e){
+			res.status(400).send(e);
+		}else{
+			res.status(200).send(o);
+		}
+	});
+});
+
+app.post('/changeTagsForSurvey', function(req, res){
+	CL.changeTagsForSurvey(req.body.user, req.body.name, req.body.columns, function(e, o){
+		if(e){
+			res.status(400).send(e);
+		}else{
+			res.status(200).send(o);
+		}
+	});
+});
+
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
 
 };

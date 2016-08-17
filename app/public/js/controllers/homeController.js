@@ -7,6 +7,7 @@ function HomeController()
 	var collection = {};
 	var shapeData=[];
 	var colorData=[];
+	var columns; //tags memory
 	var SID;
 
 //memory settings
@@ -46,15 +47,153 @@ var sMemory = false;
 	$(document).on('click', '#select-about', function(){
 		$('.modal-select-collection').empty();
 		//$('.modal-select-collection').css("width", "800px");
-		$('.modal-select-collection').append('<div class="modal-dialog"><div class="modal-content">'+
-		'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
-		' <div class="container" style="width:100%;"> <div  class="row"> '+
-		'<div class="col-xs-3" "> <button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
-		' <div class="col-xs-3" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
-		'<div class="col-xs-3" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
-		'</div> </div> </div> <div class="modal-body"> <iframe height="450px" width="100%" src="/editor.html" id="editorFrame">'+
+		$('.modal-select-collection').append(
+			'<div class="modal-dialog"><div class="modal-content">'+
+			'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
+			' <div class="container" style="width:100%;"> <div  class="row"> '+
+			'<div class="btn-group btn-group-justified" role="group">'+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-tags"  class="btn btn btn-default">Edit Tags</button> </div>'+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+			'</div></div> </div> </div> <div class="modal-body"> <iframe height="450px" width="100%" src="/editor.html" id="editorFrame">'+
 		'</iframe><button id="select-about-submit" data-dismiss="modal" class="btn btn-primary">submit</button></div></div></div></div>');
+
+		$('#select-about').button('toggle');
 	});
+
+	$(document).on('click', '#select-tags', function(){
+		$('.modal-select-collection').empty();
+		//$('.modal-select-collection').css("width", "800px");
+		$('.modal-select-collection').append(
+			'<div class="modal-dialog"><div class="modal-content">'+
+			'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
+			' <div class="container" style="width:100%;"> <div  class="row"> '+
+			'<div class="btn-group btn-group-justified" role="group">'+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-tags"  class="btn btn btn-default">Edit Tags</button> </div>'+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+			'</div></div> </div> </div> <div class="modal-body">'+
+			'<button id="select-tags-submit" data-dismiss="modal" class="btn btn-primary">submit</button></div></div></div></div>');
+
+		$('#select-tags').button('toggle');
+
+
+		$.ajax({
+			url: "/getColumnsAndTags",
+			type: "GET",
+			data: {"name" : surveys[SID].name, "user": user},
+			success: function(result){
+				columns = result.columns;
+				var tags = result.tags;
+				var tagNames = [];
+
+				$('.modal-select-collection .modal-dialog .modal-body').prepend(
+					'<div class="panel panel-primary">'+
+						'<div class="panel-heading" id="tags-heading">'+
+							'Tags: number, date, long, link, ordinal, textlocation, hidden, href'+
+						'</div>'+
+					'</div>'+
+					'<div class="dropdown">'+
+						'<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">'+
+							'Add item'+
+							'<span class="caret"></span>'+
+						'</button>'+
+						'<ul id="tag-item-select" class="dropdown-menu" aria-labelledby="dropdownMenu1">'+
+						'</ul>'+
+					'</div>'+
+					'<br>'+
+					'<div id="tag-list" class="list-group">'+
+					'</div>'
+				);
+
+				for(var i = 0; i < tags.length; i++){
+					$('#tag-list').append(
+						'<a class="list-group-item">'+
+						'<button class="close close-tag">x</button>'+
+						'<h4 class="list-group-item-heading">'+tags[i].name+'</h4>'+
+						'<input type="text" value="'+tags[i].values.join()+'"data-role="tagsinput">'+
+						'</a>'
+					);
+					tagNames.push(tags[i].name);
+				}
+
+				for(var i = 0; i < columns.length; i++){
+					if(tagNames.indexOf(columns[i]) == -1 && columns[i] != '#img' && columns[i] != '#name'){
+						$('#tag-item-select').append(
+							'<li><a>'+columns[i]+'</a></li>'
+						);
+					}
+				}
+				turnOnTag('.list-group-item > input');
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
+
+
+
+	});
+
+//tags listeners
+$(document).on('click', '#tag-item-select li', function(){
+	var text = $('a', this).html();
+	$('#tag-list').prepend(
+		'<a class="list-group-item">'+
+		'<button class="close close-tag">x</button>'+
+		'<h4 class="list-group-item-heading">'+text+'</h4>'+
+		'<input id="'+cleanName(text)+'" type="text" data-role="tagsinput">'+
+		'</a>'
+	);
+
+	turnOnTag('#'+cleanName(text));
+	$(this).remove();
+});
+
+$(document).on('click', '.close-tag', function(){
+	var parent = $(this).parent();
+
+	$('#tag-item-select').append(
+		'<li><a>'+$('h4', parent).html()+'</a></li>'
+	);
+
+	parent.remove();
+
+});
+
+
+$(document).on('click', '#select-tags-submit',  function(){
+	$("#tag-list").children('.list-group-item').each(function() {
+			var index = columns.indexOf($('h4', this).html());
+			$('.bootstrap-tagsinput', this).children('span').each(function() {
+				columns[index] += $(this).text();
+			});
+
+	});
+
+	$.ajax({
+		url: "/changeTagsForSurvey",
+		type: "POST",
+		data: {"name" : surveys[SID].name, "user": user, "columns": columns},
+		success: function(code){
+		},
+		error: function(jqXHR){
+			console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+		}
+	});
+
+});
+
 
 	$(document).on('click', '#select-reupload', function(){
 		$('.modal-select-collection').modal('show');
@@ -65,14 +204,22 @@ var sMemory = false;
 			'<div class="modal-dialog"><div class="modal-content">'+
 			'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
 			' <div class="container" style="width:100%;"> <div  class="row"> '+
-			'<div class="col-xs-3" "> <button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
-			' <div class="col-xs-3" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
-			'<div class="col-xs-3" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
-			'</div> </div> </div> <div class="modal-body"> <h3>Select a new csv file to upload:</h3> '+
+			'<div class="btn-group btn-group-justified" role="group">'+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-tags"  class="btn btn btn-default">Edit Tags</button> </div>'+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
+			'<div class="btn-group" role="group">'+
+			'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+			'</div></div> </div> </div> <div class="modal-body"> <h3>Select a new csv file to upload:</h3> '+
 		'<form id="replace-survey" action="/replaceCSV" method="POST" enctype="multipart/form-data"> '+
 		'<hr/> <fieldset> <div class="control-group"> <input type="file" name="file" required="required"/> </div>'+
 		'<div class="form-buttons"> <hr><button id="replace-survey-submit" type="submit" class="btn btn-primary">'+
 		'submit</button> </div> </fieldset> </form> </div></div></div>');
+
+		$('#select-reupload').button('toggle');
 
 		$('#replace-survey').ajaxForm({
 			data: surveys[SID],
@@ -134,10 +281,16 @@ var sMemory = false;
 		'<div class="modal-dialog"><div class="modal-content">'+
 		'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
 		' <div class="container" style="width:100%;"> <div  class="row"> '+
-		'<div class="col-xs-3" "> <button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
-		' <div class="col-xs-3" style="margin-right:5%;"> <button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
-		'<div class="col-xs-3" style="margin-right:5%;"> <button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
-		'</div> </div> </div> <div class="modal-body"> <p style="margin-left:20px;">Public View Options:</p> <div id="pv-views" class="container" style="width:100%;"></div> '+
+		'<div class="btn-group btn-group-justified" role="group">'+
+		'<div class="btn-group" role="group">'+
+		'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
+		'<div class="btn-group" role="group">'+
+		'<button id="select-tags"  class="btn btn btn-default">Edit Tags</button> </div>'+
+		'<div class="btn-group" role="group">'+
+		'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
+		'<div class="btn-group" role="group">'+
+		'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+		'</div></div> </div> </div> <div class="modal-body"> <p style="margin-left:20px;">Public View Options:</p> <div id="pv-views" class="container" style="width:100%;"></div> '+
 		'<div class="container" style="width:100%;"> <div class="row"> '+
 		'<div class="col-xs-6">'+
 		'<p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1" class="form-control"></select> </div> '+
@@ -154,6 +307,7 @@ var sMemory = false;
 		' <div class="form-buttons"> '+
 		'<button id="select-collection-submit" data-dismiss="modal" class="btn btn-raised btn-primary">submit</button> </div> </div></div></div>');
 
+		$('#select-icons').button('toggle');
 		var id = $(this).attr("id");
 		var i = id.slice(-1);
 		SID = i;

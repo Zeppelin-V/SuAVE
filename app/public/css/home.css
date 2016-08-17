@@ -969,3 +969,19 @@ gallery nav bar
 	margin-top: 9px;
 	margin-right: 7px;
 }
+
+
+/*tag selection*/
+
+.bootstrap-tagsinput {
+	width: 100%;
+}
+
+.bootstrap-tagsinput .tag{
+	background-color: #30a5ff;
+	font-size: 100%;
+}
+
+#tags-heading {
+	font-size: 18px;
+}

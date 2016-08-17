@@ -331,3 +331,101 @@ exports.saveCSV = function(filePath, data, callback){
     });
   });
 };
+
+
+exports.getColumnsAndTags = function(user, name, callback){
+  var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+".csv";
+  fs.readFile(filePath, 'utf-8', function (err, data) {
+    if (err) {
+      callback("Unable to read survey info", null);
+    } else {
+
+
+      parse(data, function(err, output){
+        if(err){
+          callback(err, null);
+        }else{
+          var names = output[0];
+          var result = {"tags":[], "columns":[]};
+
+          for(var i = 0; i < names.length; i++){
+            if(names[i].indexOf('#') > -1){
+              var tmp = {};
+              tmp.values = [];
+
+              if(names[i].indexOf('#number') > -1){
+                tmp.values.push('#number');
+                names[i] = names[i].replace('#number', '');
+              }
+              if(names[i].indexOf('#date') > -1){
+                tmp.values.push('#date');
+                names[i] = names[i].replace('#date', '');
+              }
+              if(names[i].indexOf('#long') > -1){
+                tmp.values.push('#long');
+                names[i] = names[i].replace('#long', '');
+              }
+              if(names[i].indexOf('#link') > -1){
+                tmp.values.push('#link');
+                names[i] = names[i].replace('#link', '');
+              }
+              if(names[i].indexOf('#ordinal') > -1){
+                tmp.values.push('#ordinal');
+                names[i] = names[i].replace('#ordinal', '');
+              }
+              if(names[i].indexOf('#textlocation') > -1){
+                tmp.values.push('#textlocation');
+                names[i] = names[i].replace('#textlocation', '');
+              }
+              if(names[i].indexOf('#hidden') > -1){
+                tmp.values.push('#hidden');
+                names[i] = names[i].replace('#hidden', '');
+              }
+              if(names[i].indexOf('#href') > -1){
+                tmp.values.push('#href');
+                names[i] = names[i].replace('#href', '');
+              }
+
+              if(tmp.values.length > 0){
+                tmp.name = names[i];
+                result.tags.push(tmp);
+              }
+            }
+
+            result.columns.push(names[i]);
+
+            /*
+            if(names[i] != '#img' && names[i] != '#name'){
+              result.columns.push(names[i]);
+            }*/
+          }
+
+          callback(null, result);
+        }
+      });
+
+
+    }
+  });
+};
+
+exports.changeTagsForSurvey = function(user, name, columns, callback){
+  var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+".csv";
+  var that = this;
+
+  that.loadCSV(filePath, function(o){
+    if(o == "err"){
+      callback("err", null);
+    }else{
+      o[0] = columns;
+      that.saveCSV(filePath, o, function(e){
+        if(e){
+          callback(e, null);
+        }else{
+          callback(null, "Successfully changed tags!");
+        }
+      })
+    }
+  });
+
+};

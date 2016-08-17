@@ -1519,7 +1519,7 @@ var graphPara = {};
 
     //Events
     $.subscribe("/PivotViewer/Models/Collection/Loaded", function (event) {
-        var store = Lawnchair({ name: PivotCollection.name });
+        var store = Lawnchair({ name: PivotCollection.name },function( foo, bar ) { /* a noop */ } );
         store.get("Settings", function (result) {
             if (result != null) {
                 Settings = result.value;
@@ -1671,14 +1671,14 @@ var graphPara = {};
             $("#pv-long-search").on("keyup", function (e) {
                 var input = this.value.toLowerCase();
                 if (e.keyCode == 13) {
-                    var category = PivotCollection.getCategoryByName([$("#pv-long-search-cat").val()]);
+                    var category = PivotCollection.getCategoryByName([$("#pv-long-search-cat option:selected").text()]);
                     if(!category.uiInit) {
                         Loader.loadColumn(category);
                         category.uiInit = true;
                     }
                     LoadSem.acquire(function (release) {
                         if ($('#pv-long-search').val() != null && $('#pv-long-search').val() != "")
-                            _longstringFilters = { facet: $("#pv-long-search-cat").text(), value: $("#pv-long-search").val().toLowerCase() };
+                            _longstringFilters = { facet: $("#pv-long-search-cat option:selected").text(), value: $("#pv-long-search").val().toLowerCase() };
                         else _longstringFilters = null;
                         PV.filterCollection();
                         release();
@@ -1870,7 +1870,7 @@ var graphPara = {};
             }
             Settings.showMissing = $("#show-missing").prop("checked");
 
-            var store = Lawnchair({ name: PivotCollection.name });
+            var store = Lawnchair({ name: PivotCollection.name },function( foo, bar ) { /* a noop */ } );
             store.save({ key: "Settings", value: Settings });
 
             $.publish("/PivotViewer/Settings/Changed", [Settings]);
