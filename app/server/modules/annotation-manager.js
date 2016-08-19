@@ -84,7 +84,7 @@ exports.addCommentByParameters = function(file, user, para, graphPara, comment, 
 			para.graph_para = graphPara;
 			para.date = date.toString();
       snapshots.insert(para, function(error, result){
-        comments.insert({"user": replyUser, "content": comment, "para_id": para._id,
+        comments.insert({"user": replyUser, "owner": user,"content": comment, "para_id": para._id,
         "date": date.toString()}, function(e, o){
           if(e){
             callback(e);
@@ -160,10 +160,10 @@ exports.getCommentsById = function(id, callback){
   });
 };
 
-exports.addCommentById = function(id, user, comment, callback){
+exports.addCommentById = function(id, user, owner, comment, callback){
 	var newId = new ObjectId(id);
 	var date = new Date();
-	comments.insert({"content": comment, "user": user, "para_id": newId,
+	comments.insert({"content": comment, "user": user, "owner": owner,"para_id": newId,
 	"date": date.toString()}, function(e, o){
 		if(e){
 			callback(e);
@@ -226,7 +226,7 @@ exports.getCommentsByUser = function(user, callback){
 							localField: "para_id",
 							foreignField: "_id",
 							as: "snapshot" }},
-		{$match: {"user": user}}]).toArray(function(error, result){
+		{$match: {"owner": user}}]).toArray(function(error, result){
     if(error){
 			callback(error, null);
 		}else{

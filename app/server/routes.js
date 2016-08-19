@@ -479,7 +479,7 @@ module.exports = function(app) {
 	});
 
 	app.post('/addCommentById', function(req, res){
-		AN.addCommentById(req.body.id, req.body.user, req.body.comment, function(e, o){
+		AN.addCommentById(req.body.id, req.body.user, req.body.owner, req.body.comment, function(e, o){
 			if(e){
 				res.status(400).send(e);
 			}else {

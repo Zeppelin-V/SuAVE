@@ -46,7 +46,7 @@ $(document).ready(function(){
 
   hc = new CommentsController();
   $.ajax({
-    url: "/getCommentsByUSer",
+    url: "/getCommentsByUser",
     type: "GET",
     data: {"user": user},
     success: function(output){

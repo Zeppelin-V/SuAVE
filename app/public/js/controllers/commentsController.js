@@ -54,6 +54,7 @@ function CommentsController()
         type: "POST",
         data: {"id" : snapshotId,
           "user": user,
+          "owner": user,
           "comment": newComment},
         success: function(output){
           $("#newComment").val("");
@@ -172,6 +173,9 @@ function CommentsController()
             direction:1,
             slantedText:true,
             slantedTextAngle:30
+          },
+          vAxis: {
+            baseline: 0
           }
         };
         chart.draw(view, options);

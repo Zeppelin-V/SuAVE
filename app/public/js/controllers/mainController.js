@@ -221,7 +221,10 @@ function MainController()
 	        	direction:1,
 	        	slantedText:true,
 	        	slantedTextAngle:30
-	    		}
+	    		},
+					vAxis: {
+						baseline: 0
+					}
 				};
 				chart.draw(view, options);
 			}

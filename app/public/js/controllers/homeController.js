@@ -102,7 +102,7 @@ var sMemory = false;
 				$('.modal-select-collection .modal-dialog .modal-body').prepend(
 					'<div class="panel panel-primary">'+
 						'<div class="panel-heading" id="tags-heading">'+
-							'Tags: number, date, long, link, ordinal, textlocation, hidden, href'+
+							'Tags: number, date, long, link, ordinal, textlocation, hidden'+
 						'</div>'+
 					'</div>'+
 					'<div class="dropdown">'+
@@ -141,7 +141,6 @@ var sMemory = false;
 									'<option data-subtext="will be shown as a link to an external resource in the information panel">#link</option>'+
 									'<option data-subtext="will be shown as a special type of histogram in the filter panel.">#ordinal</option>'+
 									'<option data-subtext="expects a well-formatted address that will be geocoded on the fly">#textlocation</option>'+
-									'<option data-subtext="URL to be invoked as user clicks on the title">#href</option>'+
 							  '</optgroup>'+
 							  '<optgroup label="Hidden in Filter Panel" data-max-options="1">'+
 							    '<option data-subtext="won’t appear in the filter panel or in the sorting dropdown list">#hidden</option>'+
@@ -163,7 +162,8 @@ var sMemory = false;
 				});
 
 				for(var i = 0; i < columns.length; i++){
-					if(tagNames.indexOf(columns[i]) == -1 && columns[i] != '#img' && columns[i] != '#name'){
+					if(tagNames.indexOf(columns[i]) == -1 &&
+						columns[i] != '#img' && columns[i] != '#name' && columns[i] != '#href'){
 						$('#tag-item-select').append(
 							'<li><a>'+columns[i]+'</a></li>'
 						);
