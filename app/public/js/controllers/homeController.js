@@ -361,7 +361,10 @@ $(document).on('click', '#select-tags-submit',  function(){
 		'</select> </div> </div> </div> <div id="column-collect-color" class="container" style="width:100%;"> </div>'+
 		'<hr/> <div class="container" style="width:100%;"> <div class="row"> '+
 		'<div class="col-xs-6"> <p class="subheading">Select a field to associate with item names:</p> <select class="form-control" id="column-select-3">'+
-		'</select> </div> </div> </div>'+
+		'</select> </div>'+
+		'<div class="col-xs-6"> <p class="subheading">Select a field to associate with the href link:</p> <select class="form-control" id="column-select-4">'+
+		'</select> </div>'+
+		' </div> </div>'+
 		' <div class="form-buttons"> '+
 		'<button id="select-collection-submit" data-dismiss="modal" class="btn btn-raised btn-primary">submit</button> </div> </div></div></div>');
 
@@ -409,17 +412,23 @@ $(document).on('click', '#select-tags-submit',  function(){
 				$("#column-select-1").append($("<option selected disabled hidden></option>").html(""));
 				$("#column-select-2").append($("<option selected disabled hidden></option>").html(""));
 				$("#column-select-3").append($("<option selected disabled hidden></option>").html(""));
+				$("#column-select-4").append($("<option selected disabled hidden></option>").html(""));
 				for(var i = 0; i < column.length; i++){
 					$("#column-select-1").append($("<option></option>").val(i).html(column[i]));
 					$("#column-select-2").append($("<option></option>").val(i).html(column[i]));
-					$("#column-select-3").append($("<option></option>").val(i).html(column[i]));
+					if(column[i] != "#name") $("#column-select-3").append($("<option></option>").val(i).html(column[i]));
+					if(column[i] != "#href") $("#column-select-4").append($("<option></option>").val(i).html(column[i]));
 				}
 				if (survey.collection.name != 'default') {
 					prepSetting(survey);
 				}
-				if (survey.iName){
-					$('#column-select-3 option[value='+survey.iName+']').prop('selected', true);
+				if (survey.iName && survey.iName.name){
+					$('#column-select-3 option[value='+survey.iName.name+']').prop('selected', true);
 				}
+				if (survey.iName && survey.iName.href){
+					$('#column-select-4 option[value='+survey.iName.href+']').prop('selected', true);
+				}
+
 			},
 			error: function(jqXHR){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
@@ -491,7 +500,9 @@ $(document).on('click', '#select-tags-submit',  function(){
 			collection["cColumn"] = "|^";
 		}
 
-		var iName = $('#column-select-3').find(':selected').val();
+		var iName = {};
+		iName.name = $('#column-select-3').find(':selected').val();
+		iName.href = $('#column-select-4').find(':selected').val();
 		collection.iName = iName;
 
 		if(collection["cColumn"] != "|^" || collection["sColumn"] != "|^"){
@@ -500,7 +511,7 @@ $(document).on('click', '#select-tags-submit',  function(){
 				type: "POST",
 				data: {"name" : surveys[SID].name, "user": user, "collection": JSON.stringify(collection)},
 				success: function(data){
-					if(iName != ''){
+					if(iName.name != '' || iName.href != ''){
 						changeIname();
 					}
 				},
@@ -508,7 +519,7 @@ $(document).on('click', '#select-tags-submit',  function(){
 					console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
 				}
 			});
-		}else if(iName != ''){
+		}else if(iName.name != '' || iName.href != ''){
 			changeIname();
 		}
 
@@ -551,7 +562,7 @@ $(document).on('click', '#select-tags-submit',  function(){
 			data: {"name" : surveys[SID].name, "user": user, "views": parseInt(views)},
 			success: function(data){
 				surveys[SID].views = parseInt(views);
-				if(iName == '') setTimeout(function(){window.location.href = '/';}, 500);
+				if(iName.name == '' && iName.href == '') setTimeout(function(){window.location.href = '/';}, 500);
 			},
 			error: function(jqXHR){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
@@ -567,8 +578,9 @@ $(document).on('click', '#select-tags-submit',  function(){
 	//deal with asynchronized problem.
 	//if two API calls both request write into csv file
 	var changeIname = function(){
-		var iName = $('#column-select-3').find(':selected').val();
-
+		var iName = {};
+		iName.name = $('#column-select-3').find(':selected').val();
+		iName.href = $('#column-select-4').find(':selected').val();
 		$.ajax({
 			url: "/changeCollectionItemName",
 			type: "POST",
