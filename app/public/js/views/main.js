@@ -46,7 +46,6 @@ $(document).ready(function(){
     });
   }
 
-
   user= query.file.substring(0, index);
   file = query.file.substring(index+1);
   file = file.replace(".csv", "");

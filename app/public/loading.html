@@ -44,7 +44,7 @@
     <script src="src/views/iimagecontroller.min.js" type="text/javascript"></script>
     <script src="src/views/tilecontroller.min.js" type="text/javascript"></script>
     <script src="src/views/deepzoom.min.js" type="text/javascript"></script>
-    <script src="src/pivotviewer.min.js" type="text/javascript"></script>
+    <script src="src/pivotviewer.js" type="text/javascript"></script>
     <script src="src/csvloader.js" type="text/javascript"></script>
     <script src="src/rloader.js" type="text/javascript"></script>
     <script src="vendor/bootstrap.min.js"></script>
@@ -86,7 +86,24 @@
         if(parent.PARA) options.parameter = parent.PARA;
 
         //set up the pivot viewer
-        $(document).ready(function () { $('#pivotviewer').PivotViewer(options); });
+        $(document).ready(function () {
+          if(query.dzc == 1){
+            $.ajax({
+              url: "/getSurveyDzc",
+              type: "GET",
+              data: {"user": parent.user, "file": parent.file},
+              success: function(data){
+                options.dzc = data;
+                $('#pivotviewer').PivotViewer(options);
+              },
+              error: function(jqXHR){
+                console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+              }
+            });
+          }else {
+            $('#pivotviewer').PivotViewer(options);
+          }
+        });
     </script>
 </body>
 </html>

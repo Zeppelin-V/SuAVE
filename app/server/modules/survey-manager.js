@@ -157,6 +157,21 @@ exports.changeCollection = function(files, user, collection, callback){
 	});
 }
 
+/*Change the image definition for a survey
+para: 1. files: req parameter
+			2. user: user name
+			3. collection: dzc url
+			4. callback: callback function with an error parameter
+*/
+exports.changeImageDefinition = function(files, user, dzc, callback){
+	//modify the paras in database
+	surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
+	{$set: {"dzc": dzc}}, {new:true}, function(e, o){
+		if(e) callback(e);
+		else callback(null);
+	});
+}
+
 /*Change #name tag for the csv file
 para: 1. files: req parameter
 			2. user: user name
@@ -340,6 +355,32 @@ exports.getViewOptionsByName = function(filename, user, callback)
 			callback(e);
 		}	else{
 			callback(null, o.views);
+		}
+	});
+}
+
+exports.getSurveyDzc= function(user, filename, callback)
+{
+	console.log(filename);
+	console.log(user);
+	surveys.findOne({"name":filename, "user": user}, function(e, o){
+		if (e){
+			callback(e);
+		}	else{
+			console.log(o);
+			callback(null, o.dzc);
+		}
+	});
+}
+
+exports.changeSurveyDzc = function(filename, user, dzc, callback)
+{
+	surveys.findOne({"name":filename, "user": user}, function(e, o){
+		if (e){
+			callback(e);
+		}	else{
+			o.dzc = dzc;
+			surveys.save(o, callback);
 		}
 	});
 }

@@ -11,9 +11,15 @@ function GalleryController()
 		var id = $(this).attr('id');
 		var survey = surveys[id.slice(-1)];
 		var file = survey.name;
+		var view;
 
+		if(survey.view.slice(-1) == "-"){
+			view = survey.view.substring(0, survey.view.length-1);
+		}else{
+			view = survey.view
+		}
 		window.open(window.location+'/../../main/file='+user+"_"+file+'.csv'+
-			"&views="+survey.views+"&view="+survey.view);
+			"&views="+survey.views+"&view="+view);
 	});
 
 	$(document).on('click', '#contact-author', function(){

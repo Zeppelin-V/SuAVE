@@ -29,7 +29,8 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
         var project = filename.substring(filename.lastIndexOf("/") + 1, filename.lastIndexOf("."));
         collection.name = project;
         //collection.imageBase = project + "/" + project + ".dzc";
-        collection.imageBase = "../img/collection/collection.dzc";
+        //if there's not dzc, load the default
+        if(!collection.imageBase) collection.imageBase = "../img/collection/collection.dzc";
         collection.brandImage = "";
 
         var that = this;

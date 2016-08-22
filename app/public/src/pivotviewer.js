@@ -141,14 +141,21 @@ var graphPara = {};
 
 
    PV._initCollectionLoader = function (options) {
+     console.log(options);
+     console.log(PivotCollection);
       //PV = this;
       _self.append("<div class='pv-loading'><img src='images/loading.gif' alt='Loading' /><span>Loading...</span></div>");
       $('.pv-loading').css('top', ($('.pv-wrapper').height() / 2) - 33 + 'px');
       $('.pv-loading').css('left', ($('.pv-wrapper').width() / 2) - 43 + 'px');
 
       if (Loader == undefined) throw "Collection loader is undefined.";
-      if (Loader instanceof PivotViewer.Models.Loaders.ICollectionLoader) Loader.loadCollection(PivotCollection);
-      else throw "Collection loader does not inherit from PivotViewer.Models.Loaders.ICollectionLoader.";
+      if (Loader instanceof PivotViewer.Models.Loaders.ICollectionLoader){
+        if(options.dzc) PivotCollection.imageBase = options.dzc;
+        Loader.loadCollection(PivotCollection);
+      }
+      else {
+        throw "Collection loader does not inherit from PivotViewer.Models.Loaders.ICollectionLoader.";
+      }
     };
 
     /// Create the individual controls for the facet

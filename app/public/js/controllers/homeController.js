@@ -331,48 +331,66 @@ $(document).on('click', '#select-tags-submit',  function(){
 
 	$(document).on('click', '.surveys-edit', function(){
 		$('.modal-select-collection').modal('show');
-
-
 		$('.modal-select-collection').empty();
-		//insert collection selections
-		$('.modal-select-collection').append(
-		'<div class="modal-dialog"><div class="modal-content">'+
-		'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
-		' <div class="container" style="width:100%;"> <div  class="row"> '+
-		'<div class="btn-group btn-group-justified" role="group">'+
-		'<div class="btn-group" role="group">'+
-		'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
-		'<div class="btn-group" role="group">'+
-		'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
-		'<div class="btn-group" role="group">'+
-		'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
-		'<div class="btn-group" role="group">'+
-		'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
-		'</div></div> </div> </div> <div class="modal-body"> <p style="margin-left:20px;">Public View Options:</p> <div id="pv-views" class="container" style="width:100%;"></div> '+
-		'<div class="container" style="width:100%;"> <div class="row"> '+
-		'<div class="col-xs-6">'+
-		'<p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1" class="form-control"></select> </div> '+
-		'<div class="col-xs-6"> <p class="subheading">Select a shape collection:</p> '+
-		'<select id="collect-select" class="form-control"> <option selected="" disabled="" hidden=""></option> <option value="gender">Gender</option>'+
-		'<option value="object">Object</option> </select> </div> '+
-		'</div></div> '+
-		'<div id="column-collect-shape" class="container" style="width:100%;"></div> <hr/> <div class="container" style="width:100%;"> <div class="row"> '+
-		'<div class="col-xs-6"> <p class="subheading">Select a field to associate with colors:</p> <select class="form-control" id="column-select-2">'+
-		'</select> </div> </div> </div> <div id="column-collect-color" class="container" style="width:100%;"> </div>'+
-		'<hr/> <div class="container" style="width:100%;"> <div class="row"> '+
-		'<div class="col-xs-6"> <p class="subheading">Select a field to associate with item names:</p> <select class="form-control" id="column-select-3">'+
-		'</select> </div>'+
-		'<div class="col-xs-6"> <p class="subheading">Select a field to associate with the href link:</p> <select class="form-control" id="column-select-4">'+
-		'</select> </div>'+
-		' </div> </div>'+
-		' <div class="form-buttons"> '+
-		'<button id="select-collection-submit" data-dismiss="modal" class="btn btn-raised btn-primary">submit</button> </div> </div></div></div>');
-
-		$('#select-icons').button('toggle');
 		var id = $(this).attr("id");
 		var i = id.slice(-1);
 		SID = i;
 		var survey = surveys[i];
+
+		if(survey.dzc){
+			$('.modal-select-collection').append(
+				'<div class="modal-dialog"><div class="modal-content">'+
+				'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
+				' <div class="container" style="width:100%;"> <div  class="row"> '+
+				'<div class="btn-group btn-group-justified" role="group">'+
+				'<div class="btn-group" role="group">'+
+				'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
+				'<div class="btn-group" role="group">'+
+				'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
+				'<div class="btn-group" role="group">'+
+				'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
+				'<div class="btn-group" role="group">'+
+				'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+				'</div></div> </div> </div> <div class="modal-body"> <p style="margin-left:20px;">Public View Options:</p> <div id="pv-views" class="container" style="width:100%;"></div> '+
+				' <div class="form-buttons"> '+
+				'<button id="select-collection-submit-dzc" data-dismiss="modal" class="btn btn-raised btn-primary">submit</button> </div> </div></div></div>');
+		}else{
+			//insert collection selections
+			$('.modal-select-collection').append(
+				'<div class="modal-dialog"><div class="modal-content">'+
+				'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
+				' <div class="container" style="width:100%;"> <div  class="row"> '+
+				'<div class="btn-group btn-group-justified" role="group">'+
+				'<div class="btn-group" role="group">'+
+				'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
+				'<div class="btn-group" role="group">'+
+				'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
+				'<div class="btn-group" role="group">'+
+				'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
+				'<div class="btn-group" role="group">'+
+				'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+				'</div></div> </div> </div> <div class="modal-body"> <p style="margin-left:20px;">Public View Options:</p> <div id="pv-views" class="container" style="width:100%;"></div> '+
+				'<div class="container" style="width:100%;"> <div class="row"> '+
+				'<div class="col-xs-6">'+
+				'<p class="subheading">Select a field to associate with shapes:</p> <select id="column-select-1" class="form-control"></select> </div> '+
+				'<div class="col-xs-6"> <p class="subheading">Select a shape collection:</p> '+
+				'<select id="collect-select" class="form-control"> <option selected="" disabled="" hidden=""></option> <option value="gender">Gender</option>'+
+				'<option value="object">Object</option> </select> </div> '+
+				'</div></div> '+
+				'<div id="column-collect-shape" class="container" style="width:100%;"></div> <hr/> <div class="container" style="width:100%;"> <div class="row"> '+
+				'<div class="col-xs-6"> <p class="subheading">Select a field to associate with colors:</p> <select class="form-control" id="column-select-2">'+
+				'</select> </div> </div> </div> <div id="column-collect-color" class="container" style="width:100%;"> </div>'+
+				'<hr/> <div class="container" style="width:100%;"> <div class="row"> '+
+				'<div class="col-xs-6"> <p class="subheading">Select a field to associate with item names:</p> <select class="form-control" id="column-select-3">'+
+				'</select> </div>'+
+				'<div class="col-xs-6"> <p class="subheading">Select a field to associate with the href link:</p> <select class="form-control" id="column-select-4">'+
+				'</select> </div>'+
+				' </div> </div>'+
+				' <div class="form-buttons"> '+
+				'<button id="select-collection-submit" data-dismiss="modal" class="btn btn-raised btn-primary">submit</button> </div> </div></div></div>');
+		}
+		$('#select-icons').button('toggle');
+
 		collection = {};
 		//insert views checkboxes
 		$('#pv-views').empty();
@@ -397,43 +415,52 @@ $(document).on('click', '#select-tags-submit',  function(){
     if(views[3] == '1') $("#pv-qca").prop("checked", true);
     if(views[4] == '1') $("#pv-map").prop("checked", true);
 		if(views[5] == '1') $("#pv-r").prop("checked", true);
-		$('#column-select-1').empty();
-		$('#column-select-2').empty();
-		$('#column-select-3').empty();
-		$('#collect-select').prop("selected", false);
-		$('#column-collect-shape').empty();
-		//get Columns
-		$.ajax({
-			url: "/getSurveyColumnsNCollection",
-			type: "POST",
-			data: {"name" : survey.name, "user": user},
-			success: function(data){
-				var column = data;
-				$("#column-select-1").append($("<option selected disabled hidden></option>").html(""));
-				$("#column-select-2").append($("<option selected disabled hidden></option>").html(""));
-				$("#column-select-3").append($("<option selected disabled hidden></option>").html(""));
-				$("#column-select-4").append($("<option selected disabled hidden></option>").html(""));
-				for(var i = 0; i < column.length; i++){
-					$("#column-select-1").append($("<option></option>").val(i).html(column[i]));
-					$("#column-select-2").append($("<option></option>").val(i).html(column[i]));
-					if(column[i] != "#name") $("#column-select-3").append($("<option></option>").val(i).html(column[i]));
-					if(column[i] != "#href") $("#column-select-4").append($("<option></option>").val(i).html(column[i]));
-				}
-				if (survey.collection.name != 'default') {
-					prepSetting(survey);
-				}
-				if (survey.iName && survey.iName.name){
-					$('#column-select-3 option[value='+survey.iName.name+']').prop('selected', true);
-				}
-				if (survey.iName && survey.iName.href){
-					$('#column-select-4 option[value='+survey.iName.href+']').prop('selected', true);
-				}
 
-			},
-			error: function(jqXHR){
-				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
-			}
-		});
+		if(!survey.dzc){
+			$('#column-select-1').empty();
+			$('#column-select-2').empty();
+			$('#column-select-3').empty();
+			$('#collect-select').prop("selected", false);
+			$('#column-collect-shape').empty();
+			//get Columns
+			$.ajax({
+				url: "/getSurveyColumnsNCollection",
+				type: "POST",
+				data: {"name" : survey.name, "user": user},
+				success: function(data){
+					var column = data;
+					$("#column-select-1").append($("<option selected disabled hidden></option>").html(""));
+					$("#column-select-2").append($("<option selected disabled hidden></option>").html(""));
+					$("#column-select-3").append($("<option selected disabled hidden></option>").html(""));
+					$("#column-select-4").append($("<option selected disabled hidden></option>").html(""));
+					for(var i = 0; i < column.length; i++){
+						$("#column-select-1").append($("<option></option>").val(i).html(column[i]));
+						$("#column-select-2").append($("<option></option>").val(i).html(column[i]));
+						if(column[i] != "#name") $("#column-select-3").append($("<option></option>").val(i).html(column[i]));
+						if(column[i] != "#href") $("#column-select-4").append($("<option></option>").val(i).html(column[i]));
+					}
+					if (survey.collection.name != 'default') {
+						prepSetting(survey);
+					}
+					if (survey.iName && survey.iName.name){
+						$('#column-select-3 option[value='+survey.iName.name+']').prop('selected', true);
+					}
+					if (survey.iName && survey.iName.href){
+						$('#column-select-4 option[value='+survey.iName.href+']').prop('selected', true);
+					}
+
+				},
+				error: function(jqXHR){
+					console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+				}
+			});
+		}else{
+			$('#pv-views').after('<br><div class="container" style="width:100%">'+
+			'<div class="row" style="margin-left:5px;"><p >Image definition link:</p></div>'+
+			'<div class="row" style="margin-left:5px;"><textarea style="width:90%" id="dzc-link">'+survey.dzc+'</textarea>'+
+			'</div></div><br>');
+		}
+
 	});
 
 	$(document).on('change', '#collect-select', function(){
@@ -461,6 +488,22 @@ $(document).on('click', '#select-tags-submit',  function(){
 		var columnVal = $(this).find(':selected').text();
 		collection['cColumn'] = parseInt($('#column-select-2').find(':selected').val());
 		that.fetchColVal(columnVal, "");
+	});
+
+	$(document).on('click', '#select-collection-submit-dzc', function(){
+		changeViewOptions({});
+		console.log($('#dzc-link').val());
+		$.ajax({
+			url: "/changeSurveyDzc",
+			type: "POST",
+			data: {"name" : surveys[SID].name, "user": user, "dzc": $('#dzc-link').val()},
+			success: function(data){
+				setTimeout(function(){window.location.href = '/';}, 500);
+			},
+			error: function(jqXHR){
+				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
+			}
+		});
 	});
 
 	$(document).on('click', '#select-collection-submit', function(){
@@ -523,6 +566,15 @@ $(document).on('click', '#select-tags-submit',  function(){
 			changeIname();
 		}
 
+		changeViewOptions(iName);
+
+		$('.modal-loading').modal({ show : false, keyboard : false, backdrop : 'static' });
+		$('.modal-loading .modal-body h3').html('Loading....');
+		$('.modal-loading').modal('show');
+
+	});
+
+	var changeViewOptions = function(iName){
 		var views = "";
 		//change view options
 		if($("#pv-grid").is(':checked')){
@@ -568,12 +620,7 @@ $(document).on('click', '#select-tags-submit',  function(){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
 			}
 		});
-
-		$('.modal-loading').modal({ show : false, keyboard : false, backdrop : 'static' });
-		$('.modal-loading .modal-body h3').html('Loading....');
-		$('.modal-loading').modal('show');
-
-	});
+	};
 
 	//deal with asynchronized problem.
 	//if two API calls both request write into csv file
@@ -646,10 +693,23 @@ $(document).on('click', '#select-tags-submit',  function(){
 		var id = $(this).attr('id');
 		var survey = surveys[id.slice(-1)];
 		var file = survey.name;
+		var view;
 
-		//Grid, bucket, crosstab, QGA, map
-		window.open(window.location+'/../main/file='+user+"_"+file+'.csv'+
-			"&views="+survey.views+"&view="+survey.view);
+		if(survey.view.slice(-1) == "-"){
+			view = survey.view.substring(0, survey.view.length-1);
+		}else{
+			view = survey.view
+		}
+
+		if(survey.dzc){
+			window.open(window.location+'/../main/file='+user+"_"+file+'.csv'+
+				"&views="+survey.views+"&view="+view+"&dzc=1");
+		}else{
+			//Grid, bucket, crosstab, QGA, map
+			window.open(window.location+'/../main/file='+user+"_"+file+'.csv'+
+				"&views="+survey.views+"&view="+view);
+		}
+
 	});
 
 	$(document).on('click', '.surveys-delete', function(){

@@ -270,18 +270,41 @@ module.exports = function(app) {
 			if (e){
 				res.status(400).send(e);
 			}	else{
+				console.log(req.body);
 				//Set the default collection for new survey
 				var defaultCol = 1;
 				req.body.name = req.body.name.replace(/[^\w]/gi, '_');
-				SM.changeCollection(req, req.cookies.user, {"name": "default"},
-					function(e){
-					if(e){
-						res.status(400).send(e);
-					}else{
-						res.status(200).send('ok');
-					}
-				});
+				if(req.body.dzc != ''){
+					SM.changeImageDefinition(req, req.cookies.user, req.body.dzc,
+						function(e){
+						if(e){
+							res.status(400).send(e);
+						}else{
+							res.status(200).send('ok');
+						}
+					});
+				}else{
+					SM.changeCollection(req, req.cookies.user, {"name": "default"},
+						function(e){
+						if(e){
+							res.status(400).send(e);
+						}else{
+							res.status(200).send('ok');
+						}
+					});
+				}
 			}
+		});
+	});
+
+	app.get('/getSurveyDzc', function(req, res){
+		SM.getSurveyDzc(req.query.user, req.query.file,
+			function(e, o){
+				if(e){
+					res.status(400).send(e);
+				}else{
+					res.status(200).send(o);
+				}
 		});
 	});
 
@@ -306,6 +329,16 @@ module.exports = function(app) {
 				res.status(200).send('ok');
 			}
 		});
+	});
+
+	app.post('/changeSurveyDzc', function(req, res) {
+		SM.changeSurveyDzc(req.body.name, req.body.user, req.body.dzc, function(e){
+			if(e) {
+				res.status(400).send(e);
+			}else{
+				res.status(200).send("ok");
+			}
+		})
 	});
 
 	app.post('/changeAboutFileByID', function(req, res){
