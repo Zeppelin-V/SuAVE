@@ -691,7 +691,8 @@ $(document).on('click', '#select-tags-submit',  function(){
 	//when "show" button is clicked
 	$(document).on('click', '.surveys-click', function(){
 		var id = $(this).attr('id');
-		var survey = surveys[id.slice(-1)];
+		var index = id.split('-').pop();
+    var survey = surveys[index];
 		var file = survey.name;
 		var view;
 
@@ -701,14 +702,10 @@ $(document).on('click', '#select-tags-submit',  function(){
 			view = survey.view
 		}
 
-		if(survey.dzc){
-			window.open(window.location+'/../main/file='+user+"_"+file+'.csv'+
-				"&views="+survey.views+"&view="+view+"&dzc=1");
-		}else{
-			//Grid, bucket, crosstab, QGA, map
-			window.open(window.location+'/../main/file='+user+"_"+file+'.csv'+
-				"&views="+survey.views+"&view="+view);
-		}
+		//Grid, bucket, crosstab, QGA, map
+		window.open(window.location+'/../main/file='+user+"_"+file+'.csv'+
+			"&views="+survey.views+"&view="+view);
+
 
 	});
 
@@ -940,7 +937,9 @@ $(document).on('click', '#select-tags-submit',  function(){
 	}
 
 	this.displaySurveys = function(survey){
-		var surveys = survey.reverse();
+		var surveys = survey.sort(function(a,b){
+      return Date.parse(b.date)-Date.parse(a.date);
+    });
 
 		for(i = 0; i < surveys.length; i++){
 			$('#display-surveys').append('<div class="col-md-4"> <div class="panel panel-default">  <div class="tab-content"> <div class="tab-pane fade in active" id="tab1-'+i+'"> </div> '+
@@ -1024,7 +1023,6 @@ $(document).on('click', '#select-tags-submit',  function(){
 		$('.btn-circle').css("height", width);
 		$('.btn-circle').css("border-radius", width/6);
 		$('.btn-circle').css("font-size", width/4);
-
 	});
 	// redirect to homepage on new survey creation
 		$('#help-button').click(function(){window.open("https://docs.google.com/document/d/1f4ABDP1YrEU3vRxYkIPHl9dyGTT4w3pqfRNI2Kn97Ic/edit#heading=h.vcpylem4gnc7")});

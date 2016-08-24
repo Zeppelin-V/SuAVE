@@ -34,7 +34,6 @@ exports.createNewSurvey = function(files, user, callback){
 	//find the survey in database
 	var name = files.body.name.replace(/[^\w]/gi, '_');
   surveys.findOne({"name": name, "user": user}, function(e, o){
-		console.log(o);
 		if (o){
 			callback("Name is taken");
 		}
@@ -361,13 +360,10 @@ exports.getViewOptionsByName = function(filename, user, callback)
 
 exports.getSurveyDzc= function(user, filename, callback)
 {
-	console.log(filename);
-	console.log(user);
 	surveys.findOne({"name":filename, "user": user}, function(e, o){
 		if (e){
 			callback(e);
 		}	else{
-			console.log(o);
 			callback(null, o.dzc);
 		}
 	});

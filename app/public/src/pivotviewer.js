@@ -141,8 +141,6 @@ var graphPara = {};
 
 
    PV._initCollectionLoader = function (options) {
-     console.log(options);
-     console.log(PivotCollection);
       //PV = this;
       _self.append("<div class='pv-loading'><img src='images/loading.gif' alt='Loading' /><span>Loading...</span></div>");
       $('.pv-loading').css('top', ($('.pv-wrapper').height() / 2) - 33 + 'px');
@@ -1606,7 +1604,6 @@ var graphPara = {};
         //Init Tile Controller and start animation loop
         TileController = new PivotViewer.Views.TileController(_imageController);
         _tiles = TileController.initTiles(PivotCollection.items, baseCollectionPath, canvasContext);
-
         //Init image controller
         _imageController.setup(baseCollectionPath.replace("\\", "/"));
     });

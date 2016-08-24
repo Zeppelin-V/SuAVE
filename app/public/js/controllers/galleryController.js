@@ -9,7 +9,8 @@ function GalleryController()
 
 	$(document).on('click', '.surveys-click', function(){
 		var id = $(this).attr('id');
-		var survey = surveys[id.slice(-1)];
+		var index = id.split('-').pop();
+    var survey = surveys[index];
 		var file = survey.name;
 		var view;
 
@@ -18,6 +19,8 @@ function GalleryController()
 		}else{
 			view = survey.view
 		}
+
+		//Grid, bucket, crosstab, QGA, map
 		window.open(window.location+'/../../main/file='+user+"_"+file+'.csv'+
 			"&views="+survey.views+"&view="+view);
 	});
@@ -55,7 +58,9 @@ function GalleryController()
 	});
 
 	this.displaySurveys = function(survey){
-		var surveys = survey.reverse();
+		var surveys = survey.sort(function(a,b){
+      return Date.parse(b.date)-Date.parse(a.date);
+    });
 
 		for(i = 0; i < surveys.length; i++){
 			$('#display-surveys').append('<div class="col-md-4"> <div class="panel panel-default">  <div class="tab-content"> <div class="tab-pane fade in active" id="tab1-'+i+'"> </div> '+
@@ -75,11 +80,26 @@ function GalleryController()
 			'</div>'+
 			' </div>');
 
+			var width = $('.tab-content').width()/2-30;
+			$('.btn-circle').css("width", width);
+			$('.btn-circle').css("height", width);
+			$('.btn-circle').css("border-radius", width/6);
+			$('.btn-circle').css("font-size", width/4);
+
+			var cw = $('.tab-content').width();
+			$('.tab-content').css({'height':0.65*cw+'px'});
+
 		}
 
-		$('.btn-circle').css("width", $('#icon-img').width());
-		$('.btn-circle').css("height", $('#icon-img').width());
-		$('.btn-circle').css("border-radius", $('#icon-img').width()/6);
-		$('.btn-circle').css("font-size", $('#icon-img').width()/4);
+		$(window).on('resize', function () {
+			var cw = $('.tab-content').width();
+			$('.tab-content').css({'height':0.6*cw+'px'});
+			var width = $('.tab-content').width()/2-30;
+			$('.btn-circle').css("width", width);
+			$('.btn-circle').css("height", width);
+			$('.btn-circle').css("border-radius", width/6);
+			$('.btn-circle').css("font-size", width/4);
+		});
+
 	}
 }
