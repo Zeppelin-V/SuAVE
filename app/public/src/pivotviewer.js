@@ -356,7 +356,7 @@ var graphPara = {};
         //wait until all locations paras are loaded
         setTimeout(function(){
           var list = _views[_currentView].filterList;
-
+          console.log(list);
           for(var i = 0; i < list.length; i++){
             if(list[i].loc){
               graphPara.mData.push([list[i].loc.lat, list[i].loc.lng]);
@@ -965,7 +965,7 @@ var graphPara = {};
         //Find matching facet values in items
         for (var i = 0, _iLen = _tiles.length; i < _iLen; i++) {
             var tile = _tiles[i];
-            /*
+            /*==
             if (filterChange != undefined && (!filterChange.enlarge || tile.filtered)) {
                 if (!filterChange.enlarge && !tile.filtered) continue;
 
@@ -2349,6 +2349,7 @@ var graphPara = {};
               }
 
               if(para.selected_id != -1){
+                PARA.selected_loc = para.selected_loc;
                 if(para.view == "map"){
                   $(".pv-viewpanel-view").promise().done(function(){
                     setTimeout(function(){
@@ -2364,9 +2365,17 @@ var graphPara = {};
                   });
                 }else{
                   $(".pv-viewpanel-view").promise().done(function(){
+                    var waitTime = _filterList.length;
+                    if(waitTime < 100){
+                      waitTime *= 200
+                    }else if(waitTime < 500){
+                      waitTime *= 5;
+                    }else{
+                      waitTime *= 4;
+                    }
                     setTimeout(function(){
                       PV.getCurrentView().handleClick({type: "init", id: para.selected_id});
-                    }, _filterList.length*7);
+                    }, waitTime);
                   });
                 }
               }
@@ -2377,46 +2386,49 @@ var graphPara = {};
 
         //set up window resizing listener
         $( window ).resize(function() {
-          delay(function(){
-            var mainPanelHeight = $(window).height() - $('.pv-toolbarpanel').height() - 30;
+          if($('.pv-canvas').width() != _self.width() ||
+            $('.pv-mainpanel').height() != ($(window).height() - $('.pv-toolbarpanel').height() - 30)){
+            delay(function(){
+              var mainPanelHeight = $(window).height() - $('.pv-toolbarpanel').height() - 30;
 
-            //adjust mainPanel
-            $('.pv-mainpanel').css('height', mainPanelHeight + 'px');
+              //adjust mainPanel
+              $('.pv-mainpanel').css('height', mainPanelHeight + 'px');
 
-            //adjust infoPanel
-            var infoPanel = $('.pv-infopanel');
-            infoPanel.css('left', (($('.pv-mainpanel').offset().left + $('.pv-mainpanel').width()) - 205) + 'px').css('height', mainPanelHeight - 28 + 'px');
+              //adjust infoPanel
+              var infoPanel = $('.pv-infopanel');
+              infoPanel.css('left', (($('.pv-mainpanel').offset().left + $('.pv-mainpanel').width()) - 205) + 'px').css('height', mainPanelHeight - 28 + 'px');
 
-            //adjust canvas
-            $('.pv-canvas').css('width', _self.width() );
-            $('.pv-canvas').css('height', mainPanelHeight );
+              //adjust canvas
+              $('.pv-canvas').css('width', _self.width() );
+              $('.pv-canvas').css('height', mainPanelHeight );
 
-            //adjust filterPanel
-            var filterPanel = $('.pv-filterpanel');
-            filterPanel.css('height', mainPanelHeight - 13 + 'px');
-            $('.pv-filterpanel-search').css('width', filterPanel.width() - 15 + 'px');
-            $(".pv-filterpanel-accordion").css('height', ($(".pv-filterpanel").height() - $(".pv-filterpanel-search").height() - 75) -
-            $("#pv-long-search-box").height() + "px");
+              //adjust filterPanel
+              var filterPanel = $('.pv-filterpanel');
+              filterPanel.css('height', mainPanelHeight - 13 + 'px');
+              $('.pv-filterpanel-search').css('width', filterPanel.width() - 15 + 'px');
+              $(".pv-filterpanel-accordion").css('height', ($(".pv-filterpanel").height() - $(".pv-filterpanel-search").height() - 75) -
+              $("#pv-long-search-box").height() + "px");
 
-            $(".pv-filterpanel-accordion").accordion({ icons: false});
+              $(".pv-filterpanel-accordion").accordion({ icons: false});
 
-            //$('.pv-filterpanel').css('height', $(window).height() - $('.pv-toolbarpanel').height() - 30-13 + 'px');
+              //$('.pv-filterpanel').css('height', $(window).height() - $('.pv-toolbarpanel').height() - 30-13 + 'px');
 
-            var width = _self.width();
-            var height = $('.pv-mainpanel').height();
-            var offsetX = $('.pv-filterpanel').width() + 18;
-            var offsetY = 4;
+              var width = _self.width();
+              var height = $('.pv-mainpanel').height();
+              var offsetX = $('.pv-filterpanel').width() + 18;
+              var offsetY = 4;
 
 
-            for (var i = 0; i < _views.length; i++) {
-                if (_views[i] instanceof PivotViewer.Views.IPivotViewerView) {
-                    _views[i].setup(width, height, offsetX, offsetY, TileController.getMaxTileRatio());
-                }
-            }
+              for (var i = 0; i < _views.length; i++) {
+                  if (_views[i] instanceof PivotViewer.Views.IPivotViewerView) {
+                      _views[i].setup(width, height, offsetX, offsetY, TileController.getMaxTileRatio());
+                  }
+              }
 
-            _views[_currentView].activate();
-            PV.filterCollection();
-          }, 300);
+              _views[_currentView].activate();
+              PV.filterCollection();
+            }, 300);
+          }
         });
 
     });
@@ -2513,6 +2525,7 @@ var graphPara = {};
             _views[_currentView].setSelected(null);
             //reset id parameter
             PARA.selected_id = -1;
+            PARA.selected_loc = -1;
             return;
         }
 
@@ -2731,6 +2744,7 @@ var graphPara = {};
         for (var j = 0; j < PivotCollection.items.length; j++) {
             var item = PivotCollection.items[j], facet = item.getFacetByName(category.name);
             if (facet == undefined) continue;
+            console.log(facet);
             var date = new Date(facet.values[0].value);
             if (date < min) min = date;
             if (date > max) max = date;

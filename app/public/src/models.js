@@ -56,15 +56,16 @@ PivotViewer.Models.Collection = Object.subClass({
 
 //PivotViewer.Models
 PivotViewer.Models.Category = Object.subClass({
-	init: function (name, type, isFilterVisible) {
+    init: function (name, type, isFilterVisible) {
 		this.name = name;
 		this.type = type != null && type != undefined ? type : PivotViewer.Models.FacetType.String;
-		this.isFilterVisible = isFilterVisible != null && isFilterVisible != undefined ? isFilterVisible : true;
+		this.isFilterVisible = isFilterVisible != null && isFilterVisible != undefined ? isFilterVisible : true; // does it show up in the filter (left panel)
 		this.recount = true; this.uiInit = false; this.doFilter = true;
 		this.datetimeBuckets = [];
 		this.customSort = null;
 		this.labels = [];
-	},
+    this.isMultipleItems = false; /// this facet can have more than one value
+    },
 	getValueLabel: function (value) {
 	    if (this.type == PivotViewer.Models.FacetType.Ordinal) {
 	        var label = this.labels[value];
@@ -91,7 +92,7 @@ PivotViewer.Models.CategorySort = Object.subClass({
 
 PivotViewer.Models.Item = Object.subClass({
     init: function (img, id, href, name) {
-        this.img = img; this.id = id; this.href = href; this.name = name; this.facets = [];
+        this.description = null;this.img = img; this.id = id; this.href = href; this.name = name; this.facets = [];
 		this._facetByName = [];
 		this.links = [];
 		var that = this;
@@ -146,6 +147,9 @@ PivotViewer.Models.Bucket = Object.subClass({
     equals: function (bkt) {
         return bkt != null && this.tiles.length != 0 && this.tiles.length == bkt.tiles.length && this.tiles[0].item.id == bkt.tiles[0].item.id &&
             this.tiles[this.tiles.length - 1].item.id == bkt.tiles[bkt.tiles.length - 1].item.id;
+    },
+    hasValue: function(aValue) {
+        return _.contains(this.values, aValue);
     }
 });
 
@@ -166,5 +170,5 @@ PivotViewer.Models.FacetType = {
 	DateTime: "DateTime",
 	Link: "Link",
   Ordinal: "Ordinal",
-	Location: "Location"
+  Location: "Location"
 };

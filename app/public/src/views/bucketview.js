@@ -273,7 +273,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
 
             //deselect tiles if zooming back to min size
             if (that.scale == 1 && oldScale != 1) {
-                for (var i = 0; i < that.tiles.length; i++) that.tiles[i].setSelected(false);
+                for (var i = 0; i < that.tiles.length; i++) that.tiles[i].setSelected(false, null);
                 that.selected = null;
                 $.publish("/PivotViewer/Views/Item/Selected", [{item: that.selected}]);
             }
@@ -428,7 +428,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
 
                 if (!tile.firstFilterItemDone) {
 
-                    if (true) {
+                    if (initTiles) {
                         tile._locations[0].startx = tile._locations[0].x;
                         tile._locations[0].starty = tile._locations[0].y;
                         tile.startwidth = tile.width;
@@ -472,9 +472,14 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
         }
 
         if (filterList[0].item.getFacetByName(sortCategory) == undefined) {
-            var bkt = new PivotViewer.Models.Bucket("(no info)", "(no info)");
+            var bucketsNo = [];
+            bkt = new PivotViewer.Models.Bucket("(no info)", "(no info)");
             bkt.addTile(filterList[0]);
-            return bkt;
+            bucketsNo.push(bkt);
+            bucketsNo.ids = [];
+            //return bkt;
+
+            return bucketsNo;
         }
         var min = filterList[0].item.getFacetByName(sortCategory).values[0].value;
         for (var i = filterList.length - 1; i > 0; i--) {
@@ -521,14 +526,6 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
                 }
             }
 
-            var epsilon = bucketSize;
-            for (var b = 0; b < bkts.length; b++) {
-                var bkt = bkts[b], newEp = bkt.startRange + bucketSize - bkt.endRange;
-                if (newEp < epsilon) epsilon = newEp;
-            }
-            epsilon = Math.pow(10, Math.floor(Math.log(epsilon) / Math.log(10))); bucketSize = bucketSize - (epsilon > 1 ? 1 : epsilon);
-            for (var b = 0; b < bkts.length; b++) bkts[b].endLabel = (bkts[b].startRange + bucketSize).toString();
-
             var empty = 0;
             for (var b = 0; b < bkts.length; b++) {
                 if (bkts[b].tiles.length == 0) empty++;
@@ -557,9 +554,11 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
 
             if (i != filterList.length && Settings.showMissing) {
                 bkts.push(new PivotViewer.Models.Bucket("(no info)", "(no info)"));
+                bkts.ids = [];
                 var bktNum = bkts.length - 1, bkt = bkts[bktNum];
                 for (; i < filterList.length; i++) {
                     bkt.addTile(filterList[i]);
+                    bkt.ids[filterList[i].item.id] = true;
                     bkts.ids[filterList[i].item.id] = bktNum;
                 }
             }
@@ -569,9 +568,15 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
         //Got rid of multiple values for now
     },
     centerOnTile: function (tile) {
-        var item = tile.item, location = tile._locations[0];
+        var item = tile.item, location = tile._locations[tile.selectedLoc];
         var tileMaxWidth = this.rowscols.TileMaxWidth, padding = this.rowscols.PaddingX;
-        var bucket = this.buckets.ids[item.id], bucketCols = this.rowscols.Columns;
+        var bucket;
+        if (this.buckets.ids[item.id] instanceof Array) {
+          bucket = this.buckets.ids[item.id][tile.selectedLoc];
+        }else{
+          bucket = this.buckets.ids[item.id];
+        }
+        var bucketCols = this.rowscols.Columns;
         var bucketCol = Math.round(((location.x - this.currentOffsetX) - (bucket * (bucketCols * tileMaxWidth + padding))) / tileMaxWidth);
         var col = (bucket * bucketCols) + bucketCol;
         var row = Math.round((this.canvasHeightUIAdjusted - (location.y - this.currentOffsetY)) / tile.height) - 1;
@@ -586,12 +591,31 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
         else origProportion = tile.origwidth / canvasWidth;
         if (this.selected == null) PV.zoom(Math.round((0.75 / origProportion) * 2));
         var padding = this.rowscols.PaddingX * bucket;
+
         this.currentOffsetX = (this.width / 2) - (this.rowscols.TileMaxWidth * col) - (this.rowscols.TileMaxWidth / 2) - padding;
         this.currentOffsetY = this.height / 2 - this.canvasHeightUIAdjusted + this.rowscols.TileHeight / 2 + row * this.rowscols.TileHeight;
+        /*
+        console.log(bucket);
+        console.log(this.rowscols.PaddingX);
+        console.log(padding);
+        console.log(col);
+        console.log(this.currentOffsetX);*/
         this.setTilePositions(this.rowscols, this.currentOffsetX, this.currentOffsetY, true, true);
     },
     handleHover: function (evt) {
-        this.super_handleHover(evt);
+        //this.super_handleHover(evt);
+        //console.log(this.buckets[0].tiles);
+        //console.log(this.filterList);
+        if (this.selected != null) return;
+        for (var i = 0; i < this.buckets.length; i++) {
+            for (var j = 0; j < this.buckets[i].tiles.length; j++) {
+                var loc = this.buckets[i].tiles[j].contains(evt.x, evt.y);
+                if (loc >= 0) {
+                  this.buckets[i].tiles[j].setSelected(true, loc);
+                }
+                else this.buckets[i].tiles[j].setSelected(false. null);
+            }
+        }
         $(".pv-tooltip").remove();
         $(".pv-bucketview-overlay-bucket").removeClass("bucketview-bucket-hover");
         var bktNum = this.getBucket(evt.x);
@@ -636,11 +660,15 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
     handleClick: function (evt) {
         if (this.hasSubsets() && !PV.subsets.finalized) { PV.subsets.finalized = true; PV.filterViews(); return; }
         var tile = this._super(evt);
-        if(evt.type == "init") this.resetUISettings();
+        if(evt.type == "init") {
+          this.resetUISettings();
+          tile.selectedLoc = PARA.selected_loc;
+        }
         if (this.selected != null) this.selected.setSelected(false);
         if (tile != null) {
             if (this.selected != tile) {
-                tile.setSelected(true);
+                PARA.selected_loc = tile.selectedLoc;
+                tile.setSelected(true, null);
                 this.centerOnTile(tile);
                 this.setSelected(tile);
                 $('.pv-bucketview-overlay div').fadeOut('slow');

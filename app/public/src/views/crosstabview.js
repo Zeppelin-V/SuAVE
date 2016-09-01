@@ -70,10 +70,17 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
 
         for (var i = 0; i < this.filterList.length; i++) {
             var tile = this.filterList[i], id = tile.item.id;
-            var j = this.buckets.ids[id], k = this.bucketsY.ids[id];
-            if (j == undefined || k == undefined) continue;
-            this.buckets[j].subBuckets[k].addTile(tile);
-            this.buckets[j].colCount++;
+            var ids1 = this.buckets.ids[id];
+            var ids2 = this.bucketsY.ids[id];
+            if (ids1 == undefined || ids2 == undefined) continue;
+            if(!(ids1 instanceof Array)) ids1 = [ids1];
+            if(!(ids2 instanceof Array)) ids2 = [ids2];
+            for(var x = 0; x < ids1.length; x++){
+              for(var y = 0; y < ids2.length; y++){
+                this.buckets[ids1[x]].subBuckets[ids2[y]].addTile(tile);
+                this.buckets[ids1[x]].colCount++;
+              }
+            }
         }
     },
     filterY: function () {
@@ -296,10 +303,22 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
         }
     },
     centerOnTile: function (tile) {
-        var location = tile._locations[0], item = tile.item;;
+        var location = tile._locations[tile.selectedLoc], item = tile.item;
+
         var cellCols = this.rowscols.Columns, cellRows = this.rowscols.Rows;
         var tileMaxWidth = this.rowscols.TileMaxWidth, tileHeight = this.rowscols.TileHeight;
-        var cellX = this.buckets.ids[item.id], cellY = this.bucketsY.ids[item.id];
+        var cellX, cellY;
+        if (this.buckets.ids[item.id] instanceof Array) {
+          cellX = this.buckets.ids[item.id][tile.cellLoc[0]];
+        }else{
+          cellX = this.buckets.ids[item.id];
+        }
+        if (this.bucketsY.ids[item.id] instanceof Array) {
+          cellY = this.bucketsY.ids[item.id][tile.cellLoc[1]];
+        }else{
+          cellY = this.bucketsY.ids[item.id];
+        }
+
         var cellCol = Math.round((location.x - this.currentOffsetX - (cellX + 1) * this.columnWidth) / tileMaxWidth);
 
         //Tricky numerical precision
@@ -345,7 +364,27 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
                 "</div><div style='position:absolute; right:2px;'>" + this.sortCategory + "</div></div>";
     },
     handleHover: function (evt) {
-        this.super_handleHover(evt);
+        if (this.selected != null) return;
+        for (var i = 0; i < this.buckets.length; i++) {
+            for (var j = 0; j < this.buckets[i].tiles.length; j++) {
+                var loc = this.buckets[i].tiles[j].contains(evt.x, evt.y);
+                if (loc >= 0) {
+                  var facets = this.buckets[i].tiles[j].item.facets;
+                  var col;
+                  var row;
+                  for(var k = 0; k < facets.length; k ++){
+                    if(facets[k].name == this.sortCategory2){
+                      col = loc % facets[k].values.length;
+                      row = Math.floor(loc / facets[k].values.length);
+                    }
+                  }
+
+                  this.buckets[i].tiles[j].setSelected(true, loc, [row, col]);
+
+                }
+                else this.buckets[i].tiles[j].setSelected(false. null);
+            }
+        }
         $(".pv-crosstabview-overlay-bucket").removeClass("bucketview-bucket-hover");
         $(".pv-tooltip").remove();
 
@@ -391,11 +430,26 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
     handleClick: function (evt) {
         if (this.hasSubsets() && !PV.subsets.finalized) { PV.subsets.finalized = true; PV.filterViews(); return; }
         var tile = this.super_handleClick(evt);
-        if(evt.type == "init") this.resetUISettings();
+        if(evt.type == "init") {
+          this.resetUISettings();
+          //in case snapshot doesn't have location info
+          if(this.buckets.ids[tile.item.id] instanceof Array && tile.cellLoc == null){
+            tile.selectedLoc = PARA.selected_loc;
+            var facets = tile.item.facets;
+            for(var k = 0; k < facets.length; k ++){
+              if(facets[k].name == this.sortCategory2){
+                var col = tile.selectedLoc % facets[k].values.length;
+                var row = Math.floor(tile.selectedLoc / facets[k].values.length);
+                tile.cellLoc = [row, col];
+              }
+            }
+          }
+        }
         if (this.selected != null) this.selected.setSelected(false);
         if (tile != null) {
             if (this.selected != tile) {
-                tile.setSelected(true);
+                PARA.selected_loc = tile.selectedLoc;
+                tile.setSelected(true, null);
                 this.centerOnTile(tile);
                 this.setSelected(tile);
                 $('.pv-bucketview-overlay div').fadeOut('slow');

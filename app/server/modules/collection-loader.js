@@ -29,6 +29,7 @@ exports.changeAboutFileByID = function(user, name, fullname, data, callback){
     if (err) {
       callback(err);
     }else{
+      callback(null);
       console.log("successfully rewrote about file");
     }
   });

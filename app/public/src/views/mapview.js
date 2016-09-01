@@ -641,6 +641,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         return geocodeCallBack;
     },
     geocode: function (locName, callbackFunction) {
+      console.log(locName);
       var that = this;
       var nominatimUrl = "http://www.datasciencetoolkit.org/maps/api/geocode/json?sensor=false&address=" + encodeURIComponent(locName);
       $.ajax({

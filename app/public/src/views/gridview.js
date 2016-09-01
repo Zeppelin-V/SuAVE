@@ -84,13 +84,21 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
             }
         });
     },
-    resetUISettings: function () { this.rowscols = this.calculateDimensions(this.currentWidth - this.offsetX, this.currentHeight - this.offsetY, this.maxRatio, this.filterList.length - this.numMissing); },
+    resetUISettings: function () {
+	this.rowscols =
+	    this.calculateDimensions(this.currentWidth - this.offsetX,
+				     this.currentHeight - this.offsetY,
+				     this.maxRatio,
+				     this.filterList.length - this.numMissing);
+
+    },
     recalibrateUISettings: function () { this.rowscols = this.getTileDimensions(this.currentWidth - this.offsetX, this.currentHeight - this.offsetY, this.maxRatio, this.filterList.length - this.numMissing, this.rowscols); },
     setup: function (width, height, offsetX, offsetY, tileMaxRatio) {
         this.width = width;
         this.height = height;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
+	console.debug( "recalibrateUISettings:", tileMaxRatio );
         this.maxRatio = tileMaxRatio;
         this.currentWidth = this.width;
         this.currentHeight = this.height;
@@ -117,7 +125,6 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
             this.currentOffsetX = this.offsetX;
             this.currentOffsetY = this.offsetY;
             PV.zoom(0);
-
             this.resetUISettings();
             for (var i = 0; i < this.filterList.length; i++) {
                 var tile = this.filterList[i];
@@ -127,12 +134,10 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
             this.setTilePositions(this.rowscols, this.tiles, this.currentOffsetX, this.currentOffsetY, true, false, 1000);
             pt1Timeout = 1000;
         }
-
         setTimeout(function () {
             for (var i = 0; i < that.tiles.length; i++) {
                 //setup tiles
                 var tile = that.tiles[i];
-
                 tile._locations[0].startx = tile._locations[0].x;
                 tile._locations[0].starty = tile._locations[0].y;
                 tile.startwidth = tile.width;
@@ -149,11 +154,14 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
             }
 
             // recalculate max width of images in filterList
-            that.maxRatio = TileController._imageController.getRatio(that.tiles[0].item.img);
-            for (var i = 0; i < that.filterList.length; i++) {
-                var ratio = TileController._imageController.getRatio(that.filterList[i].item.img);
-                if (ratio < that.maxRatio) that.maxRatio = ratio;
-            }
+	    // spl
+            // that.maxRatio = TileController._imageController.getRatio(that.tiles[0].item.img);
+	    // console.debug( "recalculated ratio:", that.maxRatio );
+            // for (var i = 0; i < that.filterList.length; i++) {
+            //     var ratio = TileController._imageController.getRatio(that.filterList[i].item.img);
+            //     if (ratio < that.maxRatio) that.maxRatio = ratio;
+	    // 	console.debug( "recalculated ratio:", that.maxRatio, i );
+            // }
 
             var pt2Timeout = that.filterList.length == that.tiles.length ? 0 : 500;
             setTimeout(function () {
@@ -169,7 +177,6 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
                     tile.origwidth = that.rowscols.TileHeight / TileController._imageController.getRatio(tile.item.img);
                     tile.origheight = that.rowscols.TileHeight;
                 }
-
                 that.setTilePositions(that.rowscols, that.filterList, that.offsetX, that.offsetY, false, false, 1000);
             }, pt2Timeout);
 
@@ -181,7 +188,6 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
 
     /// Sets the tiles position based on the calculateDimensions layout function
     setTilePositions: function (rowscols, tiles, offsetX, offsetY, initTiles, keepColsRows, milliseconds) {
-
         //re-use previous columns
         var columns = (keepColsRows && this.rowscols)  ? this.rowscols.Columns : rowscols.Columns;
         if (!keepColsRows) this.rowscols = rowscols;
@@ -195,7 +201,6 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
                 //setup tile initial positions
                 tile._locations[0].startx = tile._locations[0].x;
                 tile._locations[0].starty = tile._locations[0].y;
-
                 tile.startwidth = tile.width;
                 tile.startheight = tile.height;
             }
@@ -234,6 +239,7 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
     handleClick: function (evt) {
         var tile = this._super(evt);
         if (tile != null) tile.setSelected(true);
+
         if(evt["type"] == "init") this.resetUISettings();
         if(tile != null && this.selected != tile) this.centerOnTile(tile);
         else {
