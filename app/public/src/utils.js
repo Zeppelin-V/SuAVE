@@ -399,7 +399,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
             if (d == 0) { newBkts[b] = bkt; newBkt = newBkts[b]; }
             else {
                 newBkt = newBkts[b];
-                newBkt.endRange = bkt.endRange;
+                newBkt.endRange = bkt.endLabel;
                 newBkt.endLabel = bkt.endLabel;
                 Array.prototype.push.apply(newBkt.tiles, bkt.tiles);
                 Array.prototype.push.apply(newBkt.values, bkt.values);

@@ -33,19 +33,26 @@ PivotViewer.Views.GridView = PivotViewer.Views.TileBasedView.subClass({
             var oldScale = that.scale;
             var preWidth = that.currentWidth;
             var preHeight = that.currentHeight;
-            //Set the zoom time - the time it takes to zoom to the scale
-            //if on a touch device where evt.scale != undefined then have no delay
+
+            //Set the zoom time - the time it takes to zoom to the
+            //scale if on a touch device where evt.scale != undefined
+            //then have no delay
             var zoomTime = evt.scale != undefined ? 0 : 1000;
 
             if (evt.scale != undefined) {
-                if (evt.scale >= 1) that.scale += (evt.scale - 1);
+
+                if (evt.scale >= 1){
+		          that.scale += (evt.scale - 1);
+                }
                 else {
+
                     that.scale -= evt.scale;
                     that.scale = that.scale < 1 ? 1 : that.scale;
+
                 }
+            } else if (evt.delta != undefined){
+                that.scale = evt.delta == 0 ? that.scale : (that.scale + evt.delta);
             }
-            else if (evt.delta != undefined)
-                that.scale = evt.delta == 0 ? 1 : (that.scale + evt.delta);
 
             if (isNaN(that.scale)) that.scale = 1;
 

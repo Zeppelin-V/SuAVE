@@ -410,6 +410,10 @@ exports.getColumnsAndTags = function(user, name, callback){
                 tmp.values.push('#href');
                 names[i] = names[i].replace('#href', '');
               }
+              if(names[i].indexOf('#multi') > -1){
+                tmp.values.push('#multi');
+                names[i] = names[i].replace('#multi', '');
+              }
 
               if(tmp.values.length > 0){
                 tmp.name = names[i];

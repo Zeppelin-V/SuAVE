@@ -63,8 +63,8 @@ PivotViewer.Views.TileController = Object.subClass({
             context = tiles[0].context;
             //update canvas information while window size changes
 
-            context.canvas.width = $('.pv-canvas').width();
-            context.canvas.height = $('.pv-canvas').height();
+            var cwidth = context.canvas.width = $('.pv-canvas').width();
+            var cheight = context.canvas.height = $('.pv-canvas').height();
 
             var isZooming = false;
 
@@ -131,7 +131,6 @@ PivotViewer.Views.TileController = Object.subClass({
                                 end);
 
                     } else {
-
                         location.x = location.destinationx;
                         location.y = location.destinationy;
                         tile.width = tile.destinationwidth;
@@ -143,11 +142,13 @@ PivotViewer.Views.TileController = Object.subClass({
                     }
 
                     //check if the destination will be in the visible area
-
-                    tile.destinationVisible = !(location.destinationx + tile.destinationwidth < 0 ||
-                        location.destinationx > context.canvas.width ||
-                        location.destinationy + tile.destinationheight < 0 ||
-                        location.destinationy > context.canvas.height);
+                    if ((location.destinationx + tile.destinationwidth < 0) ||
+                        (location.destinationx > cwidth) ||
+                        (location.destinationy + tile.destinationheight < 0) ||
+                        (location.destinationy > cheight))
+                        tile.destinationVisible = false;
+                    else
+                        tile.destinationVisible = true;
 
                 }
             }
@@ -178,11 +179,37 @@ PivotViewer.Views.TileController = Object.subClass({
             for (var l = 0; l < locations.length; l++) {
 
                 var location = locations[l];
+                var x1 = location.x + tile.width;
+                var y1 = location.y + tile.height;
+                var drawit =
+                    ((0 <= location.x) &&
+                        (location.x < context.canvas.width) &&
+                        (0 <= location.y) &&
+                        (location.y < context.canvas.height)) ||
+                    ((0 <= location.x) &&
+                        (location.x < context.canvas.width) &&
+                        (0 <= y1) &&
+                        (y1 < context.canvas.height)) ||
+                    ((0 <= x1) &&
+                        (x1 < context.canvas.width) &&
+                        (0 <= location.y) &&
+                        (location.y < context.canvas.height)) ||
+                    ((0 <= x1) &&
+                        (x1 < context.canvas.width) &&
+                        (0 <= y1) &&
+                        (y1 < context.canvas.height)) ||
+                    ((0 <= location.x) &&
+                        (location.x < context.canvas.width) &&
+                        (location.y < context.canvas.height)) ||
+                    ((0 <= location.y) &&
+                        (location.y < context.canvas.height) &&
+                        (location.x < context.canvas.width)) ||
+                    ((location.x <= 0) &&
+                        (0 <= x1) &&
+                        (location.y <= 0) &&
+                        (0 <= y1));
 
-                if (location.x + tile.width > 0 &&
-                    location.x < context.canvas.width &&
-                    location.y + tile.height > 0 &&
-                    location.y < context.canvas.height)
+                if (drawit)
                     tile.draw(l);
 
             }
@@ -265,41 +292,75 @@ PivotViewer.Views.Tile = Object.subClass({
         if (this._images != null) {
 
             //A DrawLevel function returned - invoke
+            var completeImageHeight = ctrlr.getHeight(this.item.img);
+            var completeImageWidth = ctrlr.getWidth(this.item.img);
+
+            var displayHeight =
+                this.height -
+                Math.ceil(this.height < 128 ? this.height / 16 : 8);
+            var displayWidth =
+                this.width -
+                Math.ceil(this.width < 128 ? this.width / 16 : 8);
+
+            //Narrower images need to be centered
+
+            var blankWidth = (this.width - 8) - displayWidth;
+            var blankHeight = (this.height - 8) - displayHeight;
+
+            // Handle displaying the deepzoom image tiles ( move to deepzoom.js )
+
+            var xmargin = 0;
+            var ymargin = 0;
+            var scaled_width = displayWidth;
+            var scaled_height = displayHeight;
+
+            var tileSize = ctrlr._tileSize;
+
+            //Get image level
+
+            var image_level =
+                Math.ceil(Math.log(this.width > this.height ?
+                        this.width : this.height) /
+                    Math.log(2));
+            if (image_level == Infinity || image_level == -Infinity)
+                image_level = 0;
+
+            var maxlevel = ctrlr.getMaxLevel(this.item.img);
+            if (image_level > maxlevel)
+                image_level = maxlevel
+            var level_factor =
+                1 << (maxlevel - image_level);
+
+            var levelHeight =
+                Math.ceil(completeImageHeight / level_factor);
+            var levelWidth =
+                Math.ceil(completeImageWidth / level_factor);
+
+            //Image will need to be scaled to get the displayHeight
+
+            var scaleh = displayHeight / levelHeight;
+            var scalew = displayWidth / levelWidth;
+
+            var scale = (scaleh < scalew) ? scaleh : scalew;
+
+            scaled_width = Math.ceil(levelWidth * scale);
+            scaled_height = Math.ceil(levelHeight * scale);
+
+            xmargin =
+                Math.floor((displayWidth - scaled_width) / 2);
+            ymargin =
+                Math.floor((displayHeight - scaled_height) / 2);
+
             if (typeof this._images == "function")
-                this._images(this.item,
-                    context,
-                    location.x + 4,
-                    location.y + 4,
-                    this.width - 8,
-                    this.height - 8);
+                this._images(context,
+                    location.x + xmargin,
+                    location.y + ymargin,
+                    scaled_width,
+                    scaled_height);
             else if ((this._images.length > 0) &&
                 this._images[0] instanceof Image) {
 
                 //if the collection contains an image
-
-                var completeImageHeight = ctrlr.getHeight(this.item.img);
-                var completeImageWidth = ctrlr.getWidth(this.item.img);
-
-                var displayHeight =
-                    this.height -
-                    Math.ceil(this.height < 128 ? this.height / 16 : 8);
-                var displayWidth =
-                    this.width -
-                    Math.ceil(this.width < 128 ? this.width / 16 : 8);
-
-                // spl
-                // var displayWidth =
-                //     Math.ceil( ctrlr.getWidthForImage( this.item.img, displayHeight ) );
-                //Narrower images need to be centered
-
-                var blankWidth = (this.width - 8) - displayWidth;
-                var blankHeight = (this.height - 8) - displayHeight;
-
-                // Handle displaying the deepzoom image tiles ( move to deepzoom.js )
-                var xmargin = 0;
-                var ymargin = 0;
-                var scaled_width = displayWidth;
-                var scaled_height = displayHeight;
 
                 if (ctrlr instanceof PivotViewer.Views.DeepZoomImageController) {
 
@@ -358,68 +419,30 @@ PivotViewer.Views.Tile = Object.subClass({
                         var ofactor =
                             Math.floor((tileSize - overlap) * scale);
                         var offsetx =
-                            xmargin + 4 + (xPosition * ofactor);
+                            xmargin + (xPosition * ofactor);
                         var offsety =
-                            ymargin + 4 + (yPosition * ofactor);
+                            ymargin + (yPosition * ofactor);
 
                         context.drawImage(this._images[i],
                             offsetx + location.x,
                             offsety + location.y,
                             imageTileWidth,
                             imageTileHeight);
-
-                        // var xPosition =
-                        //     parseInt( nl.substring( 0, nl.indexOf( "_" ) ) );
-                        // var yPosition =
-                        //     parseInt( nl.substring( nl.indexOf( "_" ) + 1 ) );
-
-                        // //Get image level
-                        // n = source.match ( /_files\/[0-9]+\//g );
-                        // var imageLevel =
-                        //     parseInt( n[0].substring( 7, n[0].length - 1 ) );
-                        // var power =
-                        //     ctrlr.getMaxLevel( this.item.img ) - imageLevel;
-                        // var levelHeight =
-                        //     Math.ceil( completeImageHeight / ( 1 << power ) )
-
-                        // //Image will need to be scaled to get the displayHeight
-                        // var scale = displayHeight / levelHeight;
-
-                        // // handle overlap
-                        // overlap = ctrlr.getOverlap( this.item.img );
-
-                        // var offsetx =
-                        //     ( Math.floor( blankWidth/2 ) ) + 4 +
-                        //     xPosition * Math.floor( ( tileSize - overlap ) *
-                        //              scale );
-                        // var offsety =
-                        //     4 + Math.floor( ( yPosition *
-                        //                       ( tileSize - overlap ) *
-                        //                       scale ) );
-
-                        // var imageTileHeight =
-                        //     Math.ceil( this._images[i].height * scale );
-                        // var imageTileWidth =
-                        //     Math.ceil( this._images[i].width * scale );
-
-                        // context.drawImage( this._images[i],
-                        //                    offsetx + location.x,
-                        //                    offsety + location.y,
-                        //         imageTileWidth,
-                        //         imageTileHeight );
-
                     }
                 } else {
                     var offsetx = (Math.floor(blankWidth / 2)) + 4;
                     var offsety = 4;
-                    context.drawImage(this._images[0], offsetx + this._locations[loc].x, offsety + this._locations[loc].y, displayWidth, displayHeight);
+                    context.drawImage(this._images[0],
+                        offsetx + location.x,
+                        offsety + location.y,
+                        displayWidth, displayHeight);
                 }
 
                 if (this._selected) {
                     //draw a blue border
                     context.beginPath();
-                    var offsetx = xmargin + 4;
-                    var offsety = ymargin + 4;
+                    var offsetx = xmargin;
+                    var offsety = ymargin;
                     context.rect(offsetx +
                         this._locations[this.selectedLoc].x,
                         offsety +
@@ -454,6 +477,7 @@ PivotViewer.Views.Tile = Object.subClass({
 
         var controller = TileController._imageController;
         var context = this.context;
+        var location = this._locations[loc];
 
         if (controller.DrawLevel == undefined) {
 
@@ -461,12 +485,12 @@ PivotViewer.Views.Tile = Object.subClass({
 
             context.beginPath();
             context.fillStyle = "#D7DDDD";
-            context.fillRect(this._locations[loc].x + 4,
-                this._locations[loc].y + 4,
+            context.fillRect(location.x + 4,
+                location.y + 4,
                 this.width - 8,
                 this.height - 8);
-            context.rect(this._locations[loc].x + 4,
-                this._locations[loc].y + 4,
+            context.rect(location.x + 4,
+                location.y + 4,
                 this.width - 8,
                 this.height - 8);
             context.lineWidth = 1;
@@ -476,8 +500,8 @@ PivotViewer.Views.Tile = Object.subClass({
         } else //use the controller's blank tile
             controller.DrawLevel(this.item,
             context,
-            this._locations[loc].x + 4,
-            this._locations[loc].y + 4,
+            location.x + 4,
+            location.y + 4,
             this.width - 8,
             this.height - 8);
 

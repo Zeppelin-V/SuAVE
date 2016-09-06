@@ -24,7 +24,7 @@ var sMemory = false;
 
 //set listener on buttons
 	$(document).on('click', '#select-about-submit', function(){
-		window.frames[0].frameElement.contentWindow.getCode(function(data){
+		document.getElementById('editorFrame').contentWindow.getCode(function(data){
 
 			$.ajax({
 				url: "/changeAboutFileByID",
@@ -102,7 +102,7 @@ var sMemory = false;
 				$('.modal-select-collection .modal-dialog .modal-body').prepend(
 					'<div class="panel panel-primary">'+
 						'<div class="panel-heading" id="tags-heading">'+
-							'Tags: number, date, long, link, ordinal, textlocation, hidden'+
+							'Tags: number, date, long, link, ordinal, multi, textlocation, hidden'+
 						'</div>'+
 					'</div>'+
 					'<div class="dropdown">'+
@@ -140,6 +140,7 @@ var sMemory = false;
 							    '<option data-subtext="the filter panel will include a search box for such variables at the top of the panel">#long</option>'+
 									'<option data-subtext="will be shown as a link to an external resource in the information panel">#link</option>'+
 									'<option data-subtext="will be shown as a special type of histogram in the filter panel.">#ordinal</option>'+
+									'<option data-subtext="will be shown as multiple tiles given values for each variable">#multi</option>'+
 									'<option data-subtext="expects a well-formatted address that will be geocoded on the fly">#textlocation</option>'+
 							  '</optgroup>'+
 							  '<optgroup label="Hidden in Filter Panel" data-max-options="1">'+
@@ -199,6 +200,7 @@ $(document).on('click', '#tag-item-select li', function(){
 					'<option data-subtext="the filter panel will include a search box for such variables at the top of the panel">#long</option>'+
 					'<option data-subtext="will be shown as a link to an external resource in the information panel">#link</option>'+
 					'<option data-subtext="will be shown as a special type of histogram in the filter panel.">#ordinal</option>'+
+					'<option data-subtext="will be shown as multiple tiles given values for each variable">#multi</option>'+
 					'<option data-subtext="expects a well-formatted address that will be geocoded on the fly">#textlocation</option>'+
 					'<option data-subtext="URL to be invoked as user clicks on the title">#href</option>'+
 				'</optgroup>'+
@@ -302,7 +304,7 @@ $(document).on('click', '#select-tags-submit',  function(){
 			type: "GET",
 			data: {"name" : surveys[SID].name, "user": user},
 			success: function(code){
-				window.frames[0].frameElement.contentWindow.setCode(code);
+				document.getElementById('editorFrame').contentWindow.setCode(code);
 			},
 			error: function(jqXHR){
 				console.log(jqXHR.responseText+' :: '+jqXHR.statusText);

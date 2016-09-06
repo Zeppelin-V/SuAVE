@@ -33,6 +33,12 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
 
     this._dziQueue = [];
     this._zooming = false;
+    this._max_sprite_level = -1;
+    this._sprite_index = [];
+    this._sprite_sheet_url = [];
+    this._sprite_sheet_loaded = [];
+    this._sprite_sheet = [];
+
     var that = this;
 
     //Events
@@ -44,6 +50,77 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
     //get base URL
     this.baseUrl = deepzoomCollection.substring(0, deepzoomCollection.lastIndexOf("/"));
     this._collageUrl = deepzoomCollection.substring(deepzoomCollection.lastIndexOf("/") + 1).replace('.xml', '_files');
+    this.getSpriteIndex(deepzoomCollection, this.getDeepzoom);
+  },
+  getSpriteIndex: function(deepzoomCollection, callback) {
+    this._dzc = deepzoomCollection;
+    this._cb = callback;
+    this._the_other = that;
+    var that = this;
+
+    $.ajax({
+        type: "GET",
+        url: this.baseUrl + "/sprite.idx",
+        dataType: "xml",
+        success: function(xml) {
+
+            var sprite_index = $(xml).find("SpriteIndex");
+            that._max_sprite_level = $(sprite_index).attr("maxdepth");
+
+            var tiles = $(sprite_index).find("Tile");
+
+            for (var t = 0; t < tiles.length; t++) {
+
+                var tile = tiles[t];
+                var params = [];
+
+                var tile_params = $(tile).find("TileParams");
+
+                for (var p = 0; p < tile_params.length; p++) {
+
+                    var tile_param = tile_params[p];
+
+                    params[$(tile_param).attr("level")] = {
+                        width: $(tile_param).attr("width"),
+                        height: $(tile_param).attr("height")
+                    };
+
+                }
+
+                that._sprite_index[$(tile).attr("object")] = {
+                    x: $(tile).attr("x"),
+                    y: $(tile).attr("y"),
+                    params: params
+                };
+
+            }
+
+            var sprite_sheets = $(xml).find("SpriteSheet");
+
+            for (var ss = 0; ss < sprite_sheets.length; ss++) {
+
+                var sprite_sheet = sprite_sheets[ss];
+
+                that._sprite_sheet_url[$(sprite_sheet).attr("index")] =
+                    that.baseUrl + "/" + $(sprite_sheet).attr("sprite");
+
+            }
+            that._cb(that._dzc);
+
+
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+
+            // Not really an error. A sprite.idx just wasn't
+            // created. We just happily proceed.
+
+            that._cb(that._dzc);
+
+        }
+
+    });
+  },
+  getDeepzoom: function(deepzoomCollection) {
     var that = this;
     //load dzi and start creating array of id's and DeepZoomLevels
     $.ajax({
@@ -99,7 +176,9 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
             var dziSource = $(items[i]).attr('Source');
             var itemId = $(items[i]).attr('Id');
             var dzN = $(items[i]).attr('N');
-            var dzId = dziSource.substring(dziSource.lastIndexOf("/") + 1).replace(/\.xml/gi, "").replace(/\.dzi/gi, "");
+            var dzId = dziSource.substring(dziSource.lastIndexOf("/") + 1).
+              replace(/\.xml/gi, "").
+              replace(/\.dzi/gi, "");
             var basePath = dziSource.substring(0, dziSource.lastIndexOf("/"));
             if (basePath.length > 0) basePath = basePath + '/';
             if (width > that.MaxWidth) that.MaxWidth = width;
@@ -140,51 +219,176 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
     return this.getImagesAtLevel(id, level);
   },
 
-  getImagesAtLevel: function (id, level) {
-    level = (level <= 0 ? 6 : level);
+  getImagesAtLevel: function(id, level) {
 
-    var item = this._itemsById[id];
-    level = (level > item.MaxLevel ? item.MaxLevel : level);
+      //       level = ( level <= 0 ? 6 : level );
 
-    //to work out collage image
-    //convert image n to base 2
-    //convert to array and put even and odd bits into a string
-    //convert strings to base 10 - this represents the tile row and col
-    var baseTwo = item.DZN.toString(2);
-    var even = "", odd = "";
-    for (var b = 0; b < baseTwo.length; b++) {
-      if (b % 2 == 0) even += baseTwo[b];
-      else odd += baseTwo[b];
-    }
-    dzCol = parseInt(even, 2);
-    dzRow = parseInt(odd, 2);
-    //for the zoom level work out the DZ tile where it came from
+      if (level < 0)
+          level = 0;
 
-    if ((item.Levels == undefined || item.Levels.length == 0) && !this._zooming) {
-      //create 0 level
-      var imageList = this.getImageList(id, this.baseUrl + "/" + item.BasePath + item.DZId + "_files/6/", 6); ;
-      item.Levels.push(new PivotViewer.Views.ImageLevel(imageList));
-      return null;
-    }
-    else if (item.Levels.length < level && !this._zooming) {
-      //requested level does not exist, and the Levels list is smaller than the requested level
-      var imageList = this.getImageList(id, this.baseUrl + "/" + item.BasePath + item.DZId + "_files/" + level + "/", level);
-      item.Levels.splice(level, 0, new PivotViewer.Views.ImageLevel(imageList));
-    }
+      // _max_sprite_level will be -1 if we're not using sprites.
 
-    //get best loaded level to return
-    for (var j = level; j > -1; j--) {
-      if (item.Levels[j] != undefined && item.Levels[j].IsLoaded()) return item.Levels[j].getImages();
+      if (level <= this._max_sprite_level)
+          return this.spriteLoad(id, level);
 
-      //if request level has not been requested yet
-      if (j == level && item.Levels[j] == undefined && !this._zooming) {
-        var imageList = this.getImageList(id, this.baseUrl + "/" + item.BasePath + item.DZId + "_files/" + j + "/", j);
-        //                item.Levels.splice(j, 0, new PivotViewer.Views.ImageLevel(imageList));
-        item.Levels[j] = new PivotViewer.Views.ImageLevel(imageList);
-        break;
+      var item = this._itemsById[id];
+      level = (level > item.MaxLevel ? item.MaxLevel : level);
+
+      //to work out collage image
+      //convert image n to base 2
+      //convert to array and put even and odd bits into a string
+      //convert strings to base 10 - this represents the tile row and col
+
+      var baseTwo = item.DZN.toString(2);
+      var even = "",
+          odd = "";
+      for (var b = 0; b < baseTwo.length; b++) {
+          if (b % 2 == 0) even += baseTwo[b];
+          else odd += baseTwo[b];
       }
-    }
-    return null;
+
+      dzCol = parseInt(even, 2);
+      dzRow = parseInt(odd, 2);
+
+      //for the zoom level work out the DZ tile where it came from
+
+      // if ( ( ( item.Levels == undefined ) ||
+      //        ( item.Levels.length == 0 ) ) &&
+      //      !this._zooming ) {
+
+      //     //create 0 level
+      //     var imageList =
+      //         this.getImageList( id,
+      //                            this.baseUrl + "/" +
+      //                            item.BasePath + item.DZId + "_files/6/", 6 );
+      //     item.Levels.push( new PivotViewer.Views.ImageLevel( imageList ) );
+
+      //     return null;
+
+      // } else
+      if ((item.Levels.length < level) && !this._zooming) {
+
+          //requested level does not exist, and the Levels list is
+          //smaller than the requested level
+
+          var imageList =
+              this.getImageList(id,
+                  this.baseUrl + "/" +
+                  item.BasePath +
+                  item.DZId + "_files/" +
+                  level + "/", level);
+          item.Levels[level] =
+              new PivotViewer.Views.ImageLevel(imageList);
+
+      }
+
+      //get best loaded level to return
+      for (var j = level; j > this._max_sprite_level; j--)
+          if ((item.Levels[j] != undefined) &&
+              (item.Levels[j].IsLoaded()))
+              return item.Levels[j].getImages();
+
+          //if request level has not been requested yet
+
+      if ((item.Levels[level] == undefined) &&
+          !this._zooming) {
+
+          var imageList =
+              this.getImageList(id,
+                  this.baseUrl + "/" +
+                  item.BasePath +
+                  item.DZId + "_files/" +
+                  level + "/", level);
+
+          item.Levels[level] = new PivotViewer.Views.ImageLevel(imageList);
+
+      }
+
+      var rv = null;
+      for (var l = this._max_sprite_level; l >= 0; l--) {
+
+          rv = this.spriteLoad(id, l);
+          if (rv != null)
+              break;
+
+      }
+
+      return rv;
+
+  },
+
+  spriteLoad: function(id, level) {
+
+      var rv = null;
+
+      if (this._sprite_sheet[level] == undefined) {
+
+          if (this._sprite_sheet_url[level] != undefined) {
+
+              if (this._sprite_sheet_loaded[level] == undefined) {
+
+                  this._sprite_sheet_loaded[level] = false;
+                  this._sprite_sheet[level] = new Image();
+
+                  this._sprite_sheet[level].src =
+                      this._sprite_sheet_url[level];
+
+                  var that = this;
+                  var lvl = level;
+
+                  this._sprite_sheet[level].onload = function() {
+
+                      that._sprite_sheet_loaded[lvl] = true;
+
+                  }
+
+              }
+
+          }
+
+      } else {
+
+          if (this._sprite_sheet_loaded[level]) {
+
+              var sheet = this._sprite_sheet[level];
+
+              var index = this._sprite_index[id];
+
+              var params = index.params[level];
+              var tile_size = 1 << level;
+
+              var x_tile_loc = tile_size * index.x;
+              var y_tile_loc = tile_size * index.y;
+
+              var tile_width = params.width;
+              var tile_height = params.height;
+
+              rv = function(context, x, y, w, h) {
+
+                  var wscale = w / tile_width;
+                  var hscale = h / tile_height;
+                  var scale = (wscale < hscale) ? wscale : hscale;
+
+                  var rendered_width = Math.floor(tile_width * scale);
+                  var rendered_height = Math.floor(tile_height * scale);
+
+                  var x_slop = Math.floor((w - rendered_width) / 2);
+                  var y_slop = Math.floor((h - rendered_height) / 2);
+
+                  context.drawImage(sheet,
+                      x_tile_loc,
+                      y_tile_loc,
+                      tile_width,
+                      tile_height,
+                      x + x_slop, y + y_slop,
+                      rendered_width, rendered_height);
+
+              }
+
+          }
+
+      }
+      return rv;
   },
 
   getImageList: function (id, basePath, level) {
@@ -240,30 +444,6 @@ PivotViewer.Views.DeepZoomItem = Object.subClass({
     if (dziQueue == undefined) {
       dziQueue = TileController._imageController._dziQueue[DZId] = [];
       dziQueue.push(this);
-      // $.ajax({
-      //     type: "GET",
-      //     url: baseUrl + "/" + dziSource,
-      //     dataType: "xml",
-      //     success: function (dzixml) {
-      //         //In case we find a dzi, recalculate sizes
-      //         var image = $(dzixml).find("Image");
-      //         if (image.length == 0) return;
-
-      //         var jImage = $(image[0]);
-      //         //that.Overlap = jImage.attr("Overlap");
-      //         //that.Format = jImage.attr("Format");
-      //         var overlap = jImage.attr("Overlap");
-      //         var format = jImage.attr("Format");
-      //                     for (var i = 0; i < dziQueue.length; i++) {
-      //                         var item = dziQueue[i];
-      // //                        item.Overlap = overlap; item.Format = format;
-      //                         item.Overlap = 1; item.Format = null;
-      //                     }
-      // },
-      //     error: function (jqXHR, textStatus, errorThrown) {
-      //         that.Overlap = 0;
-      //     }
-      // });
     }
     else dziQueue.push(this);
   }

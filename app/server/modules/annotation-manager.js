@@ -70,7 +70,7 @@ exports.addCommentByParameters = function(file, user, para, graphPara, comment, 
   snapshots.findOne(para, function(e, o){
 		var date = new Date();
     if(o != null){
-      comments.insert({"user": replyUser, "content": comment, "para_id": o._id,
+      comments.insert({"user": replyUser, "owner": user, "content": comment, "para_id": o._id,
       "date": date.toString()}, function(e, out){
         if(e){
           callback(e);
@@ -230,7 +230,6 @@ exports.getCommentsByUser = function(user, callback){
     if(error){
 			callback(error, null);
 		}else{
-
 			var comments = [];
 			for(var i = 0; i < result.length; i++){
 				var res = result[i]

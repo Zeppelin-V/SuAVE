@@ -235,7 +235,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
                 }
             }
             else if (evt.delta != undefined)
-                that.scale = evt.delta == 0 ? 1 : (that.scale + evt.delta);
+                that.scale = evt.delta == 0 ? that.scale : (that.scale + evt.delta);
 
             if (isNaN(that.scale)) that.scale = 1;
 
@@ -366,7 +366,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
             tile.start = PivotViewer.Utils.now();
             tile.end = tile.start + 1000;
             var theta = Math.atan2(tile._locations[0].y - (this.currentHeight / 2), tile._locations[0].x - (this.currentWidth / 2))
-            tile._locations[0].destinationx = this.currentWidth * Math.cos(theta) + (this.currentWidth / 2);
+            tile._locations[0].destinationx = Math.abs(this.currentWidth * Math.cos(theta) + (this.currentWidth / 2));
             tile._locations[0].destinationy = this.currentHeight * Math.sin(theta) + (this.currentHeight / 2);
         }
 
@@ -425,9 +425,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
             for (var i = 0; i < bucket.tiles.length; i++) {
 
                 var tile = bucket.tiles[i];
-
                 if (!tile.firstFilterItemDone) {
-
                     if (initTiles) {
                         tile._locations[0].startx = tile._locations[0].x;
                         tile._locations[0].starty = tile._locations[0].y;
@@ -526,6 +524,15 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
                 }
             }
 
+            var epsilon = bucketSize;
+            for (var b = 0; b < bkts.length; b++) {
+                var bkt = bkts[b], newEp = bkt.startRange + bucketSize - bkt.endRange;
+                if (newEp < epsilon) epsilon = newEp;
+            }
+            epsilon = Math.pow(10, Math.floor(Math.log(epsilon) / Math.log(10))); bucketSize = bucketSize - (epsilon > 1 ? 1 : epsilon);
+            for (var b = 0; b < bkts.length; b++) bkts[b].endLabel = (bkts[b].startRange + bucketSize).toString();
+
+
             var empty = 0;
             for (var b = 0; b < bkts.length; b++) {
                 if (bkts[b].tiles.length == 0) empty++;
@@ -576,6 +583,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
         }else{
           bucket = this.buckets.ids[item.id];
         }
+
         var bucketCols = this.rowscols.Columns;
         var bucketCol = Math.round(((location.x - this.currentOffsetX) - (bucket * (bucketCols * tileMaxWidth + padding))) / tileMaxWidth);
         var col = (bucket * bucketCols) + bucketCol;
@@ -594,12 +602,6 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
 
         this.currentOffsetX = (this.width / 2) - (this.rowscols.TileMaxWidth * col) - (this.rowscols.TileMaxWidth / 2) - padding;
         this.currentOffsetY = this.height / 2 - this.canvasHeightUIAdjusted + this.rowscols.TileHeight / 2 + row * this.rowscols.TileHeight;
-        /*
-        console.log(bucket);
-        console.log(this.rowscols.PaddingX);
-        console.log(padding);
-        console.log(col);
-        console.log(this.currentOffsetX);*/
         this.setTilePositions(this.rowscols, this.currentOffsetX, this.currentOffsetY, true, true);
     },
     handleHover: function (evt) {
@@ -638,7 +640,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
                 "; " : "Values: from " + (string ? "\"" : "") + bkt.startLabel + (string ? "\"" : "") + "  to " + (string ? "\"" : "") + bkt.endLabel +
                 (string ? "\"" : "") + "; ") + bkt.tiles.length + " of " + this.filterList.length +
                 " items (" + Math.round(bkt.tiles.length / this.filterList.length * 100) + "%)           " +
-                (ruleFilters[0]!=undefined ? "<br><i>Without filter(s): "+Cs[cIndex].length+" of "+ PivotCollection.items.length+
+                (A[0]!=undefined ? "<br><i>Without filter(s): "+Cs[cIndex].length+" of "+ PivotCollection.items.length+
                 " items (" + Math.round(Cs[cIndex].length / PivotCollection.items.length * 100) + "%)</i> " : "");
             if(A[0]!=undefined){
               var ratioDiff = Math.round(bkt.tiles.length / this.filterList.length * 100)-Math.round(Cs[cIndex].length / PivotCollection.items.length * 100);

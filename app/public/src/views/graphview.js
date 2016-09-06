@@ -46,7 +46,7 @@ PivotViewer.Views.GraphView = PivotViewer.Views.TileBasedView.subClass({
                 return;
 
             for (var i = 0; i < that.tiles.length; i++) {
-                var loc = that.tiles[i].Contains(evt.x, evt.y); 
+                var loc = that.tiles[i].Contains(evt.x, evt.y);
                 if ( loc >= 0 ) that.tiles[i].Selected(true);
                 else that.tiles[i].Selected(false);
             }
@@ -66,7 +66,7 @@ PivotViewer.Views.GraphView = PivotViewer.Views.TileBasedView.subClass({
             //Set the zoom time - the time it takes to zoom to the scale
             //if on a touch device where evt.scale != undefined then have no delay
             var zoomTime = evt.scale != undefined ? 0 : 1000;
-                        
+
             if (evt.scale != undefined) {
                 if (evt.scale >= 1) that.Scale += (evt.scale - 1);
                 else {
@@ -74,8 +74,8 @@ PivotViewer.Views.GraphView = PivotViewer.Views.TileBasedView.subClass({
                     that.Scale = that.Scale < 1 ? 1 : that.Scale;
                 }
             }
-            else if (evt.delta != undefined) that.Scale = evt.delta == 0 ? 1 : (that.Scale + evt.delta - 1);
-
+            else if (evt.delta != undefined) that.Scale = evt.delta == 0 ? that.scale : (that.Scale + evt.delta - 1);
+            
             if (isNaN(that.Scale)) that.Scale = 1;
 
             var newWidth = (that.width - that.offsetX) * that.Scale;
@@ -88,7 +88,7 @@ PivotViewer.Views.GraphView = PivotViewer.Views.TileBasedView.subClass({
                 that.currentWidth = that.width;
                 that.currentHeight = that.height;
                 that.Scale = 1;
-                // Reset the slider to zero 
+                // Reset the slider to zero
                 that.dontZoom = true;
                 //$('.pv-toolbarpanel-zoomslider').slider('option', 'value', 0);
                 PV.Zoom(0);
@@ -204,7 +204,7 @@ PivotViewer.Views.GraphView = PivotViewer.Views.TileBasedView.subClass({
             // Zoom using the slider event
             //$('.pv-toolbarpanel-zoomslider').slider('option', 'value', 1);
             PV.Zoom(1);
-            var clearFilter = []; 
+            var clearFilter = [];
             for (var i = 0; i < this.tiles.length; i++) {
                 this.tiles[i].origwidth = this.TileHeight / TileController._imageController.GetRatio(this.tiles[i].facetItem.Img);
                 this.tiles[i].origheight = this.TileHeight;
@@ -286,7 +286,7 @@ PivotViewer.Views.GraphView = PivotViewer.Views.TileBasedView.subClass({
         }
     },
     GetSelectedCol: function (tile) {
-        selectedCol = Math.round((tile._locations[0].x - this.currentOffsetX) / tile.width); 
+        selectedCol = Math.round((tile._locations[0].x - this.currentOffsetX) / tile.width);
         return selectedCol;
     },
     GetSelectedRow: function (tile) {
@@ -299,7 +299,7 @@ PivotViewer.Views.GraphView = PivotViewer.Views.TileBasedView.subClass({
     },
     handleSelection: function (selectedTile) {
         var offsetX = 0, offsetY = 0;
- 
+
         //Reset slider to zero before zooming ( do this before sorting the tile selection
         //because zooming to zero unselects everything...)
         if (this.selected != selectedTile) {
