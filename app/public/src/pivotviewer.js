@@ -454,6 +454,7 @@ var graphPara = {};
             var facet = PivotCollection.items[i].getFacetByName(bucketRules[j].name);
             if(facet != undefined && bucketRules[j].value[0] <= facet.values[0].value
              && bucketRules[j].value[1] >= facet.values[0].value){
+
               Cs[j].push(PivotCollection.items[i]);
             }
           }else if(bucketRules[j].type = "nonstring"){
@@ -2744,7 +2745,6 @@ var graphPara = {};
         for (var j = 0; j < PivotCollection.items.length; j++) {
             var item = PivotCollection.items[j], facet = item.getFacetByName(category.name);
             if (facet == undefined) continue;
-            console.log(facet);
             var date = new Date(facet.values[0].value);
             if (date < min) min = date;
             if (date > max) max = date;

@@ -433,7 +433,8 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
         if(evt.type == "init") {
           this.resetUISettings();
           //in case snapshot doesn't have location info
-          if(this.buckets.ids[tile.item.id] instanceof Array && tile.cellLoc == null){
+          if((this.buckets.ids[tile.item.id] instanceof Array
+            || this.bucketsY.ids[tile.item.id] instanceof Array) && tile.cellLoc == null){
             tile.selectedLoc = PARA.selected_loc;
             var facets = tile.item.facets;
             for(var k = 0; k < facets.length; k ++){

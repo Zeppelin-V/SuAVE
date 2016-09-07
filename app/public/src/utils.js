@@ -358,7 +358,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
         var value2 = flattend[v];
         label = value2, value = value2;;
         var bkt;
-        bkt = new PivotViewer.Models.Bucket(value2.value, label);
+        bkt = new PivotViewer.Models.Bucket(value, label);
         bkt.addTile(tile);
         bkt.addValue(value);
         bkts.push(bkt);
@@ -381,7 +381,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
                 }
             }
             if (!bkt) {
-                bkt = new PivotViewer.Models.Bucket(value2.value, label);
+                bkt = new PivotViewer.Models.Bucket(value, label);
                 bkts.push(bkt);
             }
             tile.index = i;
@@ -399,7 +399,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
             if (d == 0) { newBkts[b] = bkt; newBkt = newBkts[b]; }
             else {
                 newBkt = newBkts[b];
-                newBkt.endRange = bkt.endLabel;
+                newBkt.endRange = bkt.endRange;
                 newBkt.endLabel = bkt.endLabel;
                 Array.prototype.push.apply(newBkt.tiles, bkt.tiles);
                 Array.prototype.push.apply(newBkt.values, bkt.values);

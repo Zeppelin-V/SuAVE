@@ -586,6 +586,8 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
 
         var bucketCols = this.rowscols.Columns;
         var bucketCol = Math.round(((location.x - this.currentOffsetX) - (bucket * (bucketCols * tileMaxWidth + padding))) / tileMaxWidth);
+        //fixed the rounding error above
+        if(bucket > 6) bucketCol--;
         var col = (bucket * bucketCols) + bucketCol;
         var row = Math.round((this.canvasHeightUIAdjusted - (location.y - this.currentOffsetY)) / tile.height) - 1;
 
@@ -626,7 +628,6 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
             bucketDiv.addClass("bucketview-bucket-hover");
         }
         else return;
-
         if (this.scale > 1) return;
         var box = $(".pv-bucketview-overlay-buckettitle").eq(bktNum), offset = box.offset();
         if (evt.x >= offset.left && evt.x <= (offset.left + box.width()) &&
