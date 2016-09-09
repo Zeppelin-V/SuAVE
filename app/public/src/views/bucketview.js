@@ -284,7 +284,10 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
     resetUISettings: function () { this.rowscols = this.calculateDimensions(this.columnWidth - 2, this.canvasHeightUIAdjusted - this.offsetY, this.maxRatio, this.bigCount); },
     handleFilter: function (tiles, filterList, sortCategory) {
         if (tiles != undefined) this.tiles = tiles;
-        if (filterList != undefined) this.filterList = filterList;
+        if (filterList != undefined) {
+          this.oldFilterList = this.filterList;
+          this.filterList = filterList;
+        }
         if(sortCategory != undefined) this.sortCategory = sortCategory;
         //add old info
         this.filtered = true;
@@ -665,12 +668,12 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
         var tile = this._super(evt);
         if(evt.type == "init") {
           this.resetUISettings();
-          tile.selectedLoc = PARA.selected_loc;
+          if(_options.authoring == true) tile.selectedLoc = PARA.selected_loc;
         }
         if (this.selected != null) this.selected.setSelected(false);
         if (tile != null) {
             if (this.selected != tile) {
-                PARA.selected_loc = tile.selectedLoc;
+                if(_options.authoring == true) PARA.selected_loc = tile.selectedLoc;
                 tile.setSelected(true, null);
                 this.centerOnTile(tile);
                 this.setSelected(tile);

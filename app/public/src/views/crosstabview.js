@@ -23,11 +23,11 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
             $("#pv-altsortcontrols").hide();
             $("#pv-primsort").clone(true).attr("id", "pv-altsort").appendTo($("#pv-altsortcontrols"));
 
-            PV.getGraphParameters();
+            if(_options.authoring == true) PV.getGraphParameters();
             $("#pv-altsort").on("change", function (e) {
                 if (that.bucketsY == undefined) return; //initialzing
                 that.sortCategory2 = $("#pv-altsort option:selected").html();
-                PARA.y_axis = that.sortCategory2;
+                if(_options.authoring == true) PARA.y_axis = that.sortCategory2;
 
                 var category = PivotCollection.getCategoryByName(that.sortCategory2);
                 if (!category.uiInit) PV.initUICategory(category);
@@ -42,7 +42,7 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
                 }
                 that.bucketsY = that.bucketize(that.filterList2, that.sortCategory2);
                 that.subbucketize();
-                PV.getGraphParameters();
+                if(_options.authoring == true) PV.getGraphParameters();
                 that.activate();
             });
         }
@@ -92,7 +92,7 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
         }
         else { //efficient resort
             var newFilterList2 = [];
-            if (this.filterList.length < this.filterList2.length) {
+            if (this.filterList.length < this.oldFilterList.length) {
                 for (var i = 0; i < this.filterList2.length; i++) {
                     var tile = this.filterList2[i];
                     if (this.buckets.ids[tile.item.id] != undefined) newFilterList2.push(tile);
@@ -449,7 +449,7 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
         if (this.selected != null) this.selected.setSelected(false);
         if (tile != null) {
             if (this.selected != tile) {
-                PARA.selected_loc = tile.selectedLoc;
+                if(_options.authoring == true) PARA.selected_loc = tile.selectedLoc;
                 tile.setSelected(true, null);
                 this.centerOnTile(tile);
                 this.setSelected(tile);

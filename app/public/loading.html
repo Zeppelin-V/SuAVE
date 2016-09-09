@@ -83,8 +83,10 @@
         }
         //initialize view with para
         if(parent.PARA) options.parameter = parent.PARA;
-        
+        //enable authoring mod
+        options.authoring = true;
         //set up the pivot viewer
+
         $(document).ready(function () {
             $.ajax({
               url: "/getSurveyDzc",

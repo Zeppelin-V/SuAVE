@@ -69,9 +69,10 @@ var graphPara = {};
         _options = {},
         _rEnable = false;
 
-    PARA.y_axis = null;
-    PARA.selected_id = -1;
-
+    if(_options.authoring == true){
+      PARA.y_axis = null;
+      PARA.selected_id = -1;
+    }
     var methods = {
         // PivotViewer can be initialized with these options:
         // Loader: a loader that inherits from ICollectionLoader must be specified. It takes the URL of the collection as a parameter.
@@ -324,15 +325,17 @@ var graphPara = {};
         _currentView = number;
         if(_currentView == 1) PV.getBucketFilters();
         var viewName = _views[number].getViewName().toLowerCase();
-        PARA.view = viewName.substr(0, viewName.indexOf("view")-1);
-        //reset y_axis if it's not crosstab
-        if(PARA.view != "crosstab"){
-          PARA.y_axis = null;
-        }else{
-          PARA.y_axis = $("#pv-altsort option:selected").html();
-        }
 
-        PV.getGraphParameters();
+        if(_options.authoring == true) {
+          PV.getGraphParameters();
+          PARA.view = viewName.substr(0, viewName.indexOf("view")-1);
+          //reset y_axis if it's not crosstab
+          if(PARA.view != "crosstab"){
+            PARA.y_axis = null;
+          }else{
+            PARA.y_axis = $("#pv-altsort option:selected").html();
+          }
+        }
     };
 
     PV.getCurrentView = function () { return _views[_currentView]; };
@@ -342,7 +345,7 @@ var graphPara = {};
       for (var i = 0; i < _views.length; i++) { _views[i].handleFilter(_tiles, _filterList, _sortCategory); }
       PV.getBucketFilters();
       PV.getRuleFilters();
-      PV.getGraphParameters();
+      if(_options.authoring == true) PV.getGraphParameters();
     };
 
     //get the data to draw the screenshot graph
@@ -1183,8 +1186,10 @@ var graphPara = {};
       BCs = [];
       ABCs = [];
 	    PV.filterViews();
-      PARA.string_filters = _stringFilters;
-      PARA.num_filters = _numericFilters;
+      if(_options.authoring == true){
+        PARA.string_filters = _stringFilters;
+        PARA.num_filters = _numericFilters;
+      }
     };
 
     PV.initUICategory = function (category) {
@@ -2018,7 +2023,7 @@ var graphPara = {};
                       _filterList.push(_tiles[i]);
 
                 }
-                PARA.x_axis = _sortCategory;
+                if(_options.authoring == true) PARA.x_axis = _sortCategory;
                 PV.filterViews();
                 release();
             });
@@ -2296,7 +2301,7 @@ var graphPara = {};
         }
 
         _sortCategory = $('#pv-primsort option').eq(0).html();
-        PARA.x_axis = _sortCategory;
+        if(_options.authoring == true) PARA.x_axis = _sortCategory;
 
         var category = PivotCollection.getCategoryByName(_sortCategory);
         if (!category.uiInit) PV.initUICategory(category);
@@ -2350,7 +2355,7 @@ var graphPara = {};
               }
 
               if(para.selected_id != -1){
-                PARA.selected_loc = para.selected_loc;
+                if(_options.authoring == true) PARA.selected_loc = para.selected_loc;
                 if(para.view == "map"){
                   $(".pv-viewpanel-view").promise().done(function(){
                     setTimeout(function(){
@@ -2525,14 +2530,16 @@ var graphPara = {};
             if (_selectedItem != null) _selectedItem.setSelected(false);
             _views[_currentView].setSelected(null);
             //reset id parameter
-            PARA.selected_id = -1;
-            PARA.selected_loc = -1;
+            if(_options.authoring == true){
+              PARA.selected_id = -1;
+              PARA.selected_loc = -1;
+            }
             return;
         }
 
         var selectedItem = evt.item;
         //takes in parameter
-        PARA.selected_id = evt.item.item.id;
+        if(_options.authoring == true) PARA.selected_id = evt.item.item.id;
         if (selectedItem != null) {
             var alternate = true;
             $('.pv-infopanel-heading').empty();
