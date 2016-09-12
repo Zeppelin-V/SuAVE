@@ -4,7 +4,7 @@ function MainController()
 	var that = this;
 	var graphPara;
 	var comments;
-
+	$('#modal-loading').modal('toggle');
 	google.charts.load("current", {packages:['corechart', 'geochart']});
 	var chart;
 

@@ -185,3 +185,34 @@ header#earthcube-header .tagline {
   width: 25%;
   word-wrap:break-word;
 }
+
+.well {
+  font: 150%/1.4 Helvetica, Arial, sans-serif;
+  width: 100%;
+  background-color: #F7F7F7;
+  background-image: linear-gradient(to bottom, #F5F5F5, #F9F9F9);
+  background-repeat: repeat-x;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+  overflow: hidden;
+}
+
+.progress-bar {
+  animation: progress 6s;
+  padding: .3em;
+  text-align: center;
+  color: rgba(255,255,255,100);
+  background-image: linear-gradient(135deg, #26BDA6, #FF9F65, #DED37E);
+  border-radius: 4px 4px 4px 4px;
+}
+
+@keyframes progress {
+  from {
+    width: 0;
+    color: rgba(255,255,255,0);
+  }
+  to {
+    width: 100%;
+    color: rgba(255,255,255,1);
+  }
+}

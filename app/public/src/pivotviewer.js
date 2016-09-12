@@ -2315,6 +2315,7 @@ var graphPara = {};
                 tile.missing = !Settings.showMissing && tile.item.getFacetByName(_sortCategory) == undefined;
             }
 
+            window.parent.$('#modal-loading').modal('toggle');
             PV.filterCollection();
 
             if(_options.parameter){
