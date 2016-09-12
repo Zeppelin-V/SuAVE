@@ -1,0 +1,132 @@
+<?xml version="1.0" ?>
+<SpriteIndex maxdepth="6">
+  <Tile file="plum_battery" object="plum_battery" x="0" y="0">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+    <TileParams height="5" level="3" width="5"/>
+    <TileParams height="2" level="1" width="2"/>
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <Tile file="crimson_spider" object="crimson_spider" x="1" y="0">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+    <TileParams height="5" level="3" width="5"/>
+    <TileParams height="2" level="1" width="2"/>
+  </Tile>
+  <Tile file="crimson_atom" object="crimson_atom" x="2" y="0">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+    <TileParams height="2" level="1" width="2"/>
+    <TileParams height="5" level="3" width="5"/>
+  </Tile>
+  <Tile file="maroon_cloud" object="maroon_cloud" x="3" y="0">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="puce_plane" object="puce_plane" x="4" y="0">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="crimson_battery" object="crimson_battery" x="5" y="0">
+    <TileParams height="1" level="0" width="1"/>
+    <TileParams height="3" level="2" width="3"/>
+  </Tile>
+  <Tile file="plum_atom" object="plum_atom" x="0" y="1">
+    <TileParams height="1" level="0" width="1"/>
+    <TileParams height="3" level="2" width="3"/>
+  </Tile>
+  <Tile file="puce_spider" object="puce_spider" x="1" y="1">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="maroon_battery" object="maroon_battery" x="2" y="1">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="lavender_sun" object="lavender_sun" x="3" y="1">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="coral_plane" object="coral_plane" x="4" y="1">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="plum_spider" object="plum_spider" x="5" y="1">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="puce_sun" object="puce_sun" x="0" y="2">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="lavender_plane" object="lavender_plane" x="1" y="2">
+    <TileParams height="3" level="2" width="3"/>
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="maroon_plane" object="maroon_plane" x="2" y="2">
+    <TileParams height="1" level="0" width="1"/>
+    <TileParams height="3" level="2" width="3"/>
+  </Tile>
+  <Tile file="maroon_tree" object="maroon_tree" x="3" y="2">
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="indigo_battery" object="indigo_battery" x="4" y="2">
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="lavender_battery" object="lavender_battery" x="5" y="2">
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="maroon_car" object="maroon_car" x="0" y="3">
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="indigo_sun" object="indigo_sun" x="1" y="3">
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="plum_tree" object="plum_tree" x="2" y="3">
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="salmon_car" object="salmon_car" x="3" y="3">
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="mauve_sun" object="mauve_sun" x="4" y="3">
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="lavender_car" object="lavender_car" x="5" y="3">
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="hot_pink_car" object="hot_pink_car" x="0" y="4">
+    <TileParams height="1" level="0" width="1"/>
+  </Tile>
+  <Tile file="plum_cloud" object="plum_cloud" x="1" y="4"/>
+  <Tile file="plum_water" object="plum_water" x="2" y="4"/>
+  <Tile file="crimson_tree" object="crimson_tree" x="3" y="4"/>
+  <Tile file="mauve_battery" object="mauve_battery" x="4" y="4"/>
+  <Tile file="plum_sun" object="plum_sun" x="5" y="4"/>
+  <Tile file="crimson_water" object="crimson_water" x="0" y="5"/>
+  <Tile file="hot_pink_spider" object="hot_pink_spider" x="1" y="5"/>
+  <Tile file="plum_car" object="plum_car" x="2" y="5"/>
+  <Tile file="crimson_cloud" object="crimson_cloud" x="3" y="5"/>
+  <Tile file="maroon_spider" object="maroon_spider" x="4" y="5"/>
+  <Tile file="maroon_atom" object="maroon_atom" x="5" y="5"/>
+  <Tile file="crimson_plane" object="crimson_plane" x="0" y="6"/>
+  <Tile file="fuchsia_car" object="fuchsia_car" x="1" y="6"/>
+  <Tile file="lavender_water" object="lavender_water" x="2" y="6"/>
+  <Tile file="maroon_water" object="maroon_water" x="3" y="6"/>
+  <Tile file="puce_atom" object="puce_atom" x="4" y="6"/>
+  <Tile file="indigo_spider" object="indigo_spider" x="5" y="6"/>
+  <Tile file="maroon_sun" object="maroon_sun" x="0" y="7"/>
+  <Tile file="crimson_car" object="crimson_car" x="1" y="7"/>
+  <Tile file="indigo_tree" object="indigo_tree" x="2" y="7"/>
+  <Tile file="plum_plane" object="plum_plane" x="3" y="7"/>
+  <Tile file="crimson_sun" object="crimson_sun" x="4" y="7"/>
+  <Tile file="puce_tree" object="puce_tree" x="5" y="7"/>
+  <SpriteSheet index="0" sprite="sprite_0.png"/>
+  <SpriteSheet index="1" sprite="sprite_1.png"/>
+  <SpriteSheet index="2" sprite="sprite_2.png"/>
+  <SpriteSheet index="3" sprite="sprite_3.png"/>
+  <SpriteSheet index="4" sprite="sprite_4.png"/>
+  <SpriteSheet index="5" sprite="sprite_5.png"/>
+  <SpriteSheet index="6" sprite="sprite_6.png"/>
+</SpriteIndex>

@@ -3,6 +3,7 @@ var fs = require('fs'); //file system
 var fsx = require('fs-extra');
 var parse = require('csv-parse');
 var json2csv = require('json2csv');
+var shelljs = require('shelljs/global');
 var spawn = require('child_process').spawn;
 var GL = require('../global');
 //var sharp = require('sharp');
@@ -267,6 +268,53 @@ exports.setCSV = function(filePath, collection, callback){
       });
     }
   });
+};
+
+//copy deepzoom images to the survey folder
+exports.copyImages = function(imgPath, images, callback){
+  var that = this;
+  var src = __dirname + "/../../public/img/collection/";
+  var err = null;
+  var xml = "";
+  for (var i = 0; i < images.length; i++){
+    var image = images[i];
+    xml = xml + '<I N="'+i+'" Id="'+image+'" Source="'+image+'.dzi"><Size Width='
+      +'"300" Height="300"/></I>';
+    /*if (!fs.statSync(imgPath + '/'+images[i] + "_files")){
+  		fs.mkdirSync(imgPath + '/'+images[i] + "_files");
+  	}*/
+    var tempPath = imgPath + '/'+images[i] + "_files";
+
+    if (!fs.existsSync(tempPath)){
+  		fs.mkdirSync(tempPath);
+  	}
+    var files = src + image + "_files";
+    fsx.copy(files, tempPath, function(error){
+      if(error){
+        err = error;
+      }
+    });
+  }
+
+  if(err){
+    callback(err);
+  }else{
+    //generate dzc
+    xml = '<?xml version="1.0" encoding="utf-8"?><Collection MaxLevel="'
+      +8+'" TileSize="256" Format="jpg"><Items>'+xml+'</Items></Collection>';
+    fsx.outputFile(imgPath+'/'+imgPath.split("/").splice(-1)+'.dzc', xml, function(e){
+      if(e){
+        callback(e);
+      }else{
+        exec('python '+ imgPath +'/../spritesheet '+ imgPath +'.csv', function(status, output) {
+          console.log('Exit status:', status);
+          console.log('Program output:', output);
+        });
+        callback(null);
+      }
+    });
+
+  }
 };
 
 //set csv files

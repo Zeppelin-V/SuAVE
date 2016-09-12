@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<SpriteIndex maxdepth="6">
+  <Tile file="indigo" object="indigo" x="0" y="0">
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <Tile file="puce" object="puce" x="1" y="0">
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <Tile file="mauve" object="mauve" x="2" y="0">
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <Tile file="plum" object="plum" x="0" y="1">
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <Tile file="fuchsia" object="fuchsia" x="1" y="1">
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <Tile file="lavender" object="lavender" x="2" y="1">
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <Tile file="maroon" object="maroon" x="0" y="2">
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <Tile file="hot_pink" object="hot_pink" x="1" y="2">
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <Tile file="salmon" object="salmon" x="2" y="2">
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <Tile file="crimson" object="crimson" x="0" y="3">
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <Tile file="coral" object="coral" x="1" y="3">
+    <TileParams height="19" level="5" width="19"/>
+    <TileParams height="10" level="4" width="10"/>
+    <TileParams height="38" level="6" width="38"/>
+  </Tile>
+  <SpriteSheet index="0" sprite="sprite_0.png"/>
+  <SpriteSheet index="1" sprite="sprite_1.png"/>
+  <SpriteSheet index="2" sprite="sprite_2.png"/>
+  <SpriteSheet index="3" sprite="sprite_3.png"/>
+  <SpriteSheet index="4" sprite="sprite_4.png"/>
+  <SpriteSheet index="5" sprite="sprite_5.png"/>
+  <SpriteSheet index="6" sprite="sprite_6.png"/>
+</SpriteIndex>

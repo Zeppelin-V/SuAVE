@@ -128,6 +128,11 @@ para: 1. files: req parameter
 			4. callback: callback function with an error parameter
 */
 exports.changeCollection = function(files, user, collection, callback){
+	var imgPath = __dirname + "/../../public/surveys/"+user+"_"
+		+files.body.name;
+	if (!fs.existsSync(imgPath)){
+		fs.mkdirSync(imgPath);
+	}
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name+".csv";
 
@@ -145,11 +150,23 @@ exports.changeCollection = function(files, user, collection, callback){
 			callback("Unable to read file");
 		}else{
 			data = o;
+			imgIndex = data[0].indexOf('#img');
+			imgSet = {};
+			for(var i = 1; i < data.length; i++){
+				if(!imgSet[data[i][imgIndex]]) imgSet[data[i][imgIndex]] = 1;
+			}
+
 			loader.saveCSV(filePath, data, function(error){
 				if(error){
 					callback("Unable to save file");
 				}else{
-					callback(null);
+					loader.copyImages(imgPath, Object.keys(imgSet), function(error){
+						if(error){
+							callback("Unable to match image set");
+						}else{
+							callback(null);
+						}
+					})
 				}
 			});
 		}

@@ -1,0 +1,343 @@
+#!/usr/bin/python
+
+import argparse
+import sys
+import os
+import glob
+import csv
+import re
+from PIL import Image
+import math
+import threading
+from xml.etree.ElementTree import Element, SubElement
+from xml.dom import minidom
+from xml.etree import ElementTree
+
+def processCSV( file_name ):
+    
+    # Read the CSV file and find the #img elements
+    
+    f = open( file_name, 'rb' )
+    reader = csv.reader( f )
+    
+    # Scan the header row for the "#img" element
+    
+    header = reader.next()
+    
+    img_index = -1
+    for index, item in enumerate( header ):
+        
+        if ( item == "#img" ):
+            
+            img_index = index       # We win!  There's an "#img" element
+            break
+        
+    if ( img_index == -1 ):         # Oh, noes!  No "#img" element.  Die.
+            
+        print "No '#img' item in '" + file_name + "'"
+        sys.exit()
+            
+    # Now grab the image object names from the CSV
+    
+    images = {}                     # Make associative to cull duplicates
+
+    for row in reader:
+
+        image = row[img_index]
+        images[image] = image
+
+    f.close()
+
+    return images
+
+# End processCSV
+
+def processXML( file_name ):
+    
+    # Read the XML file
+
+    root = ElementTree.parse( file_name ).getroot()
+    root_tag = root.tag
+    xmlns = re.sub( "[A-Za-z]*$", "", root_tag )
+    items = root.find( xmlns + "Items" )
+    images = {}
+    for i in items.iter( xmlns + "I" ):
+
+        source = os.path.basename( i.attrib["Source"].replace( ".xml", "" ) )
+        id = i.attrib["Id"]
+        
+        images[id] = source
+
+    return images
+
+# End processXML
+
+# Worker thread.  Spawned to parallel process the various levels.
+
+def worker( level,
+            lock,
+            dirpath,
+            outpath,
+            images_wide,
+            images_high,
+            sprite_index ):
+
+    # Calculate the size of the tile at this level and derive the
+    # sheet size.
+
+    # Note that we create a basically square sheet mostly for quality
+    # assurance purposes, since long sheet tend to confuse some image
+    # viewers for some unknown reason. It adds a small amount of
+    # complexity to the code for writing and reading the sprite sheets
+    # but basically it's no big deal.
+
+    tile_size = 1 << level
+    sprite_sheet_width = images_wide * tile_size
+    sprite_sheet_height = images_high * tile_size
+
+    # Create the sprite sheet
+    
+    sprite_sheet = Image.new( "RGBA",
+                              ( sprite_sheet_width, sprite_sheet_height ),
+                              ( 0, 0, 0, 0 ) )
+
+    # Iterate over the input XML for each image object, read the
+    # image, and stuff it into the sprite sheet.
+
+    for sprite in sprite_index.iter( "Tile" ):
+
+        # Get the object name.
+        
+        obj = sprite.attrib["file"];
+
+        # Find the file in the level's object director
+
+        objpath = dirpath + os.path.sep + obj + "_files" + os.path.sep + str( level ) + os.path.sep + "*"
+        files = glob.glob( objpath )
+
+        # Make sure we're not processing a multitiled image, which
+        # would probably create too large of a sprite sheet to be
+        # useful, anyhow.
+
+        if ( len( files ) > 1 ):
+
+            print "Can't process multitiled images."
+            sys.exit()
+
+        elif ( len( files ) == 0 ):
+
+            print "No files found in", objpath
+            sys.exit()
+
+        image_file = files[0]
+
+        # Open and read the file
+
+        if ( not os.path.exists( image_file ) ):
+
+            print "No such file or directory:", image_file
+            sys.exit()
+        
+        elif ( not os.path.isfile( image_file ) ):
+            
+            print image_file, "is not a file."
+            sys.exit()
+
+        elif ( not os.access( image_file, os.R_OK ) ):
+               
+            print image_file, "is not readable."
+            sys.exit()
+            
+        with Image.open( image_file ) as image:
+            
+            # Get the image
+            
+            width, height = image.size
+
+            with lock:          # Lock to avoid trashing the XML tree.
+                
+                tile_params = SubElement( sprite, "TileParams" )
+
+            # Set essential XML attributes.
+            
+            tile_params.set( "width", str( width ) );
+            tile_params.set( "height", str( height ) );
+            tile_params.set( "level", str( level ) );
+
+            # Fetch the position of image within sprite sheet from the
+            # XML.
+
+            tilex = int( sprite.attrib["x"] ) * tile_size
+            tiley = int ( sprite.attrib["y"] ) * tile_size
+            
+            # Copy the image into the sprite sheet.
+
+            sprite_sheet.paste( image.convert( "RGBA" ),
+                                ( tilex, tiley, tilex + width, tiley + height ) )
+
+    # We're done processing so write the sprite sheet to disk and bail.
+
+    sprite_sheet_file = outpath + os.path.sep + "sprite_" + str( level ) + ".png"
+
+    sprite_sheet.save( sprite_sheet_file )
+
+    return
+
+# End worker
+
+# Main program starts here.
+
+# Parse the arguments
+
+parser = argparse.ArgumentParser( description =
+                                  "Creates sprite sheets for SuAVE." );
+
+parser.add_argument( "-m", "--maxdepth",
+                     metavar = "maxdepth",
+                     nargs = 1,
+                     default = 6,
+                     dest = "maxdepth",
+                     help = "Maximum depth sprite sheet to be created.",
+                     type = int )
+parser.add_argument( "-M", "--Microsoft",
+                     dest = "microsoft_mode",
+                     help = "Process Microsoft XML file rather than CSV.",
+                     action = "store_true" )
+parser.set_defaults( microsoft_mode = False )
+parser.add_argument( "file",
+                     nargs = 1,
+                     help = "The file to be parsed (assumed CSV)." )
+
+options = parser.parse_args()
+
+# Chastise the user if there's something bogus
+
+if ( not os.path.exists( options.file[0] ) ):
+
+    print "No such file or directory:", options.file[0]
+    sys.exit()
+
+if ( options.maxdepth > 6 ):
+
+    print "maxdepth is too large."
+    print "You don't want to create sprite sheets with cells greater than"
+    print "128 x 128"
+    sys.exit()
+
+# Mostly for laziness sake, so we can avoid typing "options." . . .
+
+maxdepth = options.maxdepth
+file_name = options.file[0]
+
+if ( options.microsoft_mode ):
+    images = processXML( file_name )
+else:
+    images = processCSV( file_name )
+
+basename = os.path.basename( file_name )
+basename = re.sub( ".[xc][ms][lv]$", "", basename )
+dirname = os.path.dirname( file_name )
+if ( dirname == "" ):
+    dirname = "."
+
+# Build the path were we're going to store the output
+
+if ( options.microsoft_mode ):
+
+    dirpath = dirname + os.path.sep + "images"
+    outpath = dirname
+    
+else:
+
+    dirpath = dirname + os.path.sep + basename
+    outpath = dirpath
+
+if ( not os.path.exists( outpath ) ):
+
+    print "No such directory:", outpath
+    sys.exit()
+
+# process the images into sprites
+
+nimages = float( len( images ) )
+images_wide = int( math.floor( math.sqrt( nimages ) ) )
+images_high = int( math.ceil( nimages / images_wide ) )
+
+print "Sprite sheet will be", images_wide, "images x", images_high, "images"
+
+# Insert the image position indices into the XML.
+
+sprite_index = Element( "SpriteIndex" );
+sprite_index.set( "maxdepth", str( maxdepth ) );
+
+imageno = 0
+for image in images:
+
+    image_element = SubElement( sprite_index, "Tile" )
+    image_element.set( "x", str( imageno % images_wide ) )
+    image_element.set( "y", str( int( math.floor( imageno / images_wide ) ) ) )
+    image_element.set( "object", image )
+    image_element.set( "file", images[image] )
+    imageno = imageno + 1
+
+# Create sprite sheet generating threads
+    
+lock = threading.Lock()         # A lock to maintain the XML sanctity.
+
+threads = []                    # Thread list.
+
+for level in range( maxdepth + 1 ):
+
+    # While we're at it, create the correspondence between the index
+    # (depth) and the actual sprite sheet.  This is probably overkill,
+    # since we can easily generate the file name but it avoids baking
+    # a file name structure into the Javascript in SuAVE deepzoom.
+
+    sprite_sheet = SubElement( sprite_index, "SpriteSheet" )
+    sprite_sheet.set( "sprite", "sprite_" + str( level ) + ".png" )
+    sprite_sheet.set( "index", str( level ) )
+
+    # Okey dokey, let's create a worker thread.
+    
+    threads.append( threading.Thread( target = worker,
+                                      args = ( level,
+                                               lock,
+                                               dirpath,
+                                               outpath,
+                                               images_wide,
+                                               images_high,
+                                               sprite_index ) ) )
+
+# Now launch them
+
+for thread in threads:
+
+    thread.start()
+
+# Now sit back, relax, enjoy, and wait for the threads to complete.
+
+for thread in threads:
+
+    thread.join()
+
+# Write the sprite index file.  Pretty print it so that humans can
+# enjoy it, too.
+
+sprite_idx = outpath + os.path.sep + "sprite.idx"
+print "Writing", sprite_idx
+
+# This is a rather hideous hack, since it emits and reparses the XML,
+# which can take a fair amount of memory in a large XML tree.  We may
+# want to revert to writing plain old compact XML if this becomes a
+# problem.
+
+text = minidom.parseString( ElementTree.tostring( sprite_index,
+                                                  "UTF-8" ) ).toprettyxml( indent = "  " )
+
+# Write it out and take a hike.
+
+f = open( sprite_idx, "wb" )
+f.write( text )
+f.close()
+
+sys.exit()
