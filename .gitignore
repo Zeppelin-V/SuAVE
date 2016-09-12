@@ -3,3 +3,4 @@ node_modules
 upload.out
 suave_2016.pem
 app/server/modules/email-settings-mine.js
+app/public/surveys/*
