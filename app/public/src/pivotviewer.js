@@ -2315,7 +2315,6 @@ var graphPara = {};
                 tile.missing = !Settings.showMissing && tile.item.getFacetByName(_sortCategory) == undefined;
             }
 
-            window.parent.$('#modal-loading').modal('toggle');
             PV.filterCollection();
 
             if(_options.parameter){
@@ -2470,6 +2469,7 @@ var graphPara = {};
 
     var oldValue = 0;
     PV.zoom = function (value, x, y) {
+        if ( value > 100 ) value = 100;
         if (x == undefined) x = $('.pv-canvas').width() / 2;
         if (y == undefined) y = $('.pv-canvas').height() / 2;
         $('.pv-toolbarpanel-zoomslider').slider('option', 'value', value);

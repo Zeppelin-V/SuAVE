@@ -30,6 +30,7 @@ PivotViewer.Views.TileController = Object.subClass({
             this.__proto__.push.apply(that._tiles, [x]);
             that._tilesById[x.item.id] = x;
         }
+	this.isZooming = false;
     },
     getTileById: function(id) {
         var item = this._tilesById[id];
@@ -183,31 +184,31 @@ PivotViewer.Views.TileController = Object.subClass({
                 var y1 = location.y + tile.height;
                 var drawit =
                     ((0 <= location.x) &&
-                        (location.x < context.canvas.width) &&
-                        (0 <= location.y) &&
-                        (location.y < context.canvas.height)) ||
+                     (location.x < context.canvas.width) &&
+                     (0 <= location.y) &&
+                     (location.y < context.canvas.height)) ||
                     ((0 <= location.x) &&
-                        (location.x < context.canvas.width) &&
-                        (0 <= y1) &&
-                        (y1 < context.canvas.height)) ||
+                     (location.x < context.canvas.width) &&
+                     (0 <= y1) &&
+                     (y1 < context.canvas.height)) ||
                     ((0 <= x1) &&
-                        (x1 < context.canvas.width) &&
-                        (0 <= location.y) &&
-                        (location.y < context.canvas.height)) ||
+                     (x1 < context.canvas.width) &&
+                     (0 <= location.y) &&
+                     (location.y < context.canvas.height)) ||
                     ((0 <= x1) &&
-                        (x1 < context.canvas.width) &&
-                        (0 <= y1) &&
-                        (y1 < context.canvas.height)) ||
+                     (x1 < context.canvas.width) &&
+                     (0 <= y1) &&
+                     (y1 < context.canvas.height)) ||
                     ((0 <= location.x) &&
-                        (location.x < context.canvas.width) &&
-                        (location.y < context.canvas.height)) ||
+                     (location.x < context.canvas.width) &&
+                     (location.y < context.canvas.height)) ||
                     ((0 <= location.y) &&
-                        (location.y < context.canvas.height) &&
-                        (location.x < context.canvas.width)) ||
+                     (location.y < context.canvas.height) &&
+                     (location.x < context.canvas.width)) ||
                     ((location.x <= 0) &&
-                        (0 <= x1) &&
-                        (location.y <= 0) &&
-                        (0 <= y1));
+                     (0 <= x1) &&
+                     (location.y <= 0) &&
+                     (0 <= y1));
 
                 if (drawit)
                     tile.draw(l);
@@ -278,16 +279,20 @@ PivotViewer.Views.Tile = Object.subClass({
 
     draw: function(loc) {
 
+        if ( ( this.width == 0 ) ||
+             ( this.height == 0 ) )
+            return;
+
         var location = this._locations[loc];
         var ctrlr = TileController._imageController;
         var context = this.context;
 
         //Is the tile destination in visible area?
 
-        if (this.destinationVisible)
+//        if (this.destinationVisible)
             this._images = ctrlr.getImages(this.item.img,
-                this.width,
-                this.height);
+                                           this.width,
+                                           this.height);
 
         if (this._images != null) {
 
@@ -353,10 +358,10 @@ PivotViewer.Views.Tile = Object.subClass({
 
             if (typeof this._images == "function")
                 this._images(context,
-                    location.x + xmargin,
-                    location.y + ymargin,
-                    scaled_width,
-                    scaled_height);
+                             location.x + xmargin,
+                             location.y + ymargin,
+                             scaled_width,
+                             scaled_height);
             else if ((this._images.length > 0) &&
                 this._images[0] instanceof Image) {
 
@@ -424,10 +429,10 @@ PivotViewer.Views.Tile = Object.subClass({
                             ymargin + (yPosition * ofactor);
 
                         context.drawImage(this._images[i],
-                            offsetx + location.x,
-                            offsety + location.y,
-                            imageTileWidth,
-                            imageTileHeight);
+                                          offsetx + location.x,
+                                          offsety + location.y,
+                                          imageTileWidth,
+                                          imageTileHeight);
                     }
                 } else {
                     var offsetx = (Math.floor(blankWidth / 2)) + 4;

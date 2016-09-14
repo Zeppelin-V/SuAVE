@@ -235,10 +235,10 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
                 }
             }
             else if (evt.delta != undefined)
-                that.scale = evt.delta == 0 ? that.scale : (that.scale + evt.delta);
+                that.scale = that.scale + evt.delta;
 
             if (isNaN(that.scale)) that.scale = 1;
-
+            if ( that.scale > 51 ) that.scale = 51;
             var newWidth = (that.width - that.offsetX) * that.scale;
 
             //if trying to zoom out too far, reset to min
@@ -269,7 +269,8 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
                 that.resetUISettings();
             }
 
-            that.setTilePositions(that.rowscols, that.currentOffsetX, that.currentOffsetY, true, true);
+            if ( that.scale != oldScale )
+            		that.setTilePositions(that.rowscols, that.currentOffsetX, that.currentOffsetY, true, true);
 
             //deselect tiles if zooming back to min size
             if (that.scale == 1 && oldScale != 1) {

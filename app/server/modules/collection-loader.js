@@ -280,7 +280,9 @@ exports.copyImages = function(imgPath, images, callback){
     var image = images[i];
     xml = xml + '<I N="'+i+'" Id="'+image+'" Source="'+image+'.dzi"><Size Width='
       +'"300" Height="300"/></I>';
-
+    /*if (!fs.statSync(imgPath + '/'+images[i] + "_files")){
+  		fs.mkdirSync(imgPath + '/'+images[i] + "_files");
+  	}*/
     var tempPath = imgPath + '/'+images[i] + "_files";
 
     if (!fs.existsSync(tempPath)){
@@ -299,7 +301,7 @@ exports.copyImages = function(imgPath, images, callback){
   }else{
     //generate dzc
     xml = '<?xml version="1.0" encoding="utf-8"?><Collection MaxLevel="'
-      +8+'" TileSize="256" Format="jpg"><Items>'+xml+'</Items></Collection>';
+      +9+'" TileSize="256" Format="jpeg"><Items>'+xml+'</Items></Collection>';
     fsx.outputFile(imgPath+'/'+imgPath.split("/").splice(-1)+'.dzc', xml, function(e){
       if(e){
         callback(e);
