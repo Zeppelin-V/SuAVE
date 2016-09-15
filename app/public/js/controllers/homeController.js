@@ -7,6 +7,7 @@ function HomeController()
 	var collection = {};
 	var shapeData=[];
 	var colorData=[];
+	var colVal = {};
 	var columns; //tags memory
 	var oldText; //tag name
 	var SID;
@@ -52,15 +53,11 @@ var sMemory = false;
 			'<div class="modal-dialog"><div class="modal-content">'+
 			'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
 			' <div class="container" style="width:100%;"> <div  class="row"> '+
-			'<div class="btn-group btn-group-justified" role="group">'+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+			'<div class="btn-group" role="group" style="width:100%;">'+
+			'<button id="select-icons"  class="btn btn btn-default col-md-3 col-xs-6">View Options</button> '+
+			'<button id="select-tags"  class="btn btn btn-default col-md-3 col-xs-6">Edit Variables</button>'+
+			'<button id="select-about"  class="btn btn btn-default col-md-3 col-xs-6">Describe Survey</button>  '+
+			'<button id="select-reupload"  class="btn btn btn-default col-md-3 col-xs-6">Reupload Data</button>'+
 			'</div></div> </div> </div> <div class="modal-body"> <iframe height="450px" width="100%" src="/editor.html" id="editorFrame">'+
 		'</iframe><button id="select-about-submit" data-dismiss="modal" class="btn btn-primary">submit</button></div></div></div></div>');
 
@@ -74,15 +71,11 @@ var sMemory = false;
 			'<div class="modal-dialog"><div class="modal-content">'+
 			'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
 			' <div class="container" style="width:100%;"> <div  class="row"> '+
-			'<div class="btn-group btn-group-justified" role="group">'+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+			'<div class="btn-group" role="group" style="width:100%;">'+
+			'<button id="select-icons"  class="btn btn btn-default col-md-3 col-xs-6">View Options</button> '+
+			'<button id="select-tags"  class="btn btn btn-default col-md-3 col-xs-6">Edit Variables</button>'+
+			'<button id="select-about"  class="btn btn btn-default col-md-3 col-xs-6">Describe Survey</button>  '+
+			'<button id="select-reupload"  class="btn btn btn-default col-md-3 col-xs-6">Reupload Data</button>'+
 			'</div></div> </div> </div> <div class="modal-body">'+
 			'<button id="select-tags-submit" data-dismiss="modal" class="btn btn-primary">submit</button></div></div></div></div>');
 
@@ -94,7 +87,6 @@ var sMemory = false;
 			type: "GET",
 			data: {"name" : surveys[SID].name, "user": user},
 			success: function(result){
-
 				columns = result.columns;
 				var tags = result.tags;
 				var tagNames = [];
@@ -264,15 +256,11 @@ $(document).on('click', '#select-tags-submit',  function(){
 			'<div class="modal-dialog"><div class="modal-content">'+
 			'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
 			' <div class="container" style="width:100%;"> <div  class="row"> '+
-			'<div class="btn-group btn-group-justified" role="group">'+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
-			'<div class="btn-group" role="group">'+
-			'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+			'<div class="btn-group" role="group" style="width:100%;">'+
+			'<button id="select-icons"  class="btn btn btn-default col-md-3 col-xs-6">View Options</button> '+
+			'<button id="select-tags"  class="btn btn btn-default col-md-3 col-xs-6">Edit Variables</button>'+
+			'<button id="select-about"  class="btn btn btn-default col-md-3 col-xs-6">Describe Survey</button>  '+
+			'<button id="select-reupload"  class="btn btn btn-default col-md-3 col-xs-6">Reupload Data</button>'+
 			'</div></div> </div> </div> <div class="modal-body"> <h3>Select a new csv file to upload:</h3> '+
 		'<form id="replace-survey" action="/replaceCSV" method="POST" enctype="multipart/form-data"> '+
 		'<hr/> <fieldset> <div class="control-group"> <input type="file" name="file" required="required"/> </div>'+
@@ -344,15 +332,11 @@ $(document).on('click', '#select-tags-submit',  function(){
 				'<div class="modal-dialog"><div class="modal-content">'+
 				'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
 				' <div class="container" style="width:100%;"> <div  class="row"> '+
-				'<div class="btn-group btn-group-justified" role="group">'+
-				'<div class="btn-group" role="group">'+
-				'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
-				'<div class="btn-group" role="group">'+
-				'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
-				'<div class="btn-group" role="group">'+
-				'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
-				'<div class="btn-group" role="group">'+
-				'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+				'<div class="btn-group" role="group" style="width:100%;">'+
+				'<button id="select-icons"  class="btn btn btn-default col-md-3 col-xs-6">View Options</button> '+
+				'<button id="select-tags"  class="btn btn btn-default col-md-3 col-xs-6">Edit Variables</button>'+
+				'<button id="select-about"  class="btn btn btn-default col-md-3 col-xs-6">Describe Survey</button>  '+
+				'<button id="select-reupload"  class="btn btn btn-default col-md-3 col-xs-6">Reupload Data</button>'+
 				'</div></div> </div> </div> <div class="modal-body"> <p style="margin-left:20px;">Public View Options:</p> <div id="pv-views" class="container" style="width:100%;"></div> '+
 				' <div class="form-buttons"> '+
 				'<button id="select-collection-submit-dzc" data-dismiss="modal" class="btn btn-raised btn-primary">submit</button> </div> </div></div></div>');
@@ -362,15 +346,11 @@ $(document).on('click', '#select-tags-submit',  function(){
 				'<div class="modal-dialog"><div class="modal-content">'+
 				'<div class="modal-header"> <button data-dismiss="modal" class="close">x</button>'+
 				' <div class="container" style="width:100%;"> <div  class="row"> '+
-				'<div class="btn-group btn-group-justified" role="group">'+
-				'<div class="btn-group" role="group">'+
-				'<button id="select-icons"  class="btn btn btn-default">View Options</button> </div>'+
-				'<div class="btn-group" role="group">'+
-				'<button id="select-tags"  class="btn btn btn-default">Edit Variables</button> </div>'+
-				'<div class="btn-group" role="group">'+
-				'<button id="select-about"  class="btn btn btn-default">Describe Survey</button> </div> '+
-				'<div class="btn-group" role="group">'+
-				'<button id="select-reupload"  class="btn btn btn-default">Reupload Data</button> </div>'+
+				'<div class="btn-group" role="group" style="width:100%;">'+
+				'<button id="select-icons"  class="btn btn btn-default col-md-3 col-xs-6">View Options</button> '+
+				'<button id="select-tags"  class="btn btn btn-default col-md-3 col-xs-6">Edit Variables</button>'+
+				'<button id="select-about"  class="btn btn btn-default col-md-3 col-xs-6">Describe Survey</button>  '+
+				'<button id="select-reupload"  class="btn btn btn-default col-md-3 col-xs-6">Reupload Data</button>'+
 				'</div></div> </div> </div> <div class="modal-body"> <p style="margin-left:20px;">Public View Options:</p> <div id="pv-views" class="container" style="width:100%;"></div> '+
 				'<div class="container" style="width:100%;"> <div class="row"> '+
 				'<div class="col-xs-6">'+
@@ -743,6 +723,152 @@ $(document).on('click', '#select-tags-submit',  function(){
 		});
 	});
 
+	$(document).on('click', '.confirm-warning', function(){
+		$('.modal-warning').modal('toggle');
+		that.confirmColVal();
+	});
+
+	$(document).on('click', '.cancel-warning', function(){
+		console.log(colVal.collectVal);
+		if (colVal.collectVal != ''){
+			$('#collect-select').val('');
+			$('#column-select-1').val('');
+		}else{
+			$('#column-select-2').val('');
+		}
+
+	});
+
+	this.confirmColVal = function(){
+		var columnImg = colVal.columnImg;
+		var collect = colVal.collect;
+		var columnVal = colVal.columnVal;
+		var collectVal = colVal.collectVal;
+		var data = colVal.data;
+
+		if(collectVal == ""){
+			colorData = data;
+
+			//generate initial collect json
+			collection['cValues'] = {};
+
+			columnImg = generateImgJson(data);
+			Dlength = data.length;
+			$('#column-collect-color').append('<p>Please assign a color to each value:</p>');
+
+			for(var i = 0; i < data.length; i++){
+				$('#column-collect-color').append(
+					'<div class="row"><div class="col-xs-6"><div id="column-drop2-'+i+'"></div></div>'+
+					'<div class="col-xs-6"><div id="color-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
+			}
+
+			var count = 0;
+			var defaultIndex = 33;
+			var values;
+			if (surveys[SID].collection.name != "default"){
+				values = JSON.parse(surveys[SID].collection).cValues;
+			}
+			for(var i = 0; i < data.length; i++){
+				//inflate collection dropdown
+				$('#column-drop2-'+i).append('<div style="width: 250px;background: '+
+				'#eee;position: relative;height: 50px;border: solid 1px #ccc;"> '+
+				'<a class="dd-selected"><label class="dd-selected-text" '+
+				'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
+				if(values && cMemory){
+					var v = [];
+					for(var key in values) {
+							v.push(values[key]);
+					}
+					defaultIndex = colorIndex[v[i]];
+				}
+				else if (count > 31){
+					count = 0;
+					defaultIndex = 33;
+				}else if(data.length <= 10){
+					defaultIndex = brightColorSet[i];
+				}
+
+				$('#color-drop-'+i).ddslick({
+					data:colorImg,
+					defaultSelectedIndex: defaultIndex,
+					width:250,
+					background: '#ffffff',
+					imagePosition:"right"
+				});
+				defaultIndex--;
+				count++;
+			}
+			cMemory = false;
+		}else{
+			shapeData = data;
+			//generate initial collect json
+			collection['sValues'] = {};
+			/*
+			for(var i = 0; i < data.length; i++){
+				collection.sValues[data[i]] = '';
+			}*/
+
+			columnImg = generateImgJson(data);
+			Dlength = data.length;
+			$('#column-collect-shape').append('<p>Please assign a shape to each value:</p>');
+
+			for(var i = 0; i < data.length; i++){
+				$('#column-collect-shape').append(
+					'<div class="row">'+
+					'<div class="col-xs-6"><div id="column-drop-'+i+'"></div></div>'+
+					'<div class="col-xs-6"><div id="collect-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
+			}
+
+			var count = 0;
+			var defaultIndex = 1;
+			var survey;
+			var values;
+			if (surveys[SID].collection.name != "default"){
+				survey = JSON.parse(surveys[SID].collection);
+				values = survey.sValues;
+			}
+
+			for(var i = 0; i < data.length; i++){
+
+				//inflate collection dropdown
+				$('#column-drop-'+i).append('<div style="width: 250px;background: '+
+				'#eee;position: relative;height: 50px;border: solid 1px #ccc;"> '+
+				'<a class="dd-selected"><label class="dd-selected-text" '+
+				'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
+				if(values && sMemory){
+					var v = [];
+					for(var key in values) {
+							v.push(values[key]);
+					}
+					if(collectVal == "object"){
+						defaultIndex = objectIndex[v[i]];
+					}else{
+						defaultIndex = genderIndex[v[i]];
+					}
+				}
+				else if (count > 8 && collectVal == "object"){
+					count = 0;
+					defaultIndex = 1;
+				}else if (count > 2 && collectVal == "gender"){
+					count = 0;
+					defaultIndex = 1;
+				}
+
+				$('#collect-drop-'+i).ddslick({
+					data:collect,
+					defaultSelectedIndex: defaultIndex,
+					width:250,
+					background: '#ffffff',
+					imagePosition:"right"
+				});
+
+				defaultIndex++;
+				count++;
+			}
+			sMemory = false;
+		}
+	};
+
 	this.fetchColVal = function(columnVal, collectVal){
 		var columnImg;
 		var collect;
@@ -767,126 +893,17 @@ $(document).on('click', '#select-tags-submit',  function(){
 			type: "POST",
 			data: {"name" : surveys[SID].name, "user": user, "column": columnVal},
 			success: function(data){
-				if(collectVal == ""){
-					colorData = data;
-
-					//generate initial collect json
-					collection['cValues'] = {};
-
-					columnImg = generateImgJson(data);
-					Dlength = data.length;
-					$('#column-collect-color').append('<p>Please assign a color to each value:</p>');
-
-					for(var i = 0; i < data.length; i++){
-						$('#column-collect-color').append(
-							'<div class="row"><div class="col-xs-6"><div id="column-drop2-'+i+'"></div></div>'+
-							'<div class="col-xs-6"><div id="color-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
-					}
-
-					var count = 0;
-					var defaultIndex = 33;
-					var values;
-					if (surveys[SID].collection.name != "default"){
-						values = JSON.parse(surveys[SID].collection).cValues;
-					}
-					for(var i = 0; i < data.length; i++){
-						//inflate collection dropdown
-						$('#column-drop2-'+i).append('<div style="width: 250px;background: '+
-						'#eee;position: relative;height: 50px;border: solid 1px #ccc;"> '+
-						'<a class="dd-selected"><label class="dd-selected-text" '+
-						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
-						if(values && cMemory){
-							var v = [];
-							for(var key in values) {
-									v.push(values[key]);
-							}
-							defaultIndex = colorIndex[v[i]];
-						}
-						else if (count > 31){
-							count = 0;
-							defaultIndex = 33;
-						}else if(data.length <= 10){
-							defaultIndex = brightColorSet[i];
-						}
-
-						$('#color-drop-'+i).ddslick({
-							data:colorImg,
-							defaultSelectedIndex: defaultIndex,
-							width:250,
-							background: '#ffffff',
-							imagePosition:"right"
-						});
-						defaultIndex--;
-						count++;
-					}
-					cMemory = false;
+				colVal.columnImg = columnImg;
+				colVal.collect =  collect;
+				colVal.columnVal = columnVal;
+				colVal.collectVal = collectVal;
+				colVal.data = data;
+				if(data.length > 50){
+					$('.modal-warning').modal('toggle');
+					$('.modal-warning .modal-header h3').text('Warning!');
+					$('.modal-warning p').append("Too many entries. Are you sure to proceed?");
 				}else{
-					shapeData = data;
-					//generate initial collect json
-					collection['sValues'] = {};
-					/*
-					for(var i = 0; i < data.length; i++){
-						collection.sValues[data[i]] = '';
-					}*/
-
-					columnImg = generateImgJson(data);
-					Dlength = data.length;
-					$('#column-collect-shape').append('<p>Please assign a shape to each value:</p>');
-
-					for(var i = 0; i < data.length; i++){
-						$('#column-collect-shape').append(
-							'<div class="row">'+
-							'<div class="col-xs-6"><div id="column-drop-'+i+'"></div></div>'+
-							'<div class="col-xs-6"><div id="collect-drop-'+i+'"></div></div></div><p style="line-height: 50%;"></p>');
-					}
-
-					var count = 0;
-					var defaultIndex = 1;
-					var survey;
-					var values;
-					if (surveys[SID].collection.name != "default"){
-						survey = JSON.parse(surveys[SID].collection);
-						values = survey.sValues;
-					}
-
-					for(var i = 0; i < data.length; i++){
-
-						//inflate collection dropdown
-						$('#column-drop-'+i).append('<div style="width: 250px;background: '+
-						'#eee;position: relative;height: 50px;border: solid 1px #ccc;"> '+
-						'<a class="dd-selected"><label class="dd-selected-text" '+
-						'style="line-height: 47px;">'+columnImg[i].value+'</label></a> </div>');
-						if(values && sMemory){
-							var v = [];
-							for(var key in values) {
-									v.push(values[key]);
-							}
-							if(collectVal == "object"){
-								defaultIndex = objectIndex[v[i]];
-							}else{
-								defaultIndex = genderIndex[v[i]];
-							}
-						}
-						else if (count > 8 && collectVal == "object"){
-							count = 0;
-							defaultIndex = 1;
-						}else if (count > 2 && collectVal == "gender"){
-							count = 0;
-							defaultIndex = 1;
-						}
-
-						$('#collect-drop-'+i).ddslick({
-							data:collect,
-							defaultSelectedIndex: defaultIndex,
-							width:250,
-							background: '#ffffff',
-							imagePosition:"right"
-						});
-
-						defaultIndex++;
-						count++;
-					}
-					sMemory = false;
+					that.confirmColVal();
 				}
 			},
 			error: function(jqXHR){
