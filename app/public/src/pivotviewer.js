@@ -316,9 +316,9 @@ var graphPara = {};
 
         //keep info panel selected
         PV.deselectInfoPanel();
+        PV.getCurrentView().handleClick({"type":"clear"});
         $('#pv-viewpanel-view-' + _currentView + '-image').attr('src', _views[_currentView].getButtonImage());
         _views[_currentView].deactivate();
-
         $('#pv-viewpanel-view-' + number + '-image').attr('src', _views[number].getButtonImageSelected());
         _views[number].activate();
 
@@ -359,7 +359,6 @@ var graphPara = {};
         //wait until all locations paras are loaded
         setTimeout(function(){
           var list = _views[_currentView].filterList;
-          console.log(list);
           for(var i = 0; i < list.length; i++){
             if(list[i].loc){
               graphPara.mData.push([list[i].loc.lat, list[i].loc.lng]);
@@ -2077,6 +2076,7 @@ var graphPara = {};
 
         $('.pv-facet-customrange').on('change', function (e) { PV._changeCustomRange(this); });
         $('.pv-infopanel-details').on("click", '.detail-item-value-filter', function (e) {
+            $(".pv-facet[aria-controls='pv-cat-" + PV.cleanName($(this).parent().children().attr('pv-detail-item-title'))+"']").trigger('click');
             $.publish("/PivotViewer/Views/Item/Filtered", [{category: $(this).parent().children().attr('pv-detail-item-title'), min: $(this).attr('pv-detail-item-value'), values: null}]);
             return false;
         });
@@ -2341,6 +2341,9 @@ var graphPara = {};
             else PV.selectView(0);
             //return;
             TileController.beginAnimation();
+
+            window.parent.$('#modal-loading').modal('hide');
+
             if(_options.parameter){
               var para = _options.parameter;
 

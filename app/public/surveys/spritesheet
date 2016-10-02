@@ -60,10 +60,17 @@ def processXML( file_name ):
     root_tag = root.tag
     xmlns = re.sub( "[A-Za-z]*$", "", root_tag )
     items = root.find( xmlns + "Items" )
-    images = {}
-    for i in items.iter( xmlns + "I" ):
 
-        source = os.path.basename( i.attrib["Source"].replace( ".xml", "" ) )
+    children = list( items.iter() )
+    t = children[1].tag
+    images = {}
+    for i in items.iter( t ):
+
+        if "Source" in i.keys():
+            source = os.path.basename( i.attrib["Source"].replace( ".xml", "" ) )
+        elif "Href" in i.keys():
+            source = os.path.basename( i.attrib["Href"].replace( ".html", "" ) )
+
         id = i.attrib["Id"]
         
         images[id] = source
@@ -81,6 +88,8 @@ def worker( level,
             images_wide,
             images_high,
             sprite_index ):
+
+    ps = os.path.sep            # Get the path separator
 
     # Calculate the size of the tile at this level and derive the
     # sheet size.
@@ -101,6 +110,22 @@ def worker( level,
                               ( sprite_sheet_width, sprite_sheet_height ),
                               ( 0, 0, 0, 0 ) )
 
+    # Fish up the DZC file for this collection if it exists and get
+    # the default file format.
+
+    dzcbasename = os.path.basename( dirpath )
+    dzcpath = dirpath + ps + dzcbasename + ".dzc"
+    
+    if os.path.exists( dzcpath ):
+
+        root = ElementTree.parse( dzcpath ).getroot()
+        root_tag = root.tag
+        xmlns = re.sub( "[A-Za-z]*$", "", root_tag )
+        default_format = root.attrib["Format"]
+
+    else:                       # If there's no DZC, punt.
+        default_format = ""
+        
     # Iterate over the input XML for each image object, read the
     # image, and stuff it into the sprite sheet.
 
@@ -110,9 +135,25 @@ def worker( level,
         
         obj = sprite.attrib["file"];
 
+        dzipath = dirpath + ps + obj + ".dzi"
+
+        if os.path.exists( dzipath ):
+
+            root = ElementTree.parse( dzipath ).getroot()
+            root_tag = root.tag
+            xmlns = re.sub( "[A-Za-z]*$", "", root_tag )
+            image_format = "." + root.attrib["Format"]
+            
+        else:                       # If there's no DZI, punt.
+            image_format = default_format
+
         # Find the file in the level's object director
 
-        objpath = dirpath + os.path.sep + obj + "_files" + os.path.sep + str( level ) + os.path.sep + "*"
+        objpath = dirpath + ps + \
+                  obj + "_files" + ps + \
+                  str( level ) + ps + \
+                  "*" + image_format
+        
         files = glob.glob( objpath )
 
         # Make sure we're not processing a multitiled image, which
@@ -126,28 +167,13 @@ def worker( level,
 
         elif ( len( files ) == 0 ):
 
-            print "No files found in", objpath
+            print "No such file or directory:", objpath
             sys.exit()
-
+            
         image_file = files[0]
 
         # Open and read the file
 
-        if ( not os.path.exists( image_file ) ):
-
-            print "No such file or directory:", image_file
-            sys.exit()
-        
-        elif ( not os.path.isfile( image_file ) ):
-            
-            print image_file, "is not a file."
-            sys.exit()
-
-        elif ( not os.access( image_file, os.R_OK ) ):
-               
-            print image_file, "is not readable."
-            sys.exit()
-            
         with Image.open( image_file ) as image:
             
             # Get the image
@@ -177,13 +203,15 @@ def worker( level,
 
     # We're done processing so write the sprite sheet to disk and bail.
 
-    sprite_sheet_file = outpath + os.path.sep + "sprite_" + str( level ) + ".png"
+    sprite_sheet_file = outpath + ps + "sprite_" + str( level ) + ".png"
 
     sprite_sheet.save( sprite_sheet_file )
 
     return
 
 # End worker
+
+# ------------------------------------------------------------------------ #
 
 # Main program starts here.
 
@@ -195,67 +223,74 @@ parser = argparse.ArgumentParser( description =
 parser.add_argument( "-m", "--maxdepth",
                      metavar = "maxdepth",
                      nargs = 1,
-                     default = 6,
+                     default = [-1],
                      dest = "maxdepth",
-                     help = "Maximum depth sprite sheet to be created.",
+                     help = "Maximum depth sprite sheet to be created. " + \
+                     "Default: the maximum depth will be automatically " + \
+                     "computed.",
                      type = int )
 parser.add_argument( "-M", "--Microsoft",
                      dest = "microsoft_mode",
                      help = "Process Microsoft XML file rather than CSV.",
                      action = "store_true" )
 parser.set_defaults( microsoft_mode = False )
-parser.add_argument( "file",
+parser.add_argument( "file_name",
                      nargs = 1,
                      help = "The file to be parsed (assumed CSV)." )
 
+ps = os.path.sep                # Get the system's path separator
+
 options = parser.parse_args()
+
+# Mostly for laziness sake, so we can avoid typing "options." . . .
+
+maxdepth = options.maxdepth[0]
+file_name = options.file_name[0]
 
 # Chastise the user if there's something bogus
 
-if ( not os.path.exists( options.file[0] ) ):
+if ( not os.path.exists( file_name ) ):
 
-    print "No such file or directory:", options.file[0]
+    print "No such file or directory:", file_name
     sys.exit()
 
-if ( options.maxdepth > 6 ):
+if ( math.pow( 2, maxdepth ) > 128 ):
 
     print "maxdepth is too large."
     print "You don't want to create sprite sheets with cells greater than"
     print "128 x 128"
     sys.exit()
 
-# Mostly for laziness sake, so we can avoid typing "options." . . .
-
-maxdepth = options.maxdepth
-file_name = options.file[0]
-
 if ( options.microsoft_mode ):
     images = processXML( file_name )
 else:
     images = processCSV( file_name )
 
+# Munge the file name until it looks like a basename.  Enormous kludge
+# here.
+
 basename = os.path.basename( file_name )
-basename = re.sub( ".[xc][ms][lv]$", "", basename )
+basename = re.sub( "\\.[xc][ms][lv]$", "", basename )
+basename = re.sub( "\\.cxml$", "", basename )
 dirname = os.path.dirname( file_name )
+
 if ( dirname == "" ):
     dirname = "."
 
 # Build the path were we're going to store the output
 
-if ( options.microsoft_mode ):
+# Some versions of the Microsoft format apparently store files in an
+# images subdirectory
 
-    dirpath = dirname + os.path.sep + "images"
+if os.path.exists( dirname + ps + "images" ):
+
+    dirpath = dirname + ps + "images"
     outpath = dirname
     
 else:
 
-    dirpath = dirname + os.path.sep + basename
+    dirpath = dirname + ps + basename
     outpath = dirpath
-
-if ( not os.path.exists( outpath ) ):
-
-    print "No such directory:", outpath
-    sys.exit()
 
 # process the images into sprites
 
@@ -286,8 +321,19 @@ lock = threading.Lock()         # A lock to maintain the XML sanctity.
 
 threads = []                    # Thread list.
 
-for level in range( maxdepth + 1 ):
+# If the user has not set a maxdepth, we will calculate one. Arbitrary
+# maximum spritesheet size of 10 megapixels.  We'll assume that this
+# will compress as a PNG to something fairly manageable.
 
+if ( maxdepth == -1 ):          
+                                
+    ten_mp = 10 * 1024 * 1024   
+    maxdepth = int( math.log( math.sqrt( ten_mp / len( images ) ), 2 ) )
+    if ( maxdepth > 7 ):
+        maxdepth = 7
+
+for level in range( maxdepth + 1 ): # +1 so that the maxdepth is
+                                    # included
     # While we're at it, create the correspondence between the index
     # (depth) and the actual sprite sheet.  This is probably overkill,
     # since we can easily generate the file name but it avoids baking
@@ -323,7 +369,7 @@ for thread in threads:
 # Write the sprite index file.  Pretty print it so that humans can
 # enjoy it, too.
 
-sprite_idx = outpath + os.path.sep + "sprite.idx"
+sprite_idx = outpath + ps + "sprite.idx"
 print "Writing", sprite_idx
 
 # This is a rather hideous hack, since it emits and reparses the XML,
@@ -336,8 +382,15 @@ text = minidom.parseString( ElementTree.tostring( sprite_index,
 
 # Write it out and take a hike.
 
-f = open( sprite_idx, "wb" )
-f.write( text )
-f.close()
+try:
+    
+    f = open( sprite_idx, "wb" )
+    f.write( text )
+    f.close()
+
+except IOError:
+
+    print "Couldn't open sprite index file", sprite_idx, "or write failed."
+    sys.exit()
 
 sys.exit()

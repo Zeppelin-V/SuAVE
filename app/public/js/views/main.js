@@ -63,6 +63,7 @@ $(document).ready(function(){
     $('.tagline').text($(this).text());
   });
 
+  $('#modal-loading').modal('toggle');
 
   $('#rememember-me').click(function(e) {
     var icon = $(this).find('#check-icon');

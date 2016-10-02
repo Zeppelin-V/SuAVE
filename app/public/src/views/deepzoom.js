@@ -101,8 +101,12 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
 
                 var sprite_sheet = sprite_sheets[ss];
 
-                that._sprite_sheet_url[$(sprite_sheet).attr("index")] =
+		var level = $(sprite_sheet).attr("index");
+                that._sprite_sheet_url[level] =
                     that.baseUrl + "/" + $(sprite_sheet).attr("sprite");
+
+                img = new Image();
+		img.src = that._sprite_sheet_url[level];
 
             }
             that._cb(that._dzc);

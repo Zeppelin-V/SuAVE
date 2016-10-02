@@ -288,11 +288,10 @@ PivotViewer.Views.Tile = Object.subClass({
         var context = this.context;
 
         //Is the tile destination in visible area?
-
-//        if (this.destinationVisible)
+        if (this.destinationVisible)
             this._images = ctrlr.getImages(this.item.img,
-                                           this.width,
-                                           this.height);
+					   this.width,
+					   this.height);
 
         if (this._images != null) {
 
