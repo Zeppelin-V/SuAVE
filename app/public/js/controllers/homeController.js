@@ -323,7 +323,7 @@ $(document).on('click', '#select-tags-submit',  function(){
 		$('.modal-select-collection').modal('show');
 		$('.modal-select-collection').empty();
 		var id = $(this).attr("id");
-		var i = id.slice(-1);
+		var i = id.split('-').pop();
 		SID = i;
 		var survey = surveys[i];
 

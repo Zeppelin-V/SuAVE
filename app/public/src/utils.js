@@ -350,13 +350,13 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
     if (valueFn == undefined) valueFn = function (value) { return value.value; }
     if (labelFn == undefined) labelFn = function (value) { return value.label.toString();}
 
-    var bkts = [], value1 = filterList[0].item.getFacetByName(category).values[0], value = valueFn(value1), label = labelFn(value1);
-
+    var bkts = [], value1 = filterList[0].item.getFacetByName(category).values[0], value = valueFn(value1);
     var tile = filterList[0], facet = tile.item.getFacetByName(category);
     var flattend = _.flatten(_.pluck(facet.values, 'value'));
     for (var v = 0; v < flattend.length; v++) {
         var value2 = flattend[v];
-        label = value2, value = value2;;
+        label = labelFn(facet.values[0]);
+        value = value2;;
         var bkt;
         bkt = new PivotViewer.Models.Bucket(value, label);
         bkt.addTile(tile);
@@ -372,7 +372,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
         var flattend = _.flatten(_.pluck(facet.values, 'value'));
         for (var v = 0; v < flattend.length; v++) {
             var value2 = flattend[v];
-            label = value2, value = value2;
+            value = value2;
             var bkt = null;
             for (var j = 0; j < bkts.length; j++) {
                 if (bkts[j].hasValue(value)) {
@@ -381,6 +381,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
                 }
             }
             if (!bkt) {
+                label = labelFn(facet.values[0]);
                 bkt = new PivotViewer.Models.Bucket(value, label);
                 bkts.push(bkt);
             }
@@ -440,6 +441,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
             bkts.ids[filterList[i].item.id] = b;
         }
     }
+    console.log(bkts);
     return bkts;
 }
 

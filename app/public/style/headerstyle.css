@@ -54,13 +54,13 @@ header#earthcube-header .tagline {
   position: absolute;
   top: 12px;
   left: 150px;
-  width: 500px;
+  width: 45%;
   height: 30px;
   margin: 0;
   padding: 0;
   border: none;
   color: #323232;
-  font: 1.6em Arial, sans-serif;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
 #help{
@@ -187,7 +187,7 @@ header#earthcube-header .tagline {
 }
 
 
-.modal-loading.modal, body {
+.modal-loading.modal > body {
   font: 150%/1.4 Helvetica, Arial, sans-serif;
   padding: 20px;
   letter-spacing: 10px;
