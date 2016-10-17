@@ -405,7 +405,7 @@ function SnapshotController()
   		}else if(graphPara.view == "map") {
         var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
   			var dat = graphPara.mData;
-  			dat.unshift(["Latitude", "Longitude"]);
+  			//dat.unshift(["Latitude", "Longitude"]);
 
         function drawRegionsMap() {
 
