@@ -5,6 +5,20 @@ var remember = true;
 var replyUser;
 
 $(document).ready(function(){
+  $("#fullscreen").click(function(e){
+    var docElm = document.getElementById("pivot_window");
+    if (docElm.mozRequestFullScreen) {
+        docElm.mozRequestFullScreen();
+    } else if (docElm.webkitRequestFullScreen) {
+        docElm.webkitRequestFullScreen();
+    } else if (docElm.msRequestFullscreen) {
+        docElm.msRequestFullscreen();
+    } else {
+        docElm.requestFullscreen();
+    }
+
+  });
+
   var mc = new MainController();
   var lv = new LoginValidator();
   var query = URI.parseQuery(querys);

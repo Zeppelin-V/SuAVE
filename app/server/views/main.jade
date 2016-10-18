@@ -4,7 +4,7 @@ html
     title SuAVE: Survey Analysis via Visual Exploration
     script(type='text/javascript', src='/vendor/gc-loader.js')
     script(type='text/javascript', src='/vendor/jsapi.js')
-  body
+  body#suave-body
     header#earthcube-header
       h1
         a.logo(href='http://suave.sdsc.edu:3000', target='_blank')
@@ -16,6 +16,7 @@ html
         | Share
       button#video(onclick="window.open('https://youtu.be/IqiSf0eWtxQ?list=PLvVijDnlg_tXJJRJlEbRld0IOJCi5-vTD', '_blank')") Tutorial Videos
       button#help(onclick='') About Survey
+      button#fullscreen Fullscreen
     .embed-responsive
     #comment-dialog.modal.fade
       .modal-dialog

@@ -295,170 +295,197 @@ PivotViewer.Views.Tile = Object.subClass({
 
         if (this._images != null) {
 
-            //A DrawLevel function returned - invoke
-            var completeImageHeight = ctrlr.getHeight(this.item.img);
-            var completeImageWidth = ctrlr.getWidth(this.item.img);
-
-            var displayHeight =
-                this.height -
-                Math.ceil(this.height < 128 ? this.height / 16 : 8);
-            var displayWidth =
-                this.width -
-                Math.ceil(this.width < 128 ? this.width / 16 : 8);
-
-            //Narrower images need to be centered
-
-            var blankWidth = (this.width - 8) - displayWidth;
-            var blankHeight = (this.height - 8) - displayHeight;
-
-            // Handle displaying the deepzoom image tiles ( move to deepzoom.js )
-
-            var xmargin = 0;
-            var ymargin = 0;
-            var scaled_width = displayWidth;
-            var scaled_height = displayHeight;
-
-            var tileSize = ctrlr._tileSize;
-
-            //Get image level
-
-            var image_level =
-                Math.ceil(Math.log(this.width > this.height ?
-                        this.width : this.height) /
-                    Math.log(2));
-            if (image_level == Infinity || image_level == -Infinity)
-                image_level = 0;
-
-            var maxlevel = ctrlr.getMaxLevel(this.item.img);
-            if (image_level > maxlevel)
-                image_level = maxlevel
-            var level_factor =
-                1 << (maxlevel - image_level);
-
-            var levelHeight =
-                Math.ceil(completeImageHeight / level_factor);
-            var levelWidth =
-                Math.ceil(completeImageWidth / level_factor);
-
-            //Image will need to be scaled to get the displayHeight
-
-            var scaleh = displayHeight / levelHeight;
-            var scalew = displayWidth / levelWidth;
-
-            var scale = (scaleh < scalew) ? scaleh : scalew;
-
-            scaled_width = Math.ceil(levelWidth * scale);
-            scaled_height = Math.ceil(levelHeight * scale);
-
-            xmargin =
-                Math.floor((displayWidth - scaled_width) / 2);
-            ymargin =
-                Math.floor((displayHeight - scaled_height) / 2);
-
-            if (typeof this._images == "function")
-                this._images(context,
-                             location.x + xmargin,
-                             location.y + ymargin,
-                             scaled_width,
-                             scaled_height);
-            else if ((this._images.length > 0) &&
-                this._images[0] instanceof Image) {
-
-                //if the collection contains an image
-
-                if (ctrlr instanceof PivotViewer.Views.DeepZoomImageController) {
-
-                    var tileSize = ctrlr._tileSize;
-
-                    //Get image level
-                    lvl = this._images[0].src.match(/_files\/[0-9]+\//g)[0];
-
-                    var imageLevel =
-                        parseInt(lvl.substring(7, lvl.length - 1));
-
-                    var level_factor =
-                        1 << (ctrlr.getMaxLevel(this.item.img) -
-                            imageLevel);
-
-                    var levelHeight =
-                        Math.ceil(completeImageHeight / level_factor);
-                    var levelWidth =
-                        Math.ceil(completeImageWidth / level_factor);
-
-                    //Image will need to be scaled to get the displayHeight
-
-                    var scaleh = displayHeight / levelHeight;
-                    var scalew = displayWidth / levelWidth;
-
-                    var scale = (scaleh < scalew) ? scaleh : scalew;
-
-                    scaled_width = levelWidth * scale;
-                    scaled_height = levelHeight * scale;
-
-                    xmargin =
-                        Math.floor((displayWidth - scaled_width) / 2);
-                    ymargin =
-                        Math.floor((displayHeight - scaled_height) / 2);
-
-                    // handle overlap
-                    overlap = ctrlr.getOverlap(this.item.img);
-
-                    for (var i = 0; i < this._images.length; i++) {
-
-                        // We need to know where individual image tiles go
-                        var source = this._images[i].src;
-                        var n = source.match(/[0-9]+_[0-9]+/g);
-                        var nl = n[n.length - 1];
-
-                        var xPosition =
-                            parseInt(nl.substring(0, nl.indexOf("_")));
-                        var yPosition =
-                            parseInt(nl.substring(nl.indexOf("_") + 1));
-
-                        var imageTileHeight =
-                            Math.ceil(this._images[i].height * scale);
-                        var imageTileWidth =
-                            Math.ceil(this._images[i].width * scale);
-
-                        var ofactor =
-                            Math.floor((tileSize - overlap) * scale);
-                        var offsetx =
-                            xmargin + (xPosition * ofactor);
-                        var offsety =
-                            ymargin + (yPosition * ofactor);
-
-                        context.drawImage(this._images[i],
-                                          offsetx + location.x,
-                                          offsety + location.y,
-                                          imageTileWidth,
-                                          imageTileHeight);
+	    try {
+		
+		//A DrawLevel function returned - invoke
+		var completeImageHeight = ctrlr.getHeight(this.item.img);
+		var completeImageWidth = ctrlr.getWidth(this.item.img);
+		
+		var displayHeight =
+                    this.height -
+                    Math.ceil(this.height < 128 ? this.height / 16 : 8);
+		var displayWidth =
+                    this.width -
+                    Math.ceil(this.width < 128 ? this.width / 16 : 8);
+		
+		//Narrower images need to be centered
+		
+		var blankWidth = (this.width - 8) - displayWidth;
+		var blankHeight = (this.height - 8) - displayHeight;
+		
+		// Handle displaying the deepzoom image tiles ( move to deepzoom.js )
+		
+		var xmargin = 0;
+		var ymargin = 0;
+		var scaled_width = displayWidth;
+		var scaled_height = displayHeight;
+		
+		var tileSize = ctrlr._tileSize;
+		
+		//Get image level
+		
+		var image_level =
+                    Math.ceil(Math.log(this.width > this.height ?
+				       this.width : this.height) /
+			      Math.log(2));
+		if (image_level == Infinity || image_level == -Infinity)
+                    image_level = 0;
+		
+		var maxlevel = ctrlr.getMaxLevel(this.item.img);
+		if (image_level > maxlevel)
+                    image_level = maxlevel
+		var level_factor =
+                    1 << (maxlevel - image_level);
+		
+		var levelHeight =
+                    Math.ceil(completeImageHeight / level_factor);
+		var levelWidth =
+                    Math.ceil(completeImageWidth / level_factor);
+		
+		//Image will need to be scaled to get the displayHeight
+		
+		var scaleh = displayHeight / levelHeight;
+		var scalew = displayWidth / levelWidth;
+		
+		var scale = (scaleh < scalew) ? scaleh : scalew;
+		
+		scaled_width = Math.ceil(levelWidth * scale);
+		scaled_height = Math.ceil(levelHeight * scale);
+		
+		xmargin =
+                    Math.floor((displayWidth - scaled_width) / 2);
+		ymargin =
+                    Math.floor((displayHeight - scaled_height) / 2);
+		
+		if (typeof this._images == "function")
+                    this._images(context,
+				 location.x + xmargin,
+				 location.y + ymargin,
+				 scaled_width,
+				 scaled_height);
+		else if ((this._images.length > 0) &&
+			 this._images[0] instanceof Image) {
+		    
+                    //if the collection contains an image
+		    
+                    if (ctrlr instanceof PivotViewer.Views.DeepZoomImageController) {
+			
+			var tileSize = ctrlr._tileSize;
+			
+			//Get image level
+			lvl = this._images[0].src.match(/_files\/[0-9]+\//g)[0];
+			
+			var imageLevel =
+                            parseInt(lvl.substring(7, lvl.length - 1));
+			
+			var level_factor =
+                            1 << (ctrlr.getMaxLevel(this.item.img) -
+				  imageLevel);
+			
+			var levelHeight =
+                            Math.ceil(completeImageHeight / level_factor);
+			var levelWidth =
+                            Math.ceil(completeImageWidth / level_factor);
+			
+			//Image will need to be scaled to get the displayHeight
+			
+			var scaleh = displayHeight / levelHeight;
+			var scalew = displayWidth / levelWidth;
+			
+			var scale = (scaleh < scalew) ? scaleh : scalew;
+			
+			scaled_width = levelWidth * scale;
+			scaled_height = levelHeight * scale;
+			
+			xmargin =
+                            Math.floor((displayWidth - scaled_width) / 2);
+			ymargin =
+                            Math.floor((displayHeight - scaled_height) / 2);
+			
+			// handle overlap
+			overlap = ctrlr.getOverlap(this.item.img);
+			
+			var tex = 0;
+			var tey = 0;
+			for (var i = 0; i < this._images.length; i++) {
+			    
+                            // We need to know where individual image tiles go
+                            var source = this._images[i].src;
+                            var n = source.match(/[0-9]+_[0-9]+/g);
+                            var nl = n[n.length - 1];
+			    
+                            var xPosition =
+				parseInt(nl.substring(0, nl.indexOf("_")));
+                            var yPosition =
+				parseInt(nl.substring(nl.indexOf("_") + 1));
+			    
+                            var imageTileHeight =
+				Math.floor(this._images[i].height * scale);
+                            var imageTileWidth =
+				Math.floor(this._images[i].width * scale);
+			    
+                            var ofactor =
+				Math.floor((tileSize - overlap) * scale);
+                            var offsetx =
+				xmargin + (xPosition * ofactor);
+                            var offsety =
+				ymargin + (yPosition * ofactor);
+			    
+                            context.drawImage(this._images[i],
+                                              offsetx + location.x,
+                                              offsety + location.y,
+                                              imageTileWidth,
+                                              imageTileHeight);
+                            var tx =
+				parseInt( offsetx +
+					  location.x +
+					  imageTileWidth );
+                            var ty =
+				parseInt( offsety +
+					  location.y + imageTileHeight );
+			    if ( tex < tx )
+				tex = tx;
+			    if ( tey < ty )
+				tey = ty;
+			    
+			}
+			scaled_width =
+			    parseInt( tex - ( location.x + xmargin ) );
+			scaled_height =
+			    parseInt( tey - ( location.y + ymargin ) );
+			
+                    } else {
+			var offsetx = (Math.floor(blankWidth / 2)) + 4;
+			var offsety = 4;
+			context.drawImage(this._images[0],
+					  offsetx + location.x,
+					  offsety + location.y,
+					  displayWidth, displayHeight);
                     }
-                } else {
-                    var offsetx = (Math.floor(blankWidth / 2)) + 4;
-                    var offsety = 4;
-                    context.drawImage(this._images[0],
-                        offsetx + location.x,
-                        offsety + location.y,
-                        displayWidth, displayHeight);
-                }
+		    
+                    if (this._selected) {
+			//draw a blue border
+			context.beginPath();
+			var offsetx = xmargin;
+			var offsety = ymargin;
+			context.rect(offsetx +
+				     this._locations[this.selectedLoc].x,
+				     offsety +
+				     this._locations[this.selectedLoc].y,
+				     scaled_width + 2, scaled_height + 2 );
+			context.lineWidth = 4;
+			context.strokeStyle = "#92C4E1";
+			context.stroke();
+			
+                    }
+		    
+		}
 
-                if (this._selected) {
-                    //draw a blue border
-                    context.beginPath();
-                    var offsetx = xmargin;
-                    var offsety = ymargin;
-                    context.rect(offsetx +
-                        this._locations[this.selectedLoc].x,
-                        offsety +
-                        this._locations[this.selectedLoc].y,
-                        scaled_width, scaled_height);
-                    context.lineWidth = 4;
-                    context.strokeStyle = "#92C4E1";
-                    context.stroke();
+	    } catch ( e ) {
 
-                }
-
-            }
+		this.drawEmpty( loc );
+		
+	    }
 
         } else
             this.drawEmpty(loc);

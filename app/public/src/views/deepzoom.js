@@ -105,9 +105,9 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
                 that._sprite_sheet_url[level] =
                     that.baseUrl + "/" + $(sprite_sheet).attr("sprite");
 
-                img = new Image();
+                var img = new Image();
 		img.src = that._sprite_sheet_url[level];
-
+		
             }
             that._cb(that._dzc);
 
@@ -146,17 +146,17 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
         that.baseUrl = image_src;
 
         var items = $(xml).find("I");
-        if (items.length == 0) {
-          $('.pv-loading').remove();
-
-          //Throw an alert so the user knows something is wrong
-          var msg = 'No items in the DeepZoom Collection<br><br>';
-          msg += 'URL        : ' + this.url + '<br>';
-          msg += '<br>Pivot Viewer cannot continue until this problem is resolved<br>';
-          $('.pv-wrapper').append("<div id=\"pv-dzloading-error\" class=\"pv-modal-dialog\"><div><a href=\"#pv-modal-dialog-close\" title=\"Close\" class=\"pv-modal-dialog-close\">X</a><h2>HTML5 PivotViewer</h2><p>" + msg + "</p></div></div>");
-          setTimeout(function(){window.open("#pv-dzloading-error","_self")},1000)
-          return;
-        }
+          if (items.length == 0) {
+              $('.pv-loading').remove();
+	      
+              //Throw an alert so the user knows something is wrong
+              var msg = 'No items in the DeepZoom Collection<br><br>';
+              msg += 'URL        : ' + this.url + '<br>';
+              msg += '<br>Pivot Viewer cannot continue until this problem is resolved<br>';
+              $('.pv-wrapper').append("<div id=\"pv-dzloading-error\" class=\"pv-modal-dialog\"><div><a href=\"#pv-modal-dialog-close\" title=\"Close\" class=\"pv-modal-dialog-close\">X</a><h2>HTML5 PivotViewer</h2><p>" + msg + "</p></div></div>");
+              setTimeout(function(){window.open("#pv-dzloading-error","_self")},1000)
+              return;
+          }
 
         //If collection itself contains size information, use first one for now
         var dzcSize = $(items[0]).find('Size');
@@ -237,41 +237,6 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
       var item = this._itemsById[id];
       level = (level > item.MaxLevel ? item.MaxLevel : level);
 
-      //to work out collage image
-      //convert image n to base 2
-      //convert to array and put even and odd bits into a string
-      //convert strings to base 10 - this represents the tile row and col
-
-      // This appears to be useless.  Commented out by spl.
-
-      // var baseTwo = item.DZN.toString(2);
-      // var even = "",
-      //     odd = "";
-      // for (var b = 0; b < baseTwo.length; b++) {
-      //     if (b % 2 == 0) even += baseTwo[b];
-      //     else odd += baseTwo[b];
-      // }
-      // console.debug("baseTwo:", baseTwo, "even:", even, "odd:", odd );
-      // dzCol = parseInt(even, 2);
-      // dzRow = parseInt(odd, 2);
-
-      //for the zoom level work out the DZ tile where it came from
-
-      // if ( ( ( item.Levels == undefined ) ||
-      //        ( item.Levels.length == 0 ) ) &&
-      //      !this._zooming ) {
-
-      //     //create 0 level
-      //     var imageList =
-      //         this.getImageList( id,
-      //                            this.baseUrl + "/" +
-      //                            item.BasePath + item.DZId + "_files/6/", 6 );
-      //     item.Levels.push( new PivotViewer.Views.ImageLevel( imageList ) );
-
-      //     return null;
-
-      // } else
-//      if ((item.Levels.length < level) && !this._zooming) {
       if ((item.Levels[level] == undefined ) && !this._zooming) {
 
           //requested level does not exist, and the Levels list is
@@ -356,40 +321,56 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
 
           if (this._sprite_sheet_loaded[level]) {
 
-              var sheet = this._sprite_sheet[level];
+	      try {
 
-              var index = this._sprite_index[id];
+		  var sheet = this._sprite_sheet[level];
+		  
+		  var index = this._sprite_index[id];
+		  
+		  var params = index.params[level];
+		  var tile_size = 1 << level;
+		  
+		  var x_tile_loc = tile_size * index.x;
+		  var y_tile_loc = tile_size * index.y;
+		  
+		  var tile_width = params.width;
+		  var tile_height = params.height;
+		  
+		  rv = function(context, x, y, w, h) {
+		      
+                      var wscale = w / tile_width;
+                      var hscale = h / tile_height;
+                      var scale = (wscale < hscale) ? wscale : hscale;
+		      
+                      var rendered_width = Math.floor(tile_width * scale);
+                      var rendered_height = Math.floor(tile_height * scale);
+		      
+                      var x_slop = Math.floor((w - rendered_width) / 2);
+                      var y_slop = Math.floor((h - rendered_height) / 2);
+		      
+                      context.drawImage(sheet,
+					x_tile_loc,
+					y_tile_loc,
+					tile_width,
+					tile_height,
+					x + x_slop, y + y_slop,
+					rendered_width, rendered_height);
+		      
+		  }
 
-              var params = index.params[level];
-              var tile_size = 1 << level;
+	      } catch ( e ) {
 
-              var x_tile_loc = tile_size * index.x;
-              var y_tile_loc = tile_size * index.y;
+		  $('.pv-loading').remove();
+		  
+		  //Throw an alert so the user knows something is wrong
+		  var msg = 'Error in DeepZoom Collection<br><br>';
+		  msg += "Unable to find id '" + id + "'<br>";
+		  msg += '<br>Pivot Viewer cannot continue until this problem is resolved<br>';
+		  $('.pv-wrapper').append("<div id=\"pv-dzloading-error\" class=\"pv-modal-dialog\"><div><a href=\"#pv-modal-dialog-close\" title=\"Close\" class=\"pv-modal-dialog-close\">X</a><h2>HTML5 PivotViewer</h2><p>" + msg + "</p></div></div>");
+		  setTimeout(function(){window.open("#pv-dzloading-error","_self")},1000)
+		  return;
 
-              var tile_width = params.width;
-              var tile_height = params.height;
-
-              rv = function(context, x, y, w, h) {
-
-                  var wscale = w / tile_width;
-                  var hscale = h / tile_height;
-                  var scale = (wscale < hscale) ? wscale : hscale;
-
-                  var rendered_width = Math.floor(tile_width * scale);
-                  var rendered_height = Math.floor(tile_height * scale);
-
-                  var x_slop = Math.floor((w - rendered_width) / 2);
-                  var y_slop = Math.floor((h - rendered_height) / 2);
-
-                  context.drawImage(sheet,
-                      x_tile_loc,
-                      y_tile_loc,
-                      tile_width,
-                      tile_height,
-                      x + x_slop, y + y_slop,
-                      rendered_width, rendered_height);
-
-              }
+	      }
 
           }
 
@@ -429,8 +410,25 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
   getWidth: function (id) {return this._itemsById[id].Width;},
 
   getOverlap: function (id) {return this._collageItemOverlap;},
-  getRatio: function (id) {
-    return this._itemsById[id].Ratio;
+    getRatio: function (id) {
+	try {
+	    
+	    return this._itemsById[id].Ratio;
+
+	} catch ( e ) {
+
+	    $('.pv-loading').remove();
+	    
+	    //Throw an alert so the user knows something is wrong
+	    var msg = 'Missing image in DeepZoom Collection<br><br>';
+	    msg += "Can't find '" + id + "'</br>";
+	    msg += '<br>Pivot Viewer cannot continue until this problem is resolved<br>';
+	    $('.pv-wrapper').append("<div id=\"pv-dzloading-error\" class=\"pv-modal-dialog\"><div><a href=\"#pv-modal-dialog-close\" title=\"Close\" class=\"pv-modal-dialog-close\">X</a><h2>HTML5 PivotViewer</h2><p>" + msg + "</p></div></div>");
+	    setTimeout(function(){window.open("#pv-dzloading-error","_self")},1000)
+	    return;
+
+	}
+	    
   }
 });
 

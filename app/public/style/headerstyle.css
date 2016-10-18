@@ -139,6 +139,22 @@ header#earthcube-header .tagline {
   border: 2px solid #bfbfbf;
 }
 
+#fullscreen{
+  border-radius: 8px;
+  background-color: Transparent;
+  position: absolute;
+  top: 15px;
+  right: 505px;
+  display: block;
+  width: 120px;
+
+  font: 1.0em Arial, sans-serif;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  border: 2px solid #bfbfbf;
+}
+
 #share-dialog{
   margin-top: 20%;
 }

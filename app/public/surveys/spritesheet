@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+# Version 1.0
+# Updated Sat Oct 15 13:42:51 PDT 2016 -- spl
+
 import argparse
 import sys
 import os
@@ -254,7 +257,7 @@ if ( not os.path.exists( file_name ) ):
     print "No such file or directory:", file_name
     sys.exit()
 
-if ( math.pow( 2, maxdepth ) > 128 ):
+if ( maxdepth != -1 ) and ( math.pow( 2, maxdepth ) > 128 ):
 
     print "maxdepth is too large."
     print "You don't want to create sprite sheets with cells greater than"
@@ -265,6 +268,17 @@ if ( options.microsoft_mode ):
     images = processXML( file_name )
 else:
     images = processCSV( file_name )
+
+# If the user has not set a maxdepth, we will calculate one. Arbitrary
+# maximum spritesheet size of 10 megapixels.  We'll assume that this
+# will compress as a PNG to something fairly manageable.
+
+if ( maxdepth == -1 ):          
+                                
+    ten_mp = 10 * 1024 * 1024   
+    maxdepth = int( math.log( math.sqrt( ten_mp / len( images ) ), 2 ) )
+    if ( maxdepth > 7 ):
+        maxdepth = 7
 
 # Munge the file name until it looks like a basename.  Enormous kludge
 # here.
@@ -320,17 +334,6 @@ for image in images:
 lock = threading.Lock()         # A lock to maintain the XML sanctity.
 
 threads = []                    # Thread list.
-
-# If the user has not set a maxdepth, we will calculate one. Arbitrary
-# maximum spritesheet size of 10 megapixels.  We'll assume that this
-# will compress as a PNG to something fairly manageable.
-
-if ( maxdepth == -1 ):          
-                                
-    ten_mp = 10 * 1024 * 1024   
-    maxdepth = int( math.log( math.sqrt( ten_mp / len( images ) ), 2 ) )
-    if ( maxdepth > 7 ):
-        maxdepth = 7
 
 for level in range( maxdepth + 1 ): # +1 so that the maxdepth is
                                     # included
