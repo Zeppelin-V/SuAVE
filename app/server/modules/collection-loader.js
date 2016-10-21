@@ -13,10 +13,16 @@ var GL = require('../global');
 exports.loadCSV = function(filePath, callback){
   fs.readFile(filePath, 'utf-8', function (err, data) {
     if (err) {
-      callback("err");
+      callback("err", err);
     } else {
       parse(data, function(err, output){
-        callback(output);
+        if (err) {
+          callback('err', message);
+        }
+
+        //TODO: add additional validation on csv
+        var res = JSON.parse(JSON.stringify(output).replace(/\\/g,''));
+        callback(res);
       });
     }
   });
@@ -258,9 +264,9 @@ exports.setImgProperty = function(data, collection, callback){
 //set csv files
 exports.setCSV = function(filePath, collection, callback){
   var that = this;
-  that.loadCSV(filePath, function(o){
+  that.loadCSV(filePath, function(o, message){
     if(o == "err"){
-      callback("err");
+      callback("err", message);
     }else{
       var data = o;
       that.setImgProperty(data, collection, function(e){

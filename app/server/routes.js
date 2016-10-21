@@ -270,7 +270,6 @@ module.exports = function(app) {
 			if (e){
 				res.status(400).send(e);
 			}	else{
-				console.log(req.body);
 				//Set the default collection for new survey
 				var defaultCol = 1;
 				req.body.name = req.body.name.replace(/[^\w]/gi, '_');

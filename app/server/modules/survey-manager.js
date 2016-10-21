@@ -145,9 +145,9 @@ exports.changeCollection = function(files, user, collection, callback){
 	//modify and save the csv file
 	var data;
 	if(!collection.name) collection = JSON.parse(collection);
-	loader.setCSV(filePath, collection, function(o){
+	loader.setCSV(filePath, collection, function(o, message){
 		if(o == "err"){
-			callback("Unable to read file");
+			callback(message);
 		}else{
 			data = o;
 			imgIndex = data[0].indexOf('#img');
