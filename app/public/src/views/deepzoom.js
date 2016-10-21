@@ -107,7 +107,7 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
 
                 var img = new Image();
 		img.src = that._sprite_sheet_url[level];
-		
+
             }
             that._cb(that._dzc);
 
@@ -138,8 +138,9 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
         that._collageMaxLevel = $(collection).attr('MaxLevel');
         var overlap = $(collection).attr('ItemOverlap');
         that._collageItemOverlap =
-        ( ( overlap != undefined ) &&
-        ( overlap != null ) ) ? overlap : 1;
+              ( ( overlap != undefined ) &&
+		( overlap != null ) ) ? overlap : 1;
+	that._tileSize -= 2 * that._collageItemOverlap;
         var image_src = $(collection).attr('ImageSrc');
         if ( ( image_src != undefined ) &&
         ( image_src != null ) )
@@ -148,7 +149,7 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
         var items = $(xml).find("I");
           if (items.length == 0) {
               $('.pv-loading').remove();
-	      
+
               //Throw an alert so the user knows something is wrong
               var msg = 'No items in the DeepZoom Collection<br><br>';
               msg += 'URL        : ' + this.url + '<br>';
@@ -324,30 +325,30 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
 	      try {
 
 		  var sheet = this._sprite_sheet[level];
-		  
+
 		  var index = this._sprite_index[id];
-		  
+
 		  var params = index.params[level];
 		  var tile_size = 1 << level;
-		  
+
 		  var x_tile_loc = tile_size * index.x;
 		  var y_tile_loc = tile_size * index.y;
-		  
+
 		  var tile_width = params.width;
 		  var tile_height = params.height;
-		  
+
 		  rv = function(context, x, y, w, h) {
-		      
+
                       var wscale = w / tile_width;
                       var hscale = h / tile_height;
                       var scale = (wscale < hscale) ? wscale : hscale;
-		      
+
                       var rendered_width = Math.floor(tile_width * scale);
                       var rendered_height = Math.floor(tile_height * scale);
-		      
+
                       var x_slop = Math.floor((w - rendered_width) / 2);
                       var y_slop = Math.floor((h - rendered_height) / 2);
-		      
+
                       context.drawImage(sheet,
 					x_tile_loc,
 					y_tile_loc,
@@ -355,13 +356,13 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
 					tile_height,
 					x + x_slop, y + y_slop,
 					rendered_width, rendered_height);
-		      
+
 		  }
 
 	      } catch ( e ) {
 
 		  $('.pv-loading').remove();
-		  
+
 		  //Throw an alert so the user knows something is wrong
 		  var msg = 'Error in DeepZoom Collection<br><br>';
 		  msg += "Unable to find id '" + id + "'<br>";
@@ -412,13 +413,13 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
   getOverlap: function (id) {return this._collageItemOverlap;},
     getRatio: function (id) {
 	try {
-	    
+
 	    return this._itemsById[id].Ratio;
 
 	} catch ( e ) {
 
 	    $('.pv-loading').remove();
-	    
+
 	    //Throw an alert so the user knows something is wrong
 	    var msg = 'Missing image in DeepZoom Collection<br><br>';
 	    msg += "Can't find '" + id + "'</br>";
@@ -428,7 +429,7 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
 	    return;
 
 	}
-	    
+
   }
 });
 
@@ -460,7 +461,8 @@ PivotViewer.Views.ImageLevel = Object.subClass({
     var that = this;
     for (var i = 0; i < images.length; i++) {
       var img = new Image();
-      img.src = images[i];
+	img.src = images[i];
+	console.debug( "load image " + img.src );
       img.onload = function () {
         that._loaded = true;
       };
