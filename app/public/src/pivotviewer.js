@@ -765,16 +765,43 @@ var graphPara = {};
     //Sorts the facet values based on a specific sort type
     PV._sortStringValues = function (facetName) {
         if (PivotCollection.getCategoryByName(facetName).type == PivotViewer.Models.FacetType.DateTime) return;
+        var facetList = $("#pv-cat-" + PivotViewer.Utils.escapeMetaChars(PV.cleanName(facetName)) + " .pv-filterpanel-accordion-facet-list");
+        var sortType = facetList.prev().text().replace("Sort: ", "");
+
+        if (sortType == "A-Z") {
+            _listObj[PV.cleanName(facetName)].sort('pv-facet-value-label', { order: "asc" });
+        }
+        else if (sortType == "Quantity") {
+            _listObj[PV.cleanName(facetName)].sort('pv-facet-value-count', { order: "des" });
+        }
+        else {
+          //TODO: edit customSort
+            var category = PivotCollection.getCategoryByName(facetName);
+            if (category.customSort != undefined) {
+                var sortList = [];
+                for (var i = category.customSort.sortValues.length - 1; i >= 0; i--) {
+                    for (var j = 0; j < items.length; j++) {
+                        if (facet.customSort.sortValues[i] == $(items[j]).children(".pv-facet-value-label").text())
+                            sortList.push(items[j]);
+                    }
+                }
+                items = sortList;
+            }
+        }
+        /*
         //get facets
         var facetList = $("#pv-cat-" + PivotViewer.Utils.escapeMetaChars(PV.cleanName(facetName)) + " .pv-filterpanel-accordion-facet-list");
         var sortType = facetList.prev().text().replace("Sort: ", "");
         var items = facetList.children("li").get();
+        //console.log(_listObj[PV.cleanName(facetName)].list.children("li").get());
+        console.log(items);
         if (sortType == "A-Z") {
             items.sort(function (a, b) {
                 var compA = $(a).children().first().attr("itemvalue");
                 var compB = $(b).children().first().attr("itemvalue");
                 return (compA < compB) ? 1 : (compA > compB) ? -1 : 0;
             });
+            //_listObj[facetName].sort()
         }
         else if (sortType == "Quantity") {
             items.sort(function (a, b) {
@@ -798,7 +825,7 @@ var graphPara = {};
         }
         for (var i = 0; i < items.length; i++) {
             facetList.prepend(items[i]);
-        }
+        }*/
     };
 
     // Filters the collection of items and updates the views
@@ -1412,10 +1439,10 @@ var graphPara = {};
 
 
                 var options = {
-                  valueNames: [ 'pv-filterpanel-accordion-facet-list-item'],
+                  valueNames: [ 'pv-facet-value-label', 'pv-facet-value-count'],
                   page: 10,
                   plugins: [
-                    ListPagination({})
+                    ListPagination({outerWindow: 1})
                   ]
                 };
 

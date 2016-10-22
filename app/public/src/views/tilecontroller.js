@@ -141,7 +141,7 @@ PivotViewer.Views.TileController = Object.subClass({
 
                         // if now and end are numbers when we get here
                         // then the animation has finished
-			this._breaks = true;
+			// this._breaks = true;
 
                     }
 
