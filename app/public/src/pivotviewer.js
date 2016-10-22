@@ -68,7 +68,7 @@ var graphPara = {};
         _enabledView = [],
         _options = {},
         _rEnable = false
-        _listObj = null;
+        _listObj = {};
 
     if(_options.authoring == true){
       PARA.y_axis = null;
@@ -1292,16 +1292,6 @@ var graphPara = {};
                     else $(this).text("Sort: A-Z");
                     PV._sortStringValues(facetName);
                 });
-
-                var options = {
-                  valueNames: [ 'pv-filterpanel-accordion-facet-list-item'],
-                  page: 10,
-                  plugins: [
-                    ListPagination({})
-                  ]
-                };
-
-                var listObj = new List("pv-cat-" + PV.cleanName(category.name), options);
             }
             else if (category.isNumber()) {
                 for (var i = 0; i < PivotCollection.items.length; i++) {
@@ -1356,9 +1346,8 @@ var graphPara = {};
     // Filters the facet panel items and updates the counts
     PV._filterCategory = function (name) {
         var category = PivotCollection.getCategoryByName(_nameMapping[name.attr("facet")]);
-
-        if (!category.isFilterVisible || !category.recount) return;
-
+        //if (!category.isFilterVisible || !category.recount) return;
+        if (!category.isFilterVisible) return;
         if (!category.uiInit) PV.initUICategory(category);
 
         LoadSem.acquire(function (release) {
@@ -1419,6 +1408,36 @@ var graphPara = {};
                             item.itemCount.text(count);
                         }
                     }
+                }
+
+
+                var options = {
+                  valueNames: [ 'pv-filterpanel-accordion-facet-list-item'],
+                  page: 10,
+                  plugins: [
+                    ListPagination({})
+                  ]
+                };
+
+                if(!_listObj[PV.cleanName(category.name)]){
+                  _listObj[PV.cleanName(category.name)] = new List("pv-cat-" + PV.cleanName(category.name), options);
+                }
+
+                var count = 0;
+
+                _listObj[PV.cleanName(category.name)].filter(function(item) {
+                  if ($(item.elm).css('display') == 'none') {
+                    return false;
+                  } else {
+                    count++;
+                    return true;
+                  }
+                });;
+
+                if(count <= 10) {
+                  $('.pagination').hide();
+                } else{
+                  $('.pagination').show();
                 }
                 //PV._sortStringValues(category.name);
             }
