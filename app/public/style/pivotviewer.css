@@ -315,3 +315,13 @@ a .ui-slider-handle .ui-state-default, .ui-widget-content .ui-state-default, .ui
 .ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current {
 	float: left;
 }
+
+.pagination li {
+	margin-top: 15px;
+  display:inline-block;
+  padding:5px;
+}
+
+.pagination{
+  padding:0px;
+}

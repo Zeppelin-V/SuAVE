@@ -67,7 +67,8 @@ var graphPara = {};
         _nameMapping = [],
         _enabledView = [],
         _options = {},
-        _rEnable = false;
+        _rEnable = false
+        _listObj = null;
 
     if(_options.authoring == true){
       PARA.y_axis = null;
@@ -229,7 +230,7 @@ var graphPara = {};
     };
 
     PV._createStringFilters = function (facetName) {
-        var facetControls = ["<ul class='pv-filterpanel-accordion-facet-list'>"];
+        var facetControls = ["<ul class='pv-filterpanel-accordion-facet-list list'>"];
         var values = _itemTotals[facetName];
         var i = 1;
         for (var value in values.values) {
@@ -241,7 +242,8 @@ var graphPara = {};
             facetControls[i++] += "</li>";
         }
         facetControls[facetControls.length] = "</ul>";
-        return facetControls.join('');
+
+        return facetControls.join('')+'<ul class="pagination"></ul>';
     };
 
     PV._refreshSliderWidget = function (category, values, histogramFn) {
@@ -764,7 +766,7 @@ var graphPara = {};
     PV._sortStringValues = function (facetName) {
         if (PivotCollection.getCategoryByName(facetName).type == PivotViewer.Models.FacetType.DateTime) return;
         //get facets
-        var facetList = $("#pv-cat-" + PivotViewer.Utils.escapeMetaChars(PV.cleanName(facetName)) + " ul");
+        var facetList = $("#pv-cat-" + PivotViewer.Utils.escapeMetaChars(PV.cleanName(facetName)) + " .pv-filterpanel-accordion-facet-list");
         var sortType = facetList.prev().text().replace("Sort: ", "");
         var items = facetList.children("li").get();
         if (sortType == "A-Z") {
@@ -1290,6 +1292,16 @@ var graphPara = {};
                     else $(this).text("Sort: A-Z");
                     PV._sortStringValues(facetName);
                 });
+
+                var options = {
+                  valueNames: [ 'pv-filterpanel-accordion-facet-list-item'],
+                  page: 10,
+                  plugins: [
+                    ListPagination({})
+                  ]
+                };
+
+                var listObj = new List("pv-cat-" + PV.cleanName(category.name), options);
             }
             else if (category.isNumber()) {
                 for (var i = 0; i < PivotCollection.items.length; i++) {
