@@ -772,7 +772,7 @@ var graphPara = {};
             _listObj[PV.cleanName(facetName)].sort('pv-facet-value-label', { order: "asc" });
         }
         else if (sortType == "Quantity") {
-            _listObj[PV.cleanName(facetName)].sort('pv-facet-value-count', { order: "des" });
+            _listObj[PV.cleanName(facetName)].sort('pv-facet-value-count', { order: "asc" });
         }
         else {
           //TODO: edit customSort
