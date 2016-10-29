@@ -51,7 +51,9 @@ function GalleryController()
 	$(document).on('click', '.file-source', function() {
 
 		var id = $(this).attr("id");
-		var survey = surveys[id.slice(-1)];
+		var index = id.split('-').pop();
+    var survey = surveys[index];
+
 
 		window.open("/getSurveys/"+survey.user+"_"+survey.name+".csv", "_blank");
 

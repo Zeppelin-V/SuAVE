@@ -355,8 +355,13 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
     var flattend = _.flatten(_.pluck(facet.values, 'value'));
     for (var v = 0; v < flattend.length; v++) {
         var value2 = flattend[v];
-        label = labelFn(facet.values[0]);
         value = value2;;
+        for(va in facet.values){
+          if ((facet.values[va].label).indexOf(value) != -1){
+            label = facet.values[va].label;
+            break;
+          }
+        }
         var bkt;
         bkt = new PivotViewer.Models.Bucket(value, label);
         bkt.addTile(tile);
@@ -381,7 +386,12 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
                 }
             }
             if (!bkt) {
-                label = labelFn(facet.values[0]);
+                for(va in facet.values){
+                  if ((facet.values[va].label).indexOf(value) != -1){
+                    label = facet.values[va].label;
+                    break;
+                  }
+                }
                 bkt = new PivotViewer.Models.Bucket(value, label);
                 bkts.push(bkt);
             }
@@ -390,7 +400,6 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
             bkt.addValue(value);
         }
     }
-
     //Condense buckets
     if (bkts.length > 10) {
         var size = Math.ceil(bkts.length / 10), newBkts = [];
@@ -441,7 +450,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
             bkts.ids[filterList[i].item.id] = b;
         }
     }
-    console.log(bkts);
+
     return bkts;
 }
 

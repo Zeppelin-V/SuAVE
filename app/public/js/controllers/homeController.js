@@ -625,8 +625,8 @@ $(document).on('click', '#select-tags-submit',  function(){
 
 	$(document).on('click', '.toggle', function() {
 		var id = $(this).attr("id");
-		var survey = surveys[id.slice(-1)];
-
+		var index = id.split('-').pop();
+    var survey = surveys[index];
 		$.ajax({
 			url: "/hideSurveyByNameID",
 			type: "POST",
@@ -643,7 +643,8 @@ $(document).on('click', '#select-tags-submit',  function(){
 	$(document).on('click', '.file-source', function() {
 
 		var id = $(this).attr("id");
-		var survey = surveys[id.slice(-1)];
+		var index = id.split('-').pop();
+    var survey = surveys[index];
 
 		window.open("/getSurveys/"+survey.user+"_"+survey.name+".csv", "_blank");
 
@@ -651,7 +652,8 @@ $(document).on('click', '#select-tags-submit',  function(){
 
 	$(document).on('click', '.view-button', function() {
 		var id = $(this).attr("id");
-		var survey = surveys[id.slice(-1)];
+		var index = id.split('-').pop();
+    var survey = surveys[index];
 		var view = id.substring(0, id.length-2);
 
 		if(view == survey.view) return;
