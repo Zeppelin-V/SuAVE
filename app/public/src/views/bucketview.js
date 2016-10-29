@@ -340,7 +340,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
             if (this.bigCount < bkt.tiles.length) this.bigCount = bkt.tiles.length;
         }
         $(".pv-viewpanel-view").append(
-        '<div class="modal fade" id="ruleModal" role="dialog" style="z-index:100000;"><div class="modal-dialog" id="rule-modal"><div class="modal-content"><div class="modal-header">'+
+        '<div class="modal fade" id="ruleModal"><div class="modal-dialog" id="rule-modal"><div class="modal-content"><div class="modal-header">'+
         '<h4 class="modal-title">Rule Table</h4></div>'+
         '<div class="modal-body" ><code><pre id="pv-rule-result" style="position: relative; \
         ">'+
@@ -353,7 +353,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
         '<tr id="explain_values"><td id="explain" class="rules" style="white-space:normal;"></td><td id="total_ax" class="rules" style="white-space:normal;">'+
         '</td><td id="total_a_items" class="rules" style="white-space:normal;"></td><td id="total_acc" class="rules" style="white-space:normal;"></td><td id="total_cpl" class="rules" style="white-space:normal;"></td>'+
         '</tr></table></div><div class="table-responsive" ><table class="table" ><tr ><td id="accum_explain"></td></tr></table></div>'+
-        '</pre></code></div><div class="modal-footer"><button type="button" class="btn btn-default" id="new-page">Open in new window</button><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div></div></div></div>');
+        '</pre></code></div><div class="modal-footer"><button type="button" class="btn btn-default" id="new-page">Open in new window</button><button id="close-rule" type="button" class="btn btn-default" data-dismiss="modal">Close</button></div></div></div></div>');
         $(".pv-viewpanel-view").append("<div class='pv-bucketview-overlay'></div>");
         $('.pv-bucketview-overlay').css('left', this.offsetX + 'px').append(uiElements);
         $('.pv-bucketview-overlay div').fadeIn('slow');

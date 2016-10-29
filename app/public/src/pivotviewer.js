@@ -67,7 +67,7 @@ var graphPara = {};
         _nameMapping = [],
         _enabledView = [],
         _options = {},
-        _rEnable = false
+        _rEnable = false,
         _listObj = {};
 
     if(_options.authoring == true){
@@ -767,12 +767,11 @@ var graphPara = {};
         if (PivotCollection.getCategoryByName(facetName).type == PivotViewer.Models.FacetType.DateTime) return;
         var facetList = $("#pv-cat-" + PivotViewer.Utils.escapeMetaChars(PV.cleanName(facetName)) + " .pv-filterpanel-accordion-facet-list");
         var sortType = facetList.prev().text().replace("Sort: ", "");
-
         if (sortType == "A-Z") {
             _listObj[PV.cleanName(facetName)].sort('pv-facet-value-label', { order: "asc" });
         }
         else if (sortType == "Quantity") {
-            _listObj[PV.cleanName(facetName)].sort('pv-facet-value-count', { order: "asc" });
+            _listObj[PV.cleanName(facetName)].sort('pv-facet-value-count', { order: "desc" });
         }
         else {
           //TODO: edit customSort
@@ -1386,7 +1385,6 @@ var graphPara = {};
                 }
             }
 
-
             if (category.isString() || category.isLocation()) {
                 var filterList = [];
 
@@ -1438,6 +1436,7 @@ var graphPara = {};
                 }
 
 
+
                 var options = {
                   valueNames: [ 'pv-facet-value-label', 'pv-facet-value-count'],
                   page: 10,
@@ -1450,6 +1449,16 @@ var graphPara = {};
                   _listObj[PV.cleanName(category.name)] = new List("pv-cat-" + PV.cleanName(category.name), options);
                 }
 
+                //handle filter count change
+                if(category.recount){
+                  var size = _listObj[PV.cleanName(category.name)].size();
+                  var listPage = _listObj[PV.cleanName(category.name)];
+                  listPage.page = size;
+                  listPage.update();
+                  listPage.reIndex();
+                  listPage.page = 10;
+                  listPage.update();
+                }
                 var count = 0;
 
                 _listObj[PV.cleanName(category.name)].filter(function(item) {
@@ -2456,6 +2465,12 @@ var graphPara = {};
           if($('.pv-canvas').width() != _self.width() ||
             $('.pv-mainpanel').height() != ($(window).height() - $('.pv-toolbarpanel').height() - 30)){
             delay(function(){
+              //hanlde old bootstrap issue with modal
+              if($('#ruleModal').hasClass('in')){
+                $('.modal-backdrop').remove();
+              }
+
+
               var mainPanelHeight = $(window).height() - $('.pv-toolbarpanel').height() - 30;
 
               //adjust mainPanel

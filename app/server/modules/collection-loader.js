@@ -21,7 +21,7 @@ exports.loadCSV = function(filePath, callback){
         }
 
         //TODO: add additional validation on csv
-        var res = JSON.parse(JSON.stringify(output).replace(/\\/g,''));
+        //var res = JSON.parse(JSON.stringify(output).replace(/\\/g,''));
         callback(output);
       });
     }
