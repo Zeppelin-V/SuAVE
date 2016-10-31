@@ -1155,6 +1155,7 @@ var graphPara = {};
 	        for (var i = activeCat.index + 1; i < PivotCollection.categories.length; i++) PivotCollection.categories[i].recount = true;
 	    }
 	    else {
+        console.log("called here");
 	        for (var i = 0; i < PivotCollection.categories.length; i++) PivotCollection.categories[i].recount = true;
 
 	        //Filter the facet counts and remove empty facets
@@ -1280,19 +1281,45 @@ var graphPara = {};
                 }
                 $("#pv-value-search-" + PV.cleanName(category.name)).on('keyup', function (e) {
                     var clean = PV.cleanName(category.name), input = PV.cleanName(this.value.toLowerCase());
+                    var count = 0;
+                    var listPage = _listObj[PV.cleanName(category.name)];
                     if (input != "") {
+                        /*
                         var search = [];
                         search = $('.pv-filterpanel-accordion-facet-list-item[id^="pv-facet-value-' + clean + '"]');
                         search.hide();
                         search.filter(function () {
                           return $(this).children().eq(0).attr('itemvalue').toLowerCase().indexOf(input) >= 0 && $(this).children().eq(2).html() > 0;
-                        }).show();
+                        }).show();*/
                         $("#pv-value-search-clear-" + clean).css("visibility", "visible");
+
+                        listPage.filter(function(item) {
+                          var exist = $(item.elm).children().eq(0).attr('itemvalue').toLowerCase().indexOf(input) >= 0 && $(item.elm).children().eq(2).html() > 0;
+                          if(exist){
+                            count ++;
+                            return true;
+                          }else{
+                            return false
+                          }
+                        });
                     }
                     else {
-                        $('.pv-filterpanel-accordion-facet-list-item[id^="pv-facet-value-' + clean + '"]').show();
+                        //$('.pv-filterpanel-accordion-facet-list-item[id^="pv-facet-value-' + clean + '"]').show();
                         $("#pv-value-search-clear-" + clean).css("visibility", "hidden");
+                        listPage.filter(function(item) {
+                          count ++;
+                          return true;
+                        });
                     }
+
+                    if(count <= 10) {
+                      $('.pagination').hide();
+                    } else{
+                      $('.pagination').show();
+                    }
+
+
+
                 });
 
                 $("#pv-value-search-clear-" + PV.cleanName(category.name)).click(function (e) {
@@ -1375,7 +1402,6 @@ var graphPara = {};
         //if (!category.isFilterVisible || !category.recount) return;
         if (!category.isFilterVisible) return;
         if (!category.uiInit) PV.initUICategory(category);
-
         LoadSem.acquire(function (release) {
             var checkList = [];
             if (_filterList.length * 2 < _tiles.length) checkList = _filterList;
@@ -1404,6 +1430,8 @@ var graphPara = {};
                         else filterList[item] = { count: 1 };
                     }
                 }
+
+
 
                 if (checkList == _filterList) {
                     var values = _itemTotals[category.name].values;
@@ -1451,16 +1479,17 @@ var graphPara = {};
 
                 //handle filter count change
                 if(category.recount){
-                  var size = _listObj[PV.cleanName(category.name)].size();
                   var listPage = _listObj[PV.cleanName(category.name)];
+                  var size = listPage.size();
                   listPage.page = size;
                   listPage.update();
                   listPage.reIndex();
                   listPage.page = 10;
                   listPage.update();
                 }
-                var count = 0;
 
+                var count = 0;
+                //console.log(_listObj[PV.cleanName(category.name)].items);
                 _listObj[PV.cleanName(category.name)].filter(function(item) {
                   if ($(item.elm).css('display') == 'none') {
                     return false;
@@ -1770,6 +1799,7 @@ var graphPara = {};
                     _longstringFilters = null;
                     PV.filterCollection();
                 }
+                console.log("called");
             });
             $("#pv-long-search-cat").on("mousedown", function (e) {
                 if ($(this).attr("dirty") == 1) {
@@ -2190,7 +2220,6 @@ var graphPara = {};
                       return PV.cleanName($(this).children().eq(0).attr('itemvalue').toLowerCase()).indexOf(input) >= 0 && $(this).children().eq(2).html() > 0;
                     });
                     search.show();
-
                 }
             }
             else $('.pv-filterpanel-accordion-facet-list-item').show();
