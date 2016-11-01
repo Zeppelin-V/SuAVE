@@ -1155,11 +1155,9 @@ var graphPara = {};
 	        for (var i = activeCat.index + 1; i < PivotCollection.categories.length; i++) PivotCollection.categories[i].recount = true;
 	    }
 	    else {
-        console.log("called here");
 	        for (var i = 0; i < PivotCollection.categories.length; i++) PivotCollection.categories[i].recount = true;
 
 	        //Filter the facet counts and remove empty facets
-
 	        PV._filterCategory($(".pv-facet").eq($(".pv-filterpanel-accordion").accordion("option", "active")));
 
 	    }
@@ -1431,14 +1429,14 @@ var graphPara = {};
                     }
                 }
 
-
-
                 if (checkList == _filterList) {
                     var values = _itemTotals[category.name].values;
                     for (var value in values) {
                         var item = values[value];
                         if (filterList[item.id] == undefined) {
-                            if (!_selectedFilters[category.name]) item.valueItem.hide();
+                            if (!_selectedFilters[category.name]) {
+                              item.valueItem.hide();
+                            } 
                         }
                         else {
                             item.valueItem.show();
@@ -1461,9 +1459,8 @@ var graphPara = {};
                             item.itemCount.text(count);
                         }
                     }
+
                 }
-
-
 
                 var options = {
                   valueNames: [ 'pv-facet-value-label', 'pv-facet-value-count'],
@@ -1479,17 +1476,25 @@ var graphPara = {};
 
                 //handle filter count change
                 if(category.recount){
+                  /*
                   var listPage = _listObj[PV.cleanName(category.name)];
                   var size = listPage.size();
                   listPage.page = size;
                   listPage.update();
-                  listPage.reIndex();
+                  //listPage.reIndex();
                   listPage.page = 10;
-                  listPage.update();
+                  listPage.update();*/
+
+                  for (var i = 0; i < _listObj[PV.cleanName(category.name)].items.length; i++){
+                    var item = _listObj[PV.cleanName(category.name)].items[i];
+                    var value = item._values['pv-facet-value-label'];
+                    item._values['pv-facet-value-count'] = $(item.elm.lastChild).text();
+                  }
+                  //_listObj[PV.cleanName(category.name)].update();
                 }
 
                 var count = 0;
-                //console.log(_listObj[PV.cleanName(category.name)].items);
+
                 _listObj[PV.cleanName(category.name)].filter(function(item) {
                   if ($(item.elm).css('display') == 'none') {
                     return false;
@@ -1799,7 +1804,6 @@ var graphPara = {};
                     _longstringFilters = null;
                     PV.filterCollection();
                 }
-                console.log("called");
             });
             $("#pv-long-search-cat").on("mousedown", function (e) {
                 if ($(this).attr("dirty") == 1) {
