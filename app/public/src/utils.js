@@ -366,7 +366,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
           } else if (category1.isDateTime()) {
             temp = moment(temp, moment.parseFormat(temp))._d.toString();
           }
-          temp = labelFn(temp);
+
           if (temp.indexOf(value) != -1){
             label = facet.values[va].label;
             break;
@@ -403,8 +403,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
                     temp = parseFloat(facet.values[va].label.replace(/,/g, "").match(/(?:-?\d+\.?\d*)|(?:-?\d*\.?\d+)/)[0]);
                   } else if (category1.isDateTime()) {
                     temp = moment(temp, moment.parseFormat(temp))._d.toString();
-                  }
-                  temp = labelFn(temp);
+                  };
                   if (temp.indexOf(value) != -1){
                     label = facet.values[va].label;
                     break;
