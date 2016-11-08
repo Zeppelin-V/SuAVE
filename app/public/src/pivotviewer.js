@@ -1436,7 +1436,7 @@ var graphPara = {};
                         if (filterList[item.id] == undefined) {
                             if (!_selectedFilters[category.name]) {
                               item.valueItem.hide();
-                            } 
+                            }
                         }
                         else {
                             item.valueItem.show();
@@ -2164,7 +2164,16 @@ var graphPara = {};
                 checked.prop('checked', false);
                 for (var i = 0; i < checked.length; i++) PV._hideCustomDateRange($(checked[i]).attr('itemfacet'));
             }
-            else if (facetType == "String") $(this).parent().next().find('.pv-facet-value:checked').prop("checked", false);
+            else if (facetType == "String") {
+              var name = $(this).parent().attr('aria-controls').substring(7);
+              var listPage = _listObj[name];
+              var size = listPage.size();
+              listPage.page = size;
+              listPage.update();
+              $(this).parent().next().find('.pv-facet-value:checked').prop("checked", false);
+              listPage.page = 10;
+              listPage.update();
+            }
             else if (facetType == "Number" || facetType == "Ordinal") {
                 //reset range
                 var slider = $(this).parent().next().find('.pv-facet-numericslider');
