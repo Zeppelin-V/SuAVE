@@ -7,8 +7,8 @@
     <TileParams height="5" level="3" width="5"/>
     <TileParams height="10" level="4" width="10"/>
     <TileParams height="19" level="5" width="19"/>
-    <TileParams height="38" level="6" width="38"/>
     <TileParams height="75" level="7" width="75"/>
+    <TileParams height="38" level="6" width="38"/>
   </Tile>
   <SpriteSheet index="0" sprite="sprite_0.png"/>
   <SpriteSheet index="1" sprite="sprite_1.png"/>

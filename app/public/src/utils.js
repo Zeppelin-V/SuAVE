@@ -348,16 +348,26 @@ PivotViewer.Utils.fillBuckets = function (bkts, filterList, category, valueFn) {
 
 PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn) {
     if (valueFn == undefined) valueFn = function (value) { return value.value; }
-    if (labelFn == undefined) labelFn = function (value) { return value.label.toString();}
+    if (labelFn == undefined) labelFn = function (value) { return value.toString();}
 
+    var category1 = PivotCollection.getCategoryByName(category);
     var bkts = [], value1 = filterList[0].item.getFacetByName(category).values[0], value = valueFn(value1);
     var tile = filterList[0], facet = tile.item.getFacetByName(category);
     var flattend = _.flatten(_.pluck(facet.values, 'value'));
     for (var v = 0; v < flattend.length; v++) {
         var value2 = flattend[v];
-        value = value2;;
+        value = value2;
+        var label = value;
+        //check if a bucket is already initialized, especially for #multi
         for(va in facet.values){
-          if ((facet.values[va].label).indexOf(value) != -1){
+          var temp = facet.values[va].label;
+          if (category1.isNumber() || category1.isOrdinal()){
+            temp = parseFloat(facet.values[va].label.replace(/,/g, "").match(/(?:-?\d+\.?\d*)|(?:-?\d*\.?\d+)/)[0]);
+          } else if (category1.isDateTime()) {
+            temp = moment.parseFormat(facet.values[va].label)._d.toString();
+          }
+          temp = labelFn(temp);
+          if (temp.indexOf(value) != -1){
             label = facet.values[va].label;
             break;
           }
@@ -386,8 +396,16 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
                 }
             }
             if (!bkt) {
+                //check if a bucket is already initialized, especially for #multi
                 for(va in facet.values){
-                  if ((facet.values[va].label).indexOf(value) != -1){
+                  var temp = facet.values[va].label;
+                  if (category1.isNumber() || category1.isOrdinal()){
+                    temp = parseFloat(facet.values[va].label.replace(/,/g, "").match(/(?:-?\d+\.?\d*)|(?:-?\d*\.?\d+)/)[0]);
+                  } else if (category1.isDateTime()) {
+                    temp = moment.parseFormat(facet.values[va].label)._d.toString();
+                  }
+                  temp = labelFn(temp);
+                  if (temp.indexOf(value) != -1){
                     label = facet.values[va].label;
                     break;
                   }
