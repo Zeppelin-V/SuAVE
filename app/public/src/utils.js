@@ -362,9 +362,9 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
         for(va in facet.values){
           var temp = facet.values[va].label;
           if (category1.isNumber() || category1.isOrdinal()){
-            temp = parseFloat(facet.values[va].label.replace(/,/g, "").match(/(?:-?\d+\.?\d*)|(?:-?\d*\.?\d+)/)[0]);
+            temp = parseFloat(temp.replace(/,/g, "").match(/(?:-?\d+\.?\d*)|(?:-?\d*\.?\d+)/)[0]);
           } else if (category1.isDateTime()) {
-            temp = moment.parseFormat(facet.values[va].label)._d.toString();
+            temp = moment(temp, moment.parseFormat(temp))._d.toString();
           }
           temp = labelFn(temp);
           if (temp.indexOf(value) != -1){
@@ -402,7 +402,7 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
                   if (category1.isNumber() || category1.isOrdinal()){
                     temp = parseFloat(facet.values[va].label.replace(/,/g, "").match(/(?:-?\d+\.?\d*)|(?:-?\d*\.?\d+)/)[0]);
                   } else if (category1.isDateTime()) {
-                    temp = moment.parseFormat(facet.values[va].label)._d.toString();
+                    temp = moment(temp, moment.parseFormat(temp))._d.toString();
                   }
                   temp = labelFn(temp);
                   if (temp.indexOf(value) != -1){
