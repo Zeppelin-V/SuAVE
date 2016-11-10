@@ -363,6 +363,9 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
           var temp = facet.values[va].label;
           if (category1.isNumber() || category1.isOrdinal()){
             temp = parseFloat(temp.replace(/,/g, "").match(/(?:-?\d+\.?\d*)|(?:-?\d*\.?\d+)/)[0]);
+            if (Number.isInteger(temp)) {
+              temp = labelFn(temp);
+            }
           } else if (category1.isDateTime()) {
             temp = moment(temp, moment.parseFormat(temp))._d.toString();
           }
@@ -401,6 +404,9 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
                   var temp = facet.values[va].label;
                   if (category1.isNumber() || category1.isOrdinal()){
                     temp = parseFloat(facet.values[va].label.replace(/,/g, "").match(/(?:-?\d+\.?\d*)|(?:-?\d*\.?\d+)/)[0]);
+                    if (Number.isInteger(temp)) {
+                      temp = labelFn(temp);
+                    }
                   } else if (category1.isDateTime()) {
                     temp = moment(temp, moment.parseFormat(temp))._d.toString();
                   };
