@@ -102,6 +102,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
 
             }
             else {
+                if (bucket instanceof Array) bucket = bucket[0];
                 tile.marker.setIcon(that.iconsSelected[bucket]);
                 tile.marker.setZIndex(1000000000);
                 that.selected = tile;
@@ -377,7 +378,6 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         //Got rid of multiple values for now
     },
     filter: function () {
-      console.log("debug filterer");
         var that = this;
         var g = 0;  //keeps track of the no. of geocode locations;
 
@@ -419,7 +419,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         var category, category1 = null, category2 = null;
         for (var i = 0; i < PivotCollection.categories.length; i++) {
             var category = PivotCollection.categories[i], name = category.name.toLowerCase();
-            console.log(category);
+            //console.log(category);
             if (category.isLocation()) {
                 if (category.uiInit == false) PV.initUICategory(category);
                 break;
@@ -641,7 +641,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         return geocodeCallBack;
     },
     geocode: function (locName, callbackFunction) {
-      console.log(locName);
+      //console.log(locName);
       var that = this;
       var nominatimUrl = "http://www.datasciencetoolkit.org/maps/api/geocode/json?sensor=false&address=" + encodeURIComponent(locName);
       $.ajax({
