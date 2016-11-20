@@ -973,17 +973,18 @@ $(document).on('click', '#select-tags-submit',  function(){
 			'<li><a href="#tab3-'+i+'" data-toggle="tab">Edit</a></li> '+
 			'</ul></div> </div><!--/.panel--> </div>');
 
-			var dateString = surveys[i].date;
+			var date = new Date(surveys[i].date);
 
 			$('#tab1-'+i).append('<div class="row survey-title"> '+
 			'<div class="col-xs-6"><div class="icon-img">'+
 			'<button id="survey-'+i+'" type="button" class="btn btn-primary btn-circle surveys-click" style="width:100%;"> show</button> </div></div>'+
-			'<div class="col-xs-6 survey-info"><h4 style="text-align:center;">'+surveys[i].fullname+'</h4>'+
+			'<div class="col-xs-6 survey-info"><h4 style="text-align:center;" class="truncate">'+surveys[i].fullname+'</h4>'+
 			'<p style="text-align:center;">Created from: </p>'+
 			'<a id="source-'+i+'" class="file-source truncate" style="text-align:center;display:block;">'+surveys[i].originalname+'</a>'+
-			'<p style="text-align:center;">'+ dateString+'</p>'+
+			'<p style="text-align:center;">'+ date.toLocaleString() +'</p>'+
 			'</div>'+
 			' </div>');
+
 			var views = surveys[i].views.toString();
 			if(views[0] == '1') $('#tab2-'+i).append(
 				'<div class="col-xs-6 col-lg-4" ><input type="radio" name="radio-'+i+'" id="grid-button-'+i+'" class="radio"/>'+
