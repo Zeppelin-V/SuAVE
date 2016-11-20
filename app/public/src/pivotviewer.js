@@ -2524,7 +2524,6 @@ var graphPara = {};
                 $('.modal-backdrop').remove();
               }
 
-
               var mainPanelHeight = $(window).height() - $('.pv-toolbarpanel').height() - 30;
 
               //adjust mainPanel
@@ -2546,6 +2545,14 @@ var graphPara = {};
               $("#pv-long-search-box").height() + "px");
 
               $(".pv-filterpanel-accordion").accordion({ icons: false});
+
+
+              //adjust altinfopanel
+              var altinfoPanel = $('.pv-altinfopanel');
+              if (altinfoPanel) {
+                  filterPanel.css('height', mainPanelHeight - 13 + 'px');
+                  $('.pv-altinfopanel').css('left', (($('.pv-mainpanel').offset().left + $('.pv-mainpanel').width()) - 205) + 'px').css('height', $(window).height() - $('.pv-toolbarpanel').height() - 58 + 'px');
+              }
 
               //$('.pv-filterpanel').css('height', $(window).height() - $('.pv-toolbarpanel').height() - 30-13 + 'px');
 
@@ -2584,9 +2591,19 @@ var graphPara = {};
     PV.presetStrFilters = function(para, i){
       setTimeout(function(){
         $(".pv-facet[aria-controls='pv-cat-" + PV.cleanName(para.string_filters[i]["facet"])+"']").trigger('click');
+
+        var listPage = _listObj[para.string_filters[i]["facet"]];
+        var size = listPage.size();
+        listPage.page = size;
+        listPage.update();
+
         for(var v in para.string_filters[i]['value']){
           PV.setStrFilterValues(para,v,i);
         }
+
+        listPage.page = 10;
+        listPage.update();
+
       },10);
     }
 
@@ -2832,7 +2849,7 @@ var graphPara = {};
                 var length = 0;
                 for (var i = 0; i < listPage.items.length; i++){
                     if (listPage.items[i].elm.childNodes[0].checked == true) length+=1;
-                  } 
+                  }
                   enlarge = length > 1;
             }
             //enlarge = ($("input[itemfacet|='" + $(checkbox).attr("itemfacet") + "']:checked").length > 1);
