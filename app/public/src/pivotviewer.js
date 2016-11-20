@@ -914,7 +914,7 @@ var graphPara = {};
             }
         }
         else {
-
+            console.log("check called filterCollection");
             filterList = [];
             stringFilters = _stringFilters; datetimeFilters = _datetimeFilters;
             numericFilters = _numericFilters; selectedFilters = _selectedFilters;
@@ -939,6 +939,7 @@ var graphPara = {};
             }
             else if ((!filterChange.enlarge && selectedFilters[category.name] != undefined) || filterChange.clear) {
                 if (category.isString() || category.isLocation()) {
+                  console.log("enlarge is false");
                     var stringFilter = stringFilters[category.name];
                     delete stringFilter.value[filterChange.value + "a"];
                     stringFilter.value.splice(stringFilter.value.indexOf(filterChange.value), 1);
@@ -965,6 +966,7 @@ var graphPara = {};
             }
             else {
                 if (category.isString() || category.isLocation()) {
+                  console.log("enlarge is true");
                     var stringFilter = stringFilters[category.name];
                     if (stringFilter != undefined) {
                         stringFilter.value[filterChange.value + "a"] = true;
@@ -991,6 +993,7 @@ var graphPara = {};
                 }
                 selectedFilters[category.name] = true;
             }
+
         }
 
         //Find matching facet values in items
@@ -1203,6 +1206,12 @@ var graphPara = {};
 
 	        //Filter view
 	        TileController.setCircularEasingBoth();
+          /*
+          if(filterChange && filterChange.listPage) {
+                          console.log(stringFilters);
+              filterChange.listPage.page = 10;
+              filterChange.listPage.update();
+          }*/
 	    }
       A = [];
       B = [];
@@ -1216,6 +1225,7 @@ var graphPara = {};
         PARA.string_filters = _stringFilters;
         PARA.num_filters = _numericFilters;
       }
+
     };
 
     PV.initUICategory = function (category) {
@@ -1330,6 +1340,8 @@ var graphPara = {};
 
                 $("#pv-cat-" + PV.cleanName(category.name) + " .pv-facet-value").click(function (e) { PV.clickValue(this); });
                 $("#pv-cat-" + PV.cleanName(category.name) + " .pv-facet-value-label").click(function (e) {
+                  console.log("called click");
+
                     var cb = $(this).prev();
                     cb.prop("checked", !cb.prop("checked"));
                     PV.clickValue(cb[0]);
@@ -2728,7 +2740,6 @@ var graphPara = {};
 
     $.subscribe("/PivotViewer/Views/Item/Filtered", function (evt) {
         if (evt == undefined || evt == null) return;
-
         var filters = (evt.length != undefined ? evt : [evt]);
 
         for (var i = 0; i < filters.length; i++) {
@@ -2794,7 +2805,20 @@ var graphPara = {};
 
 
     PV.clickValue = function (checkbox) {
+        /*
+        var name = $(this).parent().attr('aria-controls').substring(7);
+        var listPage = _listObj[name];
+        var size = listPage.size();
+        listPage.page = size;
+        listPage.update();
+        $(this).parent().next().find('.pv-facet-value:checked').prop("checked", false);
+        listPage.page = 10;
+        listPage.update();
+        */
+
         var category = PivotCollection.getCategoryByName(_nameMapping[$(checkbox).attr('itemfacet')]);
+        var listPage = _listObj[$(checkbox).attr('itemfacet')];
+        console.log(category);
         var value = _nameMapping[$(checkbox).attr('itemvalue')], enlarge, clear;
         if ($(checkbox).prop('checked')) {
             $(checkbox).parent().parent().parent().prev().find('.pv-filterpanel-accordion-heading-clear').css('visibility', 'visible');
@@ -2802,12 +2826,29 @@ var graphPara = {};
                 PV._getCustomDateRange($(checkbox).attr('itemfacet'));
                 return;
             }
-            enlarge = ($("input[itemfacet|='" + $(checkbox).attr("itemfacet") + "']:checked").length > 1);
+            if (category.isDateTime()) {
+                enlarge = ($("input[itemfacet|='" + $(checkbox).attr("itemfacet") + "']:checked").length > 1);
+            } else {
+                var length = 0;
+                for (var i = 0; i < listPage.items.length; i++){
+                    if (listPage.items[i].elm.childNodes[0].checked == true) length+=1;
+                  } 
+                  enlarge = length > 1;
+            }
+            //enlarge = ($("input[itemfacet|='" + $(checkbox).attr("itemfacet") + "']:checked").length > 1);
             clear = false;
         }
         else if (!$(checkbox).prop('checked')) {
             if ($(checkbox).attr('itemvalue') == "CustomRange") PV._hideCustomDateRange($(checkbox).attr('itemfacet'));
-            if ($("input[itemfacet|='" + $(checkbox).attr("itemfacet") + "']:checked").length == 0) {
+            var length = 0;
+            if (category.isDateTime()) {
+                length = $("input[itemfacet|='" + $(checkbox).attr("itemfacet") + "']:checked").length;
+            } else {
+                for (var i = 0; i < listPage.items.length; i++){
+                    if (listPage.items[i].elm.childNodes[0].checked == true) length+=1;
+                }
+            }
+            if (length == 0) {
                 enlarge = true;
                 $(checkbox).parent().parent().parent().prev().find('.pv-filterpanel-accordion-heading-clear').trigger("click");
                 clear = true;
@@ -2817,11 +2858,10 @@ var graphPara = {};
                 enlarge = false;
                 clear = false;
             }
-
         }
 
         if (category.isString() || category.isLocation()){
-            PV.filterCollection({ category: category, enlarge: enlarge, clear: clear, value: value });
+            PV.filterCollection({ category: category, enlarge: enlarge, clear: clear, value: value, listPage: listPage});
         }
         else {
             start = $(checkbox).attr('startdate');
