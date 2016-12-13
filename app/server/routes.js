@@ -199,9 +199,15 @@ module.exports = function(app) {
 // view & delete accounts //
 
 	app.get('/accounts', function(req, res) {
+		res.render('accounts', { title : 'Account List'});
+	});
+
+	app.get('/surveysWithAccounts', function(req, res) {
 		AM.getAllRecords( function(e, accounts){
-			res.render('accounts', { title : 'Account List', accts : accounts });
-		})
+			SM.getSurveysByUserList(accounts, function(error, surveys) {
+				res.status(200).send({accounts: accounts, surveys: surveys});
+			});
+		});
 	});
 
 	app.post('/delete', function(req, res){

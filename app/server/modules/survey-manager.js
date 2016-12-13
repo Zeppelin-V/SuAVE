@@ -231,6 +231,26 @@ exports.getSurveyByUsername = function(username, callback)
 	});
 }
 
+/*Get surveys for users
+para: 1. usernames
+			2. callback: callback function with 1) error 2) output
+*/
+exports.getSurveysByUserList = function(usernames, callback)
+{
+	var users = usernames.map(function(user){return user.user});
+
+	surveys.aggregate([
+    // Match the selected documents by "user"
+    { "$match": {"user": { "$in": users } }}
+	], function(e, o){
+		if (e) {
+			callback(e, null);
+		} else{
+			callback(e, o);
+		}
+	});
+}
+
 /*Get unhidden surveys for public purpose
 para: 1. username
 			2. callback: callback function with 1) error 2) output

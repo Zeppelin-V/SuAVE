@@ -9,6 +9,7 @@ $(document).ready(function(){
 		}else {
 			surveys = e;
 			gc.displaySurveys(surveys);
+			$('.page-subheader').append("Num of surveys: " + surveys.length);
 		}
 	});
 

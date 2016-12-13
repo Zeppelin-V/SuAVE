@@ -3,7 +3,7 @@ extends layout
 
 block content
 	div.container(style='margin:20px')
-		table.table.table-bordered.table-striped
+		table(style="border:1px solid black;")
 			thead
 				tr
 					th(style='width:40px') #
@@ -11,11 +11,8 @@ block content
 					th(style='width:180px') Username
 					th(style='width:180px') Email
 					th Account Created
-			tbody
-			- for (var i = 0; i < accts.length; i++)
-				tr
-					td= i+1
-					td= accts[i].name
-					td= accts[i].user
-					td= accts[i].email
-					td= accts[i].date
+					th Private Surveys
+					th Public Surveys
+			tbody#info
+	script(src='/vendor/jquery.min.js')
+	script(src='/js/views/accounts.js')

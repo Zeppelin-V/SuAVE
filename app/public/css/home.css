@@ -644,6 +644,11 @@ h1.page-header {
 	border-bottom: 0;
 }
 
+p.page-subheader {
+	margin-top: -25px;
+	margin-left: 5px;
+}
+
 /*Charts*/
 
 .main-chart {
@@ -952,7 +957,9 @@ Gallery view
   justify-content: center;
   align-items: center;
 }
-
+.tab-pane{
+	width: 100%;
+}
 .nav-pills{
 	padding-top: 0px;
 }

@@ -29,6 +29,8 @@ $(document).ready(function(){
 		}else {
 			surveys = e;
 			hc.displaySurveys(surveys);
+
+			$('.page-subheader').append("Num of surveys: " + surveys.length);
 		}
 	});
 });
