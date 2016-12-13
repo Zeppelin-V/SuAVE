@@ -464,6 +464,10 @@ exports.getColumnsAndTags = function(user, name, callback){
                 tmp.values.push('#multi');
                 names[i] = names[i].replace('#multi', '');
               }
+              if(names[i].indexOf('#info') > -1){
+                tmp.values.push('#info');
+                names[i] = names[i].replace('#info', '');
+              }
 
               if(tmp.values.length > 0){
                 tmp.name = names[i];

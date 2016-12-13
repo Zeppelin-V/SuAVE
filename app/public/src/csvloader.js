@@ -28,7 +28,7 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
         var filename = collection.base;
         var project = filename.substring(filename.lastIndexOf("/") + 1, filename.lastIndexOf("."));
         collection.name = project;
-        
+
         if(_options.authoring == false){
           collection.imageBase = project + "/" + project + ".dzc";
         }else{
@@ -85,7 +85,7 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
     },
     loadData: function () {
         var categories = this.data[0];
-        var name_column = -1, img_column = -1, href_column = -1, desc_column = -1;
+        var name_column = -1, img_column = -1, href_column = -1, desc_column = -1, info_column = -1;
 
         for (var i = 0; i < categories.length; i++) {
             if (categories[i].charAt(0) == "#") {
@@ -121,6 +121,11 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                     isMultipleItems = true;
                     type = PivotViewer.Models.FacetType.String;
                 }
+                else if(categories[i].indexOf("#info", index) !== -1) {
+                  info_column = i;
+                  type = PivotViewer.Models.FacetType.Description;
+                  visible = false;
+                }
                 else if (categories[i].indexOf("#textlocation", index) !== -1){
                     type = PivotViewer.Models.FacetType.Location;
                     index = categories[i].indexOf("#textlocation", index);
@@ -143,6 +148,10 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
         for (var i = 1; i < this.data.length; i++) {
             var row = this.data[i];
             var item = new PivotViewer.Models.Item(row[img_column], String(i), href_column == -1 ? "" : row[href_column], row[name_column]);
+            if(info_column != -1) {
+
+              item.description = PivotViewer.Utils.htmlSpecialChars(row[info_column]);
+            }
             this.collection.items.push(item);
         }
         $.publish("/PivotViewer/Models/Collection/Loaded", null);

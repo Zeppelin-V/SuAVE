@@ -170,5 +170,6 @@ PivotViewer.Models.FacetType = {
 	DateTime: "DateTime",
 	Link: "Link",
   Ordinal: "Ordinal",
-  Location: "Location"
+  Location: "Location",
+	Description: "Description"
 };

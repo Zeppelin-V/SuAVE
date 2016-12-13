@@ -28,7 +28,6 @@ $(document).ready(function(){
       for (var key in res) {
         i++;
         var acct = res[key];
-        console.log(acct.surveys);
         $("#info").append(
           "<tr>" +
           "<td>" + i + "</td>" +
@@ -42,11 +41,10 @@ $(document).ready(function(){
         );
 
         for(var j = 0; j < acct.surveys.public.length; j++) {
-          $("#public-" + i).append('<tr><td>'+ acct.user + "_" +acct.surveys.public[j][0]+'.csv</td><td>Created on:' + acct.surveys.public[j][1] + ' </td></tr>');
+          $("#public-" + i).append('<tr><td>'+ acct.user + "_" +acct.surveys.public[j][0]+'.csv</td><td>' + acct.surveys.public[j][1] + ' </td></tr>');
         }
-        console.log("#private-" + i);
         for(var j = 0; j < acct.surveys.private.length; j++) {
-          $("#private-" + i).append('<tr><td>'+ acct.user + "_" + acct.surveys.private[j][0] +'.csv</td><td>Created on:' + acct.surveys.private[j][1] + ' </td></tr>');
+          $("#private-" + i).append('<tr><td>'+ acct.user + "_" + acct.surveys.private[j][0] +'.csv</td><td>' + acct.surveys.private[j][1] + ' </td></tr>');
         }
       }
 
