@@ -914,7 +914,6 @@ var graphPara = {};
             }
         }
         else {
-            console.log("check called filterCollection");
             filterList = [];
             stringFilters = _stringFilters; datetimeFilters = _datetimeFilters;
             numericFilters = _numericFilters; selectedFilters = _selectedFilters;
@@ -939,7 +938,6 @@ var graphPara = {};
             }
             else if ((!filterChange.enlarge && selectedFilters[category.name] != undefined) || filterChange.clear) {
                 if (category.isString() || category.isLocation()) {
-                  console.log("enlarge is false");
                     var stringFilter = stringFilters[category.name];
                     delete stringFilter.value[filterChange.value + "a"];
                     stringFilter.value.splice(stringFilter.value.indexOf(filterChange.value), 1);
@@ -966,7 +964,6 @@ var graphPara = {};
             }
             else {
                 if (category.isString() || category.isLocation()) {
-                  console.log("enlarge is true");
                     var stringFilter = stringFilters[category.name];
                     if (stringFilter != undefined) {
                         stringFilter.value[filterChange.value + "a"] = true;
@@ -1340,8 +1337,6 @@ var graphPara = {};
 
                 $("#pv-cat-" + PV.cleanName(category.name) + " .pv-facet-value").click(function (e) { PV.clickValue(this); });
                 $("#pv-cat-" + PV.cleanName(category.name) + " .pv-facet-value-label").click(function (e) {
-                  console.log("called click");
-
                     var cb = $(this).prev();
                     cb.prop("checked", !cb.prop("checked"));
                     PV.clickValue(cb[0]);
@@ -2835,7 +2830,6 @@ var graphPara = {};
 
         var category = PivotCollection.getCategoryByName(_nameMapping[$(checkbox).attr('itemfacet')]);
         var listPage = _listObj[$(checkbox).attr('itemfacet')];
-        console.log(category);
         var value = _nameMapping[$(checkbox).attr('itemvalue')], enlarge, clear;
         if ($(checkbox).prop('checked')) {
             $(checkbox).parent().parent().parent().prev().find('.pv-filterpanel-accordion-heading-clear').css('visibility', 'visible');

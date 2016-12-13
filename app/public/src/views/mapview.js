@@ -315,6 +315,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         $('#MAIN_BODY').css('overflow', 'auto');
         $('.pv-mapview-canvas').fadeIn();
         $('.pv-toolbarpanel-sort').fadeIn();
+        if(this.map != null) {this.refitBounds();}
     },
     deactivate: function () {
         this._super();
@@ -419,7 +420,6 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         var category, category1 = null, category2 = null;
         for (var i = 0; i < PivotCollection.categories.length; i++) {
             var category = PivotCollection.categories[i], name = category.name.toLowerCase();
-            //console.log(category);
             if (category.isLocation()) {
                 if (category.uiInit == false) PV.initUICategory(category);
                 break;
@@ -641,7 +641,6 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         return geocodeCallBack;
     },
     geocode: function (locName, callbackFunction) {
-      //console.log(locName);
       var that = this;
       var nominatimUrl = "http://www.datasciencetoolkit.org/maps/api/geocode/json?sensor=false&address=" + encodeURIComponent(locName);
       $.ajax({
