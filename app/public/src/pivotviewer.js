@@ -1462,7 +1462,7 @@ var graphPara = {};
                             if (!_selectedFilters[category.name]) item.valueItem.hide();
                         }
                         else {
-                            item.valueItem.show();
+                            //item.valueItem.show();
                             item.itemCount.text(count);
                         }
                     }
@@ -2200,8 +2200,8 @@ var graphPara = {};
         $('.pv-infopanel-details').on("click", '.pv-infopanel-detail-description-more', function (e) {
             var that = $(this);
             var details = that.prev();
-            if (that.text() == "Less") { details.css('height', ''); that.text('More'); }
-            else { details.css('height', '100px'); that.text('Less'); }
+            if (that.text() == "More") { details.css('height', ''); that.text('Less'); }
+            else { details.css('height', '100px'); that.text('More'); }
         });
         $('.pv-infopanel-controls-navleft').click(function (e) {
             for (var i = 1; i < _filterList.length; i++) {
@@ -2690,8 +2690,8 @@ var graphPara = {};
             var infopanelDetails = $('.pv-infopanel-details');
             infopanelDetails.empty();
             if (selectedItem.item.description != undefined && selectedItem.item.description.length > 0) {
-                infopanelDetails.append("<div class='pv-infopanel-detail-description' style='height:100px;'>" + selectedItem.item.description + "</div><div class='pv-infopanel-detail-description-more'>Less</div>");
-                $('.pv-infopanel-detail-description-more').click();
+                infopanelDetails.append("<div class='pv-infopanel-detail-description' style='height:100px;'>" + selectedItem.item.description + "</div><div class='pv-infopanel-detail-description-more'>More</div>");
+                //$('.pv-infopanel-detail-description-more').click();
             }
             // nav arrows...
             if (selectedItem.item.id == _filterList[0].id) {

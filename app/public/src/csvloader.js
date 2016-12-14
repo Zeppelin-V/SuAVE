@@ -125,6 +125,7 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                   info_column = i;
                   type = PivotViewer.Models.FacetType.Description;
                   visible = false;
+                  continue;
                 }
                 else if (categories[i].indexOf("#textlocation", index) !== -1){
                     type = PivotViewer.Models.FacetType.Location;
@@ -150,7 +151,7 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
             var item = new PivotViewer.Models.Item(row[img_column], String(i), href_column == -1 ? "" : row[href_column], row[name_column]);
             if(info_column != -1) {
 
-              item.description = PivotViewer.Utils.htmlSpecialChars(row[info_column]);
+              item.description = row[info_column];
             }
             this.collection.items.push(item);
         }
