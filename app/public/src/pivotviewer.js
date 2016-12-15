@@ -2194,6 +2194,7 @@ var graphPara = {};
         $('.pv-facet-customrange').on('change', function (e) { PV._changeCustomRange(this); });
         $('.pv-infopanel-details').on("click", '.detail-item-value-filter', function (e) {
             $(".pv-facet[aria-controls='pv-cat-" + PV.cleanName($(this).parent().children().attr('pv-detail-item-title'))+"']").trigger('click');
+            PV.clickValue
             $.publish("/PivotViewer/Views/Item/Filtered", [{category: $(this).parent().children().attr('pv-detail-item-title'), min: $(this).attr('pv-detail-item-value'), values: null}]);
             return false;
         });
@@ -2766,6 +2767,11 @@ var graphPara = {};
             }
             LoadSem.acquire(function (release) {
                 if (category.isString() || category.isLocation()) {
+                    var listPage = _listObj[PV.cleanName(category.name)];
+                    var size = listPage.size();
+                    listPage.page = size;
+                    listPage.update();
+
                     $(".pv-facet-value[itemfacet='" + PV.cleanName(category.name) + "']").prop("checked", false);
                     if (filter.values) {
                         if (filter.values.length == 1) {
@@ -2786,6 +2792,9 @@ var graphPara = {};
                         cb.prop("checked", true);
                         if (filters.length == 1) PV.clickValue(cb[0]);
                     }
+
+                    listPage.page = 10;
+                    listPage.update();
                 }
                 else if (category.isNumber()|| category.isOrdinal()) {
                     var s = $('#pv-facet-numericslider-' + PivotViewer.Utils.escapeMetaChars(PV.cleanName(category.name)));
@@ -2828,7 +2837,6 @@ var graphPara = {};
         listPage.page = 10;
         listPage.update();
         */
-
         var category = PivotCollection.getCategoryByName(_nameMapping[$(checkbox).attr('itemfacet')]);
         var listPage = _listObj[$(checkbox).attr('itemfacet')];
         var value = _nameMapping[$(checkbox).attr('itemvalue')], enlarge, clear;
@@ -2853,6 +2861,7 @@ var graphPara = {};
         else if (!$(checkbox).prop('checked')) {
             if ($(checkbox).attr('itemvalue') == "CustomRange") PV._hideCustomDateRange($(checkbox).attr('itemfacet'));
             var length = 0;
+
             if (category.isDateTime()) {
                 length = $("input[itemfacet|='" + $(checkbox).attr("itemfacet") + "']:checked").length;
             } else {

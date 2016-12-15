@@ -355,7 +355,6 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
     var bkts = [], value1 = filterList[0].item.getFacetByName(category).values[0], value = valueFn(value1);
     var tile = filterList[0], facet = tile.item.getFacetByName(category);
     var flattend = _.flatten(_.pluck(facet.values, 'value'));
-    if (multi) {flattend = [flattend[0]];}
     for (var v = 0; v < flattend.length; v++) {
         var value2 = flattend[v];
         value = value2;
@@ -391,7 +390,6 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
         if (facet == undefined) break;
         if (tile.missing) continue;
         var flattend = _.flatten(_.pluck(facet.values, 'value'));
-        if (multi) {flattend = [flattend[0]];}
         for (var v = 0; v < flattend.length; v++) {
             var value2 = flattend[v];
             value = value2;
