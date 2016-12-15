@@ -476,7 +476,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
         if (filterList[0].item.getFacetByName(sortCategory) == undefined) {
             var bucketsNo = [];
             bkt = new PivotViewer.Models.Bucket("(no info)", "(no info)");
-            bkt.addTile(filterList[0]);
+            //bkt.addTile(filterList[0]);
             bucketsNo.push(bkt);
             bucketsNo.ids = [];
             //return bkt;
