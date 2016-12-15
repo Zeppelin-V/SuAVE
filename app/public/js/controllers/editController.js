@@ -18,7 +18,7 @@ function EditController()
         colHeaders: true,
         width: availableWidth,
         height: availableHeight,
-        stretchH: 'all',
+        stretchH: 'all'
       });
       bindDumpButton();
     },
