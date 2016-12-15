@@ -64,6 +64,10 @@ var sMemory = false;
 		$('#select-about').button('toggle');
 	});
 
+	$(document).on('click', '#edit-button', function(){
+		var newWindow = window.open('/edit/' + surveys[SID].user + '/' + surveys[SID].name);
+	});
+
 	$(document).on('click', '#select-tags', function(){
 		$('.modal-select-collection').empty();
 		//$('.modal-select-collection').css("width", "800px");
@@ -104,6 +108,7 @@ var sMemory = false;
 						'</button>'+
 						'<ul id="tag-item-select" class="dropdown-menu" aria-labelledby="dropdownMenu1">'+
 						'</ul>'+
+						'<button class="btn btn-danger" type="button" id = "edit-button" style="float: right;"> Advanced </button>' +
 					'</div>'+
 					'<br>'+
 					'<div id="tag-list" class="list-group">'+

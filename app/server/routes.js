@@ -630,6 +630,46 @@ app.post('/changeTagsForSurvey', function(req, res){
 	});
 });
 
+	//edit survey through handson table
+	app.get('/edit/:user/:name', function(req, res) {
+		if (req.session.user == null
+			|| req.session.user.user != req.params.user
+			|| req.params.name == null){
+	// if user is not logged-in redirect back to login page //
+			res.redirect('/');
+		}	else{
+			res.render('edit', {user: '"' + req.params.user + '"', name: '"' + req.params.name + '"'});
+			//res.render('edit', {user: '"aaaa"', name: '"bbbb"'});
+		}
+	});
+
+	app.get('/getSurveyByFilename', function(req, res){
+		var filePath = __dirname + "/../public/surveys/"+req.query.filename;
+		CL.loadCSV(filePath, function(e, o){
+			if(e == 'err'){
+				res.status(400).send(o);
+			}else{
+				res.status(200).send(e);
+			}
+		});
+	});
+
+	app.post('/changeSurveyByFilename', function(req, res){
+		if (req.session.user == null){
+			// if user is not logged-in redirect back to login page //
+			res.redirect('/');
+		}	else{
+			//console.log(req.body);
+			CL.changeSurveyByFilename(req.body.user, req.body.name, JSON.parse(req.body.data), function(e, o){
+				if(e){
+					res.status(400).send(e);
+				}else{
+					res.status(200).send(o);
+				}
+			});
+		}
+	});
+
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
 
 };

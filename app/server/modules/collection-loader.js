@@ -19,7 +19,6 @@ exports.loadCSV = function(filePath, callback){
         if (err) {
           callback('err', message);
         }
-
         //TODO: add additional validation on csv
         //var res = JSON.parse(JSON.stringify(output).replace(/\\/g,''));
         callback(output);
@@ -510,5 +509,15 @@ exports.changeTagsForSurvey = function(user, name, columns, callback){
       })
     }
   });
+};
 
+exports.changeSurveyByFilename = function(user, name, data, callback){
+  var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+".csv";
+  this.saveCSV(filePath, data, function(e){
+    if(e){
+      callback(e, null);
+    }else{
+      callback(null, "Successfully saved the file!");
+    }
+  });
 };

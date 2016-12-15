@@ -22,11 +22,11 @@ app.use(session({
 	store: new MongoStore({ host: 'localhost', port: 27017, db: 'suave'})
 	})
 );
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true}));
 app.use(require('stylus').middleware({ src: __dirname + '/app/public' }));
 app.use(express.static(__dirname + '/app/public'));
-
 
 require('./app/server/routes')(app);
 
