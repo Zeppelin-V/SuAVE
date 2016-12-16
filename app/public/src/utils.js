@@ -350,8 +350,14 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
     if (valueFn == undefined) valueFn = function (value) { return value.value; }
     if (labelFn == undefined) labelFn = function (value) { return value.toString();}
 
+    for (var i = 0; i < PivotViewer.Models.string_filters.length; i++) {
+      if(PivotViewer.Models.string_filters[i].facet == category) {
+        var values = PivotViewer.Models.string_filters[i].value;
+      }
+    }
     var category1 = PivotCollection.getCategoryByName(category);
     var multi = category1.isMultipleItems;
+    var set = new Set(values);
     var bkts = [], value1 = filterList[0].item.getFacetByName(category).values[0], value = valueFn(value1);
     var tile = filterList[0], facet = tile.item.getFacetByName(category);
     var flattend = _.flatten(_.pluck(facet.values, 'value'));
@@ -359,6 +365,10 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
         var value2 = flattend[v];
         value = value2;
         var label = value;
+        // filtering buckets when multi variable is selected in sorting
+        if(multi && set.size != 0) {
+          if(!set.has(value)) continue;
+        }
         //check if a bucket is already initialized, especially for #multi
         for(va in facet.values){
           var temp = facet.values[va].label;
@@ -393,6 +403,10 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
         for (var v = 0; v < flattend.length; v++) {
             var value2 = flattend[v];
             value = value2;
+            // filtering buckets when multi variable is selected in sorting
+            if(multi && set.size != 0) {
+              if(!set.has(value)) continue;
+            }
             var bkt = null;
             for (var j = 0; j < bkts.length; j++) {
                 if (bkts[j].hasValue(value)) {

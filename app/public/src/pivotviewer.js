@@ -1203,12 +1203,6 @@ var graphPara = {};
 
 	        //Filter view
 	        TileController.setCircularEasingBoth();
-          /*
-          if(filterChange && filterChange.listPage) {
-                          console.log(stringFilters);
-              filterChange.listPage.page = 10;
-              filterChange.listPage.update();
-          }*/
 	    }
       A = [];
       B = [];
@@ -1217,6 +1211,7 @@ var graphPara = {};
       ACs = [];
       BCs = [];
       ABCs = [];
+      PivotViewer.Models.string_filters = _stringFilters;
 	    PV.filterViews();
       if(_options.authoring == true){
         PARA.string_filters = _stringFilters;
