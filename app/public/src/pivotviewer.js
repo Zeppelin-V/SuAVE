@@ -1457,7 +1457,7 @@ var graphPara = {};
                             if (!_selectedFilters[category.name]) item.valueItem.hide();
                         }
                         else {
-                            //item.valueItem.show();
+                            item.valueItem.css( "display", "list-item" );
                             item.itemCount.text(count);
                         }
                     }
