@@ -380,10 +380,14 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
             }
           } else if (category1.isDateTime()) {
             temp = moment(temp, moment.parseFormat(temp))._d.toString();
-          }
+          };
 
           if (temp.indexOf(value) != -1){
-            label = facet.values[va].label;
+            if (category1.isDateTime()) {
+              label = moment(temp, moment.parseFormat(temp)).format("MM/DD/YYYY").toString();
+            } else {
+              label = facet.values[va].label;
+            }
             break;
           }
         }
@@ -427,11 +431,17 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
                   } else if (category1.isDateTime()) {
                     temp = moment(temp, moment.parseFormat(temp))._d.toString();
                   };
+
                   if (temp.indexOf(value) != -1){
-                    label = facet.values[va].label;
+                    if (category1.isDateTime()) {
+                      label = moment(temp, moment.parseFormat(temp)).format("MM/DD/YYYY").toString();
+                    } else {
+                      label = facet.values[va].label;
+                    }
                     break;
                   }
                 }
+
                 bkt = new PivotViewer.Models.Bucket(value, label);
                 bkts.push(bkt);
             }

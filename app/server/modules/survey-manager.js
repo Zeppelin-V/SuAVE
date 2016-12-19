@@ -86,9 +86,10 @@ exports.replaceSurvey = function(files, user, callback){
 			callback("Survey does not exist!");
 		}
     else{
+			var survey = o;
 			//reset the survey's paramters in database
 			surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
-			{$set: {collection: "default", iName: "", "originalname": files.file.originalname}},
+			{$set: {collection: {name: "default"}, iName: "", "originalname": files.file.originalname}},
 			{new:true}, function(e, o){
 				if(e) callback(e);
 			});
@@ -113,7 +114,7 @@ exports.replaceSurvey = function(files, user, callback){
           if(err){
             callback(err);
           }else{
-						callback(null, "ok");
+						callback(null, survey);
           }
         });
       });

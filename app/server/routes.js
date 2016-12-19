@@ -251,20 +251,24 @@ module.exports = function(app) {
 
 //replace survey csv file
 	app.post('/replaceCSV', uploading.single('file'), function(req, res){
-		SM.replaceSurvey(req, req.cookies.user, function(e){
+		SM.replaceSurvey(req, req.cookies.user, function(e, o){
 			if (e){
 				res.status(400).send(e);
 			}	else{
-
 				req.body.name = req.body.name.replace(/ /g,"-");
-				SM.changeCollection(req, req.cookies.user, {"name": "default"},
-					function(e){
-					if(e){
-						res.status(400).send(e);
-					}else{
-						res.status(200).send('ok');
-					}
-				});
+				if (o.dzc == null) {
+					SM.changeCollection(req, req.cookies.user, {"name": "default"},
+						function(e){
+						if(e){
+							res.status(400).send(e);
+						}else{
+							res.status(200).send('ok');
+						}
+					});
+				} else {
+					res.status(200).send('ok');
+				}
+
 			}
 		});
 	});
