@@ -30,8 +30,8 @@ PivotViewer.Views.TileController = Object.subClass({
             this.__proto__.push.apply(that._tiles, [x]);
             that._tilesById[x.item.id] = x;
         }
-	this.isZooming = false;
-	this._started = false;
+        this.isZooming = false;
+        this._started = false;
     },
     getTileById: function(id) {
         var item = this._tilesById[id];
@@ -59,7 +59,7 @@ PivotViewer.Views.TileController = Object.subClass({
         this._started = true;
         var context = null;
         var tiles = this._tiles;
-	this._breaks = false;
+        this._breaks = false;
 
         if (tiles.length > 0 && tiles[0].context != null) {
 
@@ -141,7 +141,7 @@ PivotViewer.Views.TileController = Object.subClass({
 
                         // if now and end are numbers when we get here
                         // then the animation has finished
-			// this._breaks = true;
+                        // this._breaks = true;
 
                     }
 
@@ -173,10 +173,23 @@ PivotViewer.Views.TileController = Object.subClass({
 
         //once properties set then draw
 
+        var text_min_height = 12;
+        var candidates = new Array(tiles.length);
+        var context = tiles[0].context;
+        context.font = text_min_height + "px Roboto,Helvetica,Arial,sans-serif";
+
+        var width_sum = 0;
+        var length_sum = 0;
+        var max_width = 0;
+        var max_chars = 0;
+        var tile_width = 0;
+
         for (var i = 0; i < tiles.length; i++) {
 
             var tile = tiles[i];
             var locations = tile._locations;
+
+            candidates[i] = new Array(locations.length);
 
             //only draw if in visible area
 
@@ -187,38 +200,134 @@ PivotViewer.Views.TileController = Object.subClass({
                 var y1 = location.y + tile.height;
                 var drawit =
                     ((0 <= location.x) &&
-                     (location.x < context.canvas.width) &&
-                     (0 <= location.y) &&
-                     (location.y < context.canvas.height)) ||
+                        (location.x < context.canvas.width) &&
+                        (0 <= location.y) &&
+                        (location.y < context.canvas.height)) ||
                     ((0 <= location.x) &&
-                     (location.x < context.canvas.width) &&
-                     (0 <= y1) &&
-                     (y1 < context.canvas.height)) ||
+                        (location.x < context.canvas.width) &&
+                        (0 <= y1) &&
+                        (y1 < context.canvas.height)) ||
                     ((0 <= x1) &&
-                     (x1 < context.canvas.width) &&
-                     (0 <= location.y) &&
-                     (location.y < context.canvas.height)) ||
+                        (x1 < context.canvas.width) &&
+                        (0 <= location.y) &&
+                        (location.y < context.canvas.height)) ||
                     ((0 <= x1) &&
-                     (x1 < context.canvas.width) &&
-                     (0 <= y1) &&
-                     (y1 < context.canvas.height)) ||
+                        (x1 < context.canvas.width) &&
+                        (0 <= y1) &&
+                        (y1 < context.canvas.height)) ||
                     ((0 <= location.x) &&
-                     (location.x < context.canvas.width) &&
-                     (location.y < context.canvas.height)) ||
+                        (location.x < context.canvas.width) &&
+                        (location.y < context.canvas.height)) ||
                     ((0 <= location.y) &&
-                     (location.y < context.canvas.height) &&
-                     (location.x < context.canvas.width)) ||
+                        (location.y < context.canvas.height) &&
+                        (location.x < context.canvas.width)) ||
                     ((location.x <= 0) &&
-                     (0 <= x1) &&
-                     (location.y <= 0) &&
-                     (0 <= y1));
+                        (0 <= x1) &&
+                        (location.y <= 0) &&
+                        (0 <= y1));
 
-                if (drawit)
-                    tile.draw(l);
+                if (drawit) {
+
+                    var m = context.measureText(tile.item.name);
+                    width_sum += m.width;
+                    if (m.width > max_width)
+                        max_width = m.width;
+
+                    length_sum += tile.item.name.length;
+                    if (tile.item.name.length > max_chars)
+                        max_chars = tile.item.name.length;
+
+                    candidates[i][l] = tile.draw(l);
+                    if (tile_width < tile.width)
+                        tile_width = tile.width;
+
+                }
 
             }
 
         }
+
+        var twminus8 = tile_width - 8;
+        var text_height =
+            Math.floor((twminus8 / max_width) * text_min_height);
+
+        var ok = text_height >= text_min_height;
+
+        if (!ok) {
+
+            var avg_charsize = width_sum / length_sum;
+
+            for (max_chars -= 3; max_chars >= 20 && !ok; max_chars--) {
+
+                text_height =
+                    Math.floor((twminus8 /
+                            (max_chars * avg_charsize)) *
+                        text_min_height);
+                ok = text_height >= text_min_height;
+
+            }
+
+        }
+
+        if (ok) {
+
+            $.publish("/PivotViewer/ImageController/TooltipEnable", [false]);
+
+            context.font = text_height + "px Roboto,Helvetica,Arial,sans-serif";
+
+            for (var i = 0; i < tiles.length; i++) {
+
+                var tile = tiles[i];
+                var locations = tile._locations;
+
+                for (var l = 0; l < locations.length; l++) {
+
+                    var dims = candidates[i][l];
+
+                    if ((dims != undefined) && (dims[0] != 0)) {
+
+                        location = locations[l];
+
+                        var scaled_width = dims[0];
+                        var scaled_height = dims[1];
+
+                        var text = tile.item.name;
+
+                        if (text.length > max_chars)
+                            text = text.substr(0, max_chars) + "...";
+                        var m = context.measureText(text);
+
+                        var location = locations[l];
+                        var xslop = (tile.width - scaled_width) / 2;
+                        var yslop = (tile.height - scaled_height) / 2;
+
+                        var x1 = location.x + xslop +
+                            (((scaled_width - 8) - m.width) / 2);
+                        var y1 = location.y + yslop +
+                            scaled_height - (4 + text_height);
+
+                        context.save();
+                        context.strokeStyle = "rgb( 0, 0, 0 )";
+                        context.fillStyle = "rgba( 64, 64, 64, .5)";
+
+                        this.roundRect(context, x1 - 4, y1 - text_height,
+                            m.width + 8, text_height + 8, 5,
+                            true, false);
+                        context.restore()
+
+                        context.save();
+                        context.fillStyle = "rgba( 255, 255, 255 ,1 )";
+                        context.fillText(text, x1, y1);
+                        context.restore();
+
+                    }
+
+                }
+
+            }
+
+        } else
+            $.publish("/PivotViewer/ImageController/TooltipEnable", [true]);
 
         // request new frame
         if (!this._breaks)
@@ -227,12 +336,79 @@ PivotViewer.Views.TileController = Object.subClass({
             });
         else {
 
-	    window.setTimeout(function() {
-		that.animateTiles()
-	    }, 250);
+            window.setTimeout(function() {
+                that.animateTiles()
+            }, 250);
 
             this._started = false;
-	}
+        }
+
+    },
+
+    /**
+     * Pinched from answer #2 from
+     * http://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
+     *
+     * Draws a rounded rectangle using the current state of the canvas.
+     * If you omit the last three params, it will draw a rectangle
+     * outline with a 5 pixel border radius
+     * @param {CanvasRenderingContext2D} ctx
+     * @param {Number} x The top left x coordinate
+     * @param {Number} y The top left y coordinate
+     * @param {Number} width The width of the rectangle
+     * @param {Number} height The height of the rectangle
+     * @param {Number} [radius = 5] The corner radius; It can also be an object
+     *                 to specify different radii for corners
+     * @param {Number} [radius.tl = 0] Top left
+     * @param {Number} [radius.tr = 0] Top right
+     * @param {Number} [radius.br = 0] Bottom right
+     * @param {Number} [radius.bl = 0] Bottom left
+     * @param {Boolean} [fill = false] Whether to fill the rectangle.
+     * @param {Boolean} [stroke = true] Whether to stroke the rectangle.
+     */
+    roundRect: function(ctx, x, y, width, height, radius, fill, stroke) {
+
+        if (typeof stroke == 'undefined') {
+            stroke = true;
+        }
+        if (typeof radius === 'undefined') {
+            radius = 5;
+        }
+        if (typeof radius === 'number') {
+            radius = {
+                tl: radius,
+                tr: radius,
+                br: radius,
+                bl: radius
+            };
+        } else {
+            var defaultRadius = {
+                tl: 0,
+                tr: 0,
+                br: 0,
+                bl: 0
+            };
+            for (var side in defaultRadius) {
+                radius[side] = radius[side] || defaultRadius[side];
+            }
+        }
+        ctx.beginPath();
+        ctx.moveTo(x + radius.tl, y);
+        ctx.lineTo(x + width - radius.tr, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+        ctx.lineTo(x + width, y + height - radius.br);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+        ctx.lineTo(x + radius.bl, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+        ctx.lineTo(x, y + radius.tl);
+        ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+        ctx.closePath();
+        if (fill) {
+            ctx.fill();
+        }
+        if (stroke) {
+            ctx.stroke();
+        }
 
     },
 
@@ -288,135 +464,138 @@ PivotViewer.Views.Tile = Object.subClass({
 
     draw: function(loc) {
 
-        if ( ( this.width == 0 ) ||
-             ( this.height == 0 ) )
+        if ((this.width == 0) ||
+            (this.height == 0))
             return;
 
         var location = this._locations[loc];
         var ctrlr = TileController._imageController;
         var context = this.context;
 
+        var scaled_width = 0;
+        var scaled_height = 0;
+
         //Is the tile destination in visible area?
         if (this.destinationVisible)
             this._images = ctrlr.getImages(this.item.img,
-					   this.width,
-					   this.height);
+                this.width,
+                this.height);
 
         if (this._images != null) {
 
-	    try {
+            try {
 
-		//A DrawLevel function returned - invoke
-		var completeImageHeight = ctrlr.getHeight(this.item.img);
-		var completeImageWidth = ctrlr.getWidth(this.item.img);
+                //A DrawLevel function returned - invoke
+                var completeImageHeight = ctrlr.getHeight(this.item.img);
+                var completeImageWidth = ctrlr.getWidth(this.item.img);
 
-		var displayHeight =
+                var displayHeight =
                     this.height -
                     Math.ceil(this.height < 128 ? this.height / 16 : 8);
-		var displayWidth =
+                var displayWidth =
                     this.width -
                     Math.ceil(this.width < 128 ? this.width / 16 : 8);
 
-		//Narrower images need to be centered
+                //Narrower images need to be centered
 
-		var blankWidth = (this.width - 8) - displayWidth;
-		var blankHeight = (this.height - 8) - displayHeight;
+                var blankWidth = (this.width - 8) - displayWidth;
+                var blankHeight = (this.height - 8) - displayHeight;
 
-		// Handle displaying the deepzoom image tiles ( move to deepzoom.js )
+                // Handle displaying the deepzoom image tiles ( move to deepzoom.js )
 
-		var xmargin = 0;
-		var ymargin = 0;
-		var scaled_width = displayWidth;
-		var scaled_height = displayHeight;
+                var xmargin = 0;
+                var ymargin = 0;
+                scaled_width = displayWidth;
+                scaled_height = displayHeight;
 
-		var tileSize = ctrlr._tileSize;
+                var tileSize = ctrlr._tileSize;
 
-		//Get image level
+                //Get image level
 
-		var image_level =
+                var image_level =
                     Math.ceil(Math.log(this.width > this.height ?
-				       this.width : this.height) /
-			      Math.log(2));
-		if (image_level == Infinity || image_level == -Infinity)
+                            this.width : this.height) /
+                        Math.log(2));
+                if (image_level == Infinity || image_level == -Infinity)
                     image_level = 0;
 
-		var maxlevel = ctrlr.getMaxLevel(this.item.img);
-		if (image_level > maxlevel)
+                var maxlevel = ctrlr.getMaxLevel(this.item.img);
+                if (image_level > maxlevel)
                     image_level = maxlevel
-		var level_factor =
+                var level_factor =
                     1 << (maxlevel - image_level);
 
-		var levelHeight =
+                var levelHeight =
                     Math.ceil(completeImageHeight / level_factor);
-		var levelWidth =
+                var levelWidth =
                     Math.ceil(completeImageWidth / level_factor);
 
-		//Image will need to be scaled to get the displayHeight
+                //Image will need to be scaled to get the displayHeight
 
-		var scaleh = displayHeight / levelHeight;
-		var scalew = displayWidth / levelWidth;
+                var scaleh = displayHeight / levelHeight;
+                var scalew = displayWidth / levelWidth;
 
-		var scale = (scaleh < scalew) ? scaleh : scalew;
+                var scale = (scaleh < scalew) ? scaleh : scalew;
 
-		scaled_width = Math.ceil(levelWidth * scale);
-		scaled_height = Math.ceil(levelHeight * scale);
+                scaled_width = Math.ceil(levelWidth * scale);
+                scaled_height = Math.ceil(levelHeight * scale);
 
-		xmargin =
+                xmargin =
                     Math.floor((displayWidth - scaled_width) / 2);
-		ymargin =
+                ymargin =
                     Math.floor((displayHeight - scaled_height) / 2);
 
-		if (typeof this._images == "function")
+                if (typeof this._images == "function")
                     this._images(context,
-				 location.x + xmargin,
-				 location.y + ymargin,
-				 scaled_width,
-				 scaled_height);
-		else if ((this._images.length > 0) &&
-			 this._images[0] instanceof Image) {
+                        location.x + xmargin,
+                        location.y + ymargin,
+                        scaled_width,
+                        scaled_height);
+                else if ((this._images.length > 0) &&
+                    this._images[0] instanceof Image) {
 
                     //if the collection contains an image
 
                     if (ctrlr instanceof PivotViewer.Views.DeepZoomImageController) {
 
-			var tileSize = ctrlr._tileSize;
+                        var tileSize = ctrlr._tileSize;
 
-			//Get image level
-			lvl = this._images[0].src.match(/_files\/[0-9]+\//g)[0];
+                        //Get image level
+                        lvl = this._images[0].src.match(/_files\/[0-9]+\//g)[0];
 
-			var imageLevel =
+                        var imageLevel =
                             parseInt(lvl.substring(7, lvl.length - 1));
 
-			var level_factor =
+                        var level_factor =
                             1 << (ctrlr.getMaxLevel(this.item.img) -
-				  imageLevel);
+                                imageLevel);
 
-			var levelHeight =
+                        var levelHeight =
                             Math.ceil(completeImageHeight / level_factor);
-			var levelWidth =
+                        var levelWidth =
                             Math.ceil(completeImageWidth / level_factor);
 
-			//Image will need to be scaled to get the displayHeight
+                        //Image will need to be scaled to get the displayHeight
 
-			var scaleh = displayHeight / levelHeight;
-			var scalew = displayWidth / levelWidth;
+                        var scaleh = displayHeight / levelHeight;
+                        var scalew = displayWidth / levelWidth;
 
-			var scale = (scaleh < scalew) ? scaleh : scalew;
+                        var scale = (scaleh < scalew) ? scaleh : scalew;
 
-			scaled_width = levelWidth * scale;
-			scaled_height = levelHeight * scale;
+                        scaled_width = levelWidth * scale;
+                        scaled_height = levelHeight * scale;
 
-			xmargin =
+                        xmargin =
                             Math.floor((displayWidth - scaled_width) / 2);
-			ymargin =
+                        ymargin =
                             Math.floor((displayHeight - scaled_height) / 2);
 
-			// handle overlap
-			overlap = ctrlr.getOverlap(this.item.img);
+                        // handle overlap
+                        overlap = ctrlr.getOverlap(this.item.img);
 
-			var tex = 0;
-			var tey = 0;
-			for (var i = 0; i < this._images.length; i++) {
+                        var tex = 0;
+                        var tey = 0;
+                        for (var i = 0; i < this._images.length; i++) {
 
                             // We need to know where individual image tiles go
                             var source = this._images[i].src;
@@ -424,80 +603,81 @@ PivotViewer.Views.Tile = Object.subClass({
                             var nl = n[n.length - 1];
 
                             var xPosition =
-				parseInt(nl.substring(0, nl.indexOf("_")));
+                                parseInt(nl.substring(0, nl.indexOf("_")));
                             var yPosition =
-				parseInt(nl.substring(nl.indexOf("_") + 1));
+                                parseInt(nl.substring(nl.indexOf("_") + 1));
 
                             var imageTileHeight =
-				Math.floor(this._images[i].height * scale);
+                                Math.floor(this._images[i].height * scale);
                             var imageTileWidth =
-				Math.floor(this._images[i].width * scale);
+                                Math.floor(this._images[i].width * scale);
 
                             var ofactor =
-				((tileSize - overlap) * scale);
+                                ((tileSize - overlap) * scale);
                             var offsetx =
-				xmargin + (xPosition * ofactor);
+                                xmargin + (xPosition * ofactor);
                             var offsety =
-				ymargin + (yPosition * ofactor);
+                                ymargin + (yPosition * ofactor);
 
                             context.drawImage(this._images[i],
-                                              offsetx + location.x,
-                                              offsety + location.y,
-                                              imageTileWidth,
-                                              imageTileHeight);
+                                offsetx + location.x,
+                                offsety + location.y,
+                                imageTileWidth,
+                                imageTileHeight);
                             var tx =
-				parseInt( offsetx +
-					  location.x +
-					  imageTileWidth );
+                                parseInt(offsetx +
+                                    location.x +
+                                    imageTileWidth);
                             var ty =
-				parseInt( offsety +
-					  location.y + imageTileHeight );
-			    if ( tex < tx )
-				tex = tx;
-			    if ( tey < ty )
-				tey = ty;
+                                parseInt(offsety +
+                                    location.y + imageTileHeight);
+                            if (tex < tx)
+                                tex = tx;
+                            if (tey < ty)
+                                tey = ty;
 
-			}
-			scaled_width =
-			    parseInt( tex - ( location.x + xmargin ) );
-			scaled_height =
-			    parseInt( tey - ( location.y + ymargin ) );
+                        }
+                        scaled_width =
+                            parseInt(tex - (location.x + xmargin));
+                        scaled_height =
+                            parseInt(tey - (location.y + ymargin));
 
                     } else {
-			var offsetx = (Math.floor(blankWidth / 2)) + 4;
-			var offsety = 4;
-			context.drawImage(this._images[0],
-					  offsetx + location.x,
-					  offsety + location.y,
-					  displayWidth, displayHeight);
+                        var offsetx = (Math.floor(blankWidth / 2)) + 4;
+                        var offsety = 4;
+                        context.drawImage(this._images[0],
+                            offsetx + location.x,
+                            offsety + location.y,
+                            displayWidth, displayHeight);
                     }
 
                     if (this._selected) {
-			//draw a blue border
-			context.beginPath();
-			var offsetx = xmargin;
-			var offsety = ymargin;
-			context.rect(offsetx +
-				     this._locations[this.selectedLoc].x,
-				     offsety +
-				     this._locations[this.selectedLoc].y,
-				     scaled_width + 2, scaled_height + 2 );
-			context.lineWidth = 4;
-			context.strokeStyle = "#92C4E1";
-			context.stroke();
+                        //draw a blue border
+                        context.beginPath();
+                        var offsetx = xmargin;
+                        var offsety = ymargin;
+                        context.rect(offsetx +
+                            this._locations[this.selectedLoc].x,
+                            offsety +
+                            this._locations[this.selectedLoc].y,
+                            scaled_width + 2, scaled_height + 2);
+                        context.lineWidth = 4;
+                        context.strokeStyle = "#92C4E1";
+                        context.stroke();
 
                     }
 
-		}
+                }
 
-	    } catch ( e ) {
+            } catch (e) {
 
-		this.drawEmpty( loc );
+                this.drawEmpty(loc);
 
-	    }
+            }
 
         } else
             this.drawEmpty(loc);
+        return [scaled_width, scaled_height];
 
     },
     //http://simonsarris.com/blog/510-making-html5-canvas-useful
@@ -506,9 +686,9 @@ PivotViewer.Views.Tile = Object.subClass({
             if ((this._locations[i].x <= mx) &&
                 (this._locations[i].x + this.width >= mx) &&
                 (this._locations[i].y <= my) &&
-                (this._locations[i].y + this.height >= my)){
-                  return i;
-                }
+                (this._locations[i].y + this.height >= my)) {
+                return i;
+            }
 
         return -1;
 
@@ -563,9 +743,14 @@ PivotViewer.Views.Tile = Object.subClass({
     firstFilterItemDone: false,
     selectedLoc: 0,
     setSelected: function(selected, sLoc, cellLoc) {
-      this._selected = selected;
-      if(sLoc != null) this.selectedLoc = sLoc;
-      if(cellLoc != null) this.cellLoc = cellLoc;
+        if (selected)
+            $.publish("/PivotViewer/ImageController/Selected", [this]);
+        this._selected = selected;
+        if (sLoc != null) this.selectedLoc = sLoc;
+        if (cellLoc != null) this.cellLoc = cellLoc;
+    },
+    isSelected: function() {
+        return this._selected;
     }
 });
 
