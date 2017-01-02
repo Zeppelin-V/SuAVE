@@ -204,11 +204,12 @@ PivotViewer.Views.CrosstabView = PivotViewer.Views.BucketView.subClass({
         }
 
         // recalculate max width of images in filterList
+        /*
         this.maxRatio = TileController._imageController.getRatio(this.tiles[0].item.img);
         for (var i = 0; i < this.filterList.length; i++) {
             var ratio = TileController._imageController.getRatio(this.filterList[i].item.img);
             if (ratio < this.maxRatio) this.maxRatio = ratio;
-        }
+        }*/
 
         var pt2Timeout = this.filterList.length == this.tiles.length ? 0 : 500, that = this;
         setTimeout(function () {

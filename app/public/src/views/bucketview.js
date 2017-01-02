@@ -374,11 +374,12 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
             tile._locations[0].destinationy = this.currentHeight * Math.sin(theta) + (this.currentHeight / 2);
         }
 
+        /*
         this.maxRatio = TileController._imageController.getRatio(this.tiles[0].item.img);
         for (var i = 0; i < this.filterList.length; i++) {
             var ratio = TileController._imageController.getRatio(this.filterList[i].item.img);
             if (ratio < this.maxRatio) this.maxRatio = ratio;
-        }
+        }*/
 
         var pt2Timeout = this.filterList.length == this.tiles.length ? 0 : 500, that = this;
         setTimeout(function () {
