@@ -14,6 +14,7 @@ function actionFormatter(value, row, index) {
 function detailFormatter(index, row) {
       var overview = '';
       overview = overview + '<p><b>comment:</b> ' + row.content + '</p>';
+      overview = overview + '<p><b>type:</b> ' + row.type + '</p>';
       overview = overview + '<p><b>user:</b> ' + row.commenter + '</p>';
       overview = overview + '<p><b>file:</b> ' + row.file + '</p>';
       overview = overview + '<p><b>view:</b> ' + row.view + '</p>';

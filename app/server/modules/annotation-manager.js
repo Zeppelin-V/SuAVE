@@ -241,6 +241,7 @@ exports.getCommentsByUser = function(user, callback){
 				temp.commenter = res.user;
 				temp.view = snapshot.view;
 				temp.file = snapshot.file;
+				temp.type = snapshot.selected_id != -1 ? 'selected item' : 'view';
 				if(snapshot.y_axis.length > 0){
 					temp.category = "X:<br>"+snapshot.x_axis+"<br> Y:<br> "+snapshot.y_axis;
 				}else{

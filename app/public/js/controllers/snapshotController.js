@@ -197,6 +197,9 @@ function SnapshotController()
         $("#panel-para").append("</tr>");
       }
 
+      var text = snapshotPara.selected != -1 ? 'selected item' : 'view';
+      $("#panel-para").append("<tr><td><h4>Type: </h4>"+ text +"</td></tr>");
+
       if(snapshotPara.string_filters != "None" && !filter){
         $("#panel-para").append("<tr>");
         $("#panel-para").append("<h4>String filters:</h4>");

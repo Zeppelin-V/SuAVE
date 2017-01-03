@@ -2760,7 +2760,8 @@ var graphPara = {};
 
         //set up window resizing listener
         $(window).resize(function() {
-            if ($('.pv-canvas').width() != _self.width() ||
+            //if ($('.pv-canvas').width() != _self.width() ||
+            if (Math.abs($('.pv-canvas').width() - _self.width()) > 20 ||
                 $('.pv-mainpanel').height() != ($(window).height() - $('.pv-toolbarpanel').height() - 30)) {
                 delay(function() {
                     //hanlde old bootstrap issue with modal

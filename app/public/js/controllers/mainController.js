@@ -55,11 +55,11 @@ function MainController()
 		}
 	};
 
-	var getComments = function(){
+	var getComments = function(para){
 		$.ajax({
 			url: "/getCommentsByParameters",
 			type: "GET",
-			data: {"para": PARA},
+			data: {"para": para},
 			success: function(output){
 				displayComments(output);
 			},
@@ -113,11 +113,17 @@ function MainController()
 			if(PARA.string_filters.length == 0) PARA.string_filters = "None";
 			if(PARA.num_filters.length == 0) PARA.num_filters = "None";
 
+			var currentPARA = JSON.parse(JSON.stringify(PARA));
+
+			if (!$('#comment-on-item').hasClass('btn-raised')) {
+				currentPARA.selected_id = -1;
+			}
+
 			$.ajax({
 				url: "/addCommentByParameters",
 				type: "POST",
 				data: {"user": user,
-				 	"file": file, "para": PARA,
+				 	"file": file, "para": currentPARA,
 					"comment": newComment, "graphPara":JSON.stringify(graphPara),
 					"replyUser": tempUser},
 				success: function(output){
@@ -139,6 +145,20 @@ function MainController()
 		window.open(chart.getImageURI(), "_blank")
 	});
 
+	$(document).on('click', '#comment-on-item', function(){
+		var button = $('#comment-on-item');
+		$("#comments-body").html("");
+		if (button.hasClass('btn-raised')) {
+			var tempPara = JSON.parse(JSON.stringify(PARA));
+			tempPara.selected_id = -1;
+			button.removeClass('btn-raised');
+			getComments(tempPara);
+		} else {
+			button.addClass('btn-raised');
+			getComments(PARA);
+		}
+	});
+
 	$(document).on('click', '#toggle-filter', function(){
 		$("#comments-body").html("");
 		if($('#toggle-filter').text() == 'See all comments'){
@@ -149,7 +169,6 @@ function MainController()
 			para.view = PARA.view;
 			para.x_axis = PARA.x_axis;
 			para.y_axis = PARA.y_axis;
-			console.log(para);
 			$.ajax({
 				url: "/getCommentsByParametersWithoutFilters",
 				type: "GET",
@@ -163,7 +182,7 @@ function MainController()
 			});
 		}else{
 			$('#toggle-filter').text('See all comments');
-			getComments();
+			getComments(PARA);
 		}
 	});
 
@@ -184,13 +203,30 @@ function MainController()
 
 		$('.operation-btn').html("");
 		if(PARA.num_filters != "None" || PARA.string_filters != "None"){
-			$('.operation-btn').append('<button id="download" type="button" class="btn btn-info">Download</button>');
-			$('.operation-btn').append('<button id="toggle-filter" type="button" class="btn btn-info">See all comments</button>')
+			$('.operation-btn').append(
+				'<div class="col-xs-12">'+
+					'<button id="download" type="button" class="btn btn-info">Download</button>' +
+					'<button id="toggle-filter" type="button" class="btn btn-info">See all comments</button>' +
+				'</div>'
+			);
 		}else{
-			$('.operation-btn').append('<button id="download" type="button" class="btn btn-info">Download</button>');
+			$('.operation-btn').append(
+				'<div class="col-xs-12">'+
+					'<button id="download" type="button" class="btn btn-info">Download</button>' +
+				'</div>'
+			);
 		}
 
-		getComments();
+		if (PARA.selected_id != -1) {
+			$('.operation-btn').append(
+				'<div class="col-xs-12">'+
+					'<button id="comment-on-item" class="btn btn-warning btn-raised">Comment on selected item</button>' +
+					//'<ul class="nav nav-pills"><li class="active"><a href="javascript:void(0)">Home</a></li></ul>' +
+				'</div>'
+			);
+			//$('.operation-btn').append('<ul class="nav nav-pills"><li class="active"><a href="javascript:void(0)">Home</a></li></ul>');
+		}
+		getComments(PARA);
 
 		//According to the PARA, draw charts
 		if(graphPara.view == "bucket"){
