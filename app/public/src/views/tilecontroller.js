@@ -293,34 +293,89 @@ PivotViewer.Views.TileController = Object.subClass({
 
                         var scaled_width = dims[0];
                         var scaled_height = dims[1];
+                        var xmargin = dims[2];
+                        var ymargin = dims[3];
 
                         var text = tile.item.name;
 
-                        if (text.length > max_chars)
-                            text = text.substr(0, max_chars) + "...";
-                        var m = context.measureText(text);
+                        var lines = [];
+                        if (text.length > max_chars) {
+
+                            var words = text.split(" ");
+                            var string = "";
+
+                            for (var w = 0; w < words.length; w++) {
+
+                                var sl = string.length + words[w].length;
+
+                                if (string.length > 0)
+                                    sl++;
+
+                                if (sl > max_chars) {
+
+                                    lines.push(string);
+                                    string = words[w];
+
+                                } else
+                                    string += " " + words[w];
+
+                            }
+
+                            lines.push(string);
+
+                            if (lines.length > 3) {
+
+                                lines = [];
+
+                                lines.push(text.substr(0,
+                                        max_chars - 3) +
+                                    "...");
+
+                            }
+
+                        } else
+                            lines.push(text);
+
+                        var ths = text_height + 4; // Text height plus space.
+                        var tw = 0;
+                        var th = lines.length * ths;
+                        for (var ln = 0; ln < lines.length; ln++) {
+
+                            var m = context.measureText(lines[ln]);
+
+                            if (tw < m.width)
+                                tw = m.width;
+
+                        }
 
                         var location = locations[l];
-                        var xslop = (tile.width - scaled_width) / 2;
-                        var yslop = (tile.height - scaled_height) / 2;
 
-                        var x1 = location.x + xslop +
-                            (((scaled_width - 8) - m.width) / 2);
-                        var y1 = location.y + yslop +
-                            scaled_height - (4 + text_height);
+                        var x1 = location.x + xmargin;
+                        var y1 = location.y + ymargin;
 
                         context.save();
                         context.strokeStyle = "rgb( 0, 0, 0 )";
-                        context.fillStyle = "rgba( 64, 64, 64, .5)";
+                        context.fillStyle = "rgba( 64, 64, 64, .5 )";
 
-                        this.roundRect(context, x1 - 2, y1 - text_height,
-                            m.width + 4, text_height + 4, 5,
+                        var rectw = tw + 8;
+                        var recth = th + 4;
+
+                        this.roundRect(context,
+                            x1 + ((scaled_width - rectw) / 2),
+                            y1 + scaled_height - (recth + 4),
+                            rectw, recth,
+                            5,
                             true, false);
                         context.restore()
 
                         context.save();
-                        context.fillStyle = "rgba( 255, 255, 255 ,1 )";
-                        context.fillText(text, x1, y1);
+                        context.textAlign = "center";
+                        context.fillStyle = "rgba( 255, 255, 255, 1 )";
+                        for (var ln = 0; ln < lines.length; ln++)
+                            context.fillText(lines[ln],
+                                x1 + (scaled_width / 2),
+                                y1 - th + scaled_height +
+                                (ln * ths) + 6);
                         context.restore();
 
                     }
@@ -469,7 +524,7 @@ PivotViewer.Views.Tile = Object.subClass({
 
         if ((this.width == 0) ||
             (this.height == 0))
-            return;
+            return undefined;
 
         var location = this._locations[loc];
         var ctrlr = TileController._imageController;
@@ -680,7 +735,7 @@ PivotViewer.Views.Tile = Object.subClass({
 
         } else
             this.drawEmpty(loc);
-        return [scaled_width, scaled_height];
+        return [scaled_width, scaled_height, xmargin, ymargin];
 
     },
     //http://simonsarris.com/blog/510-making-html5-canvas-useful
@@ -722,11 +777,11 @@ PivotViewer.Views.Tile = Object.subClass({
 
         } else //use the controller's blank tile
             controller.DrawLevel(this.item,
-            context,
-            location.x + 4,
-            location.y + 4,
-            this.width - 8,
-            this.height - 8);
+                context,
+                location.x + 4,
+                location.y + 4,
+                this.width - 8,
+                this.height - 8);
 
     },
     now: null,

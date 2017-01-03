@@ -592,7 +592,7 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
         var bucketCols = this.rowscols.Columns;
         var bucketCol = Math.round(((location.x - this.currentOffsetX) - (bucket * (bucketCols * tileMaxWidth + padding))) / tileMaxWidth);
         //fixed the rounding error above
-        if(bucket > 6) bucketCol--;
+        //if(bucket > 6) bucketCol--;
         var col = (bucket * bucketCols) + bucketCol;
         var row = Math.round((this.canvasHeightUIAdjusted - (location.y - this.currentOffsetY)) / tile.height) - 1;
 
