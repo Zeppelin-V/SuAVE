@@ -247,20 +247,23 @@ PivotViewer.Views.TileController = Object.subClass({
 
         }
 
-        var twminus8 = tile_width - 8;
+        var tw_minus_24 = tile_width - 24;
         var text_height =
-            Math.floor((twminus8 / max_width) * text_min_height);
+            Math.floor((tw_minus_24 / max_width) * text_min_height);
 
+        if (text_height > 30)
+            text_height = 30;
         var ok = text_height >= text_min_height;
 
         if (!ok) {
 
             var avg_charsize = width_sum / length_sum;
+            var tile_limit = tw_minus_24 + (3 * avg_charsize);
 
             for (max_chars -= 3; max_chars >= 20 && !ok; max_chars--) {
 
                 text_height =
-                    Math.floor((twminus8 /
+                    Math.floor((tile_limit /
                             (max_chars * avg_charsize)) *
                         text_min_height);
                 ok = text_height >= text_min_height;
@@ -310,8 +313,8 @@ PivotViewer.Views.TileController = Object.subClass({
                         context.strokeStyle = "rgb( 0, 0, 0 )";
                         context.fillStyle = "rgba( 64, 64, 64, .5)";
 
-                        this.roundRect(context, x1 - 4, y1 - text_height,
-                            m.width + 8, text_height + 8, 5,
+                        this.roundRect(context, x1 - 2, y1 - text_height,
+                            m.width + 4, text_height + 4, 5,
                             true, false);
                         context.restore()
 
