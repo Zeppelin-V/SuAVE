@@ -142,7 +142,11 @@ function MainController()
 	// Wait for the chart to finish drawing before calling the getImageURI() method.
 	$(document).on('click', '#download', function(){
 		//window.open(chart.getImageURI(), 'Download');
-		window.open(chart.getImageURI(), "_blank")
+		if(PARA.selected_id == -1) {
+			window.open(chart.getImageURI(), "_blank")
+		} else {
+			window.open(PARA.selected_image, "_blank")
+		}
 	});
 
 	$(document).on('click', '#comment-on-item', function(){
