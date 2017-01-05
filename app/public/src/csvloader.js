@@ -13,12 +13,13 @@
 //
 
 PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoader.subClass({
-    init: function (csvUri, proxy) {
+    init: function(csvUri, proxy) {
         this.csvUriNoProxy = csvUri;
         if (proxy) this.csvUri = proxy + csvUri;
         else this.csvUri = csvUri;
+        console.log(this.csvUri);
     },
-    loadCollection: function (collection) {
+    loadCollection: function(collection) {
         this.collection = collection;
         this.collection.config = {};
         this._super(collection);
@@ -29,30 +30,39 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
         var project = filename.substring(filename.lastIndexOf("/") + 1, filename.lastIndexOf("."));
         collection.name = project;
 
-        if(_options.authoring == false){
-          collection.imageBase = project + "/" + project + ".dzc";
-        }else{
-          //if there's not dzc, load the default
-          if(!collection.imageBase) collection.imageBase = "../img/collection/collection.dzc";
+        console.log(collection.imageBase);
+        if (_options.authoring == false) {
+            collection.imageBase = project + "/" + project + ".dzc";
+
+        } else {
+            //if there's not dzc, load the default
+            if (!collection.imageBase) {
+                collection.imageBase = "../img/collection/collection.dzc";
+                //save imageBase for annotation
+                _options.imageBase = 'http://' + window.location.href.split('/')[2] + '/img/collection/';
+            } else {
+              //save imageBase for annotation
+              _options.imageBase = collection.imageBase.substr(0, collection.imageBase.lastIndexOf('/') + 1);
+            }
         }
+
         //if(!collection.imageBase) collection.imageBase = project + "/" + project + ".dzc";
         collection.brandImage = "";
 
         var that = this;
         if (this.csvUri.endsWith(".zip")) {
-            jBinary.loadData(this.csvUri).then(function (binary) {
+            jBinary.loadData(this.csvUri).then(function(binary) {
                 var zip = new JSZip();
                 zip.load(binary);
                 that.data = zip.file(/.csv/)[0].asText().csvToArray();
                 that.loadData();
             });
-        }
-        else {
+        } else {
             $.ajax({
                 type: "GET",
                 url: this.csvUri,
                 dataType: "text",
-                success: function (csv) {
+                success: function(csv) {
                     Debug.log('CSV loaded');
                     that.data = csv.csvToArray();
                     if (that.data.length <= 1) {
@@ -62,12 +72,14 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                         //Display a message so the user knows something is wrong
                         var msg = 'There are no items in the CSV Collection<br><br>';
                         $('.pv-wrapper').append("<div id=\"pv-empty-collection-error\" class=\"pv-modal-dialog\"><div><a href=\"#pv-modal-dialog-close\" title=\"Close\" class=\"pv-modal-dialog-close\">X</a><h2>HTML5 PivotViewer</h2><p>" + msg + "</p></div></div>");
-                        setTimeout(function () { window.open("#pv-empty-collection-error", "_self") }, 1000)
+                        setTimeout(function() {
+                            window.open("#pv-empty-collection-error", "_self")
+                        }, 1000)
                         return;
                     }
                     that.loadData();
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     //Make sure throbber is removed else everyone thinks the app is still running
                     $('.pv-loading').remove();
 
@@ -78,14 +90,20 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                     msg += 'Details    : ' + jqXHR.responseText + '<br>';
                     msg += '<br>Pivot Viewer cannot continue until this problem is resolved<br>';
                     $('.pv-wrapper').append("<div id=\"pv-loading-error\" class=\"pv-modal-dialog\"><div><a href=\"#pv-modal-dialog-close\" title=\"Close\" class=\"pv-modal-dialog-close\">X</a><h2>HTML5 PivotViewer</h2><p>" + msg + "</p></div></div>");
-                    setTimeout(function () { window.open("#pv-loading-error", "_self") }, 1000)
+                    setTimeout(function() {
+                        window.open("#pv-loading-error", "_self")
+                    }, 1000)
                 }
             });
         }
     },
-    loadData: function () {
+    loadData: function() {
         var categories = this.data[0];
-        var name_column = -1, img_column = -1, href_column = -1, desc_column = -1, info_column = -1;
+        var name_column = -1,
+            img_column = -1,
+            href_column = -1,
+            desc_column = -1,
+            info_column = -1;
 
         for (var i = 0; i < categories.length; i++) {
             if (categories[i].charAt(0) == "#") {
@@ -97,8 +115,8 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                     this.collection.config.views = [];
                     while (this.data[j][i] != null && this.data[j][i] != "") this.collection.config.views.push(this.data[j++][i]);
                 }
-                if(categories[i] != "#textlocation"){
-                  continue;
+                if (categories[i] != "#textlocation") {
+                    continue;
                 }
             }
 
@@ -116,26 +134,22 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                 else if (categories[i].indexOf("#link", index) !== -1) {
                     type = PivotViewer.Models.FacetType.Link;
                     visible = false;
-                }
-                else if ((categories[i].indexOf("#multi", index) !== -1)){
+                } else if ((categories[i].indexOf("#multi", index) !== -1)) {
                     isMultipleItems = true;
                     type = PivotViewer.Models.FacetType.String;
-                }
-                else if(categories[i].indexOf("#info", index) !== -1) {
-                  info_column = i;
-                  type = PivotViewer.Models.FacetType.Description;
-                  visible = false;
-                  continue;
-                }
-                else if (categories[i].indexOf("#textlocation", index) !== -1){
+                } else if (categories[i].indexOf("#info", index) !== -1) {
+                    info_column = i;
+                    type = PivotViewer.Models.FacetType.Description;
+                    visible = false;
+                    continue;
+                } else if (categories[i].indexOf("#textlocation", index) !== -1) {
                     type = PivotViewer.Models.FacetType.Location;
                     index = categories[i].indexOf("#textlocation", index);
-                }else{
+                } else {
                     type = PivotViewer.Models.FacetType.String;
                 }
                 if (categories[i].indexOf("#hidden") !== -1) visible = false;
-            }
-            else {
+            } else {
                 type = PivotViewer.Models.FacetType.String;
                 index = categories[i].length;
             }
@@ -149,19 +163,20 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
         for (var i = 1; i < this.data.length; i++) {
             var row = this.data[i];
             var item = new PivotViewer.Models.Item(row[img_column], String(i), href_column == -1 ? "" : row[href_column], row[name_column]);
-            if(info_column != -1) {
+            if (info_column != -1) {
 
-              item.description = row[info_column];
+                item.description = row[info_column];
             }
             this.collection.items.push(item);
         }
         $.publish("/PivotViewer/Models/Collection/Loaded", null);
     },
-    loadColumn: function (category) {
+    loadColumn: function(category) {
         var integer = true;
         for (var i = 0; i < this.collection.items.length; i++) {
             // var item = this.collection.items[i], raw = this.data[i + 1][category.column];
-            var item = this.collection.items[i], raw = this.data[i + 1][category.column]; // +1 the header row is skipped
+            var item = this.collection.items[i],
+                raw = this.data[i + 1][category.column]; // +1 the header row is skipped
             if (raw.trim() == "") continue;
             var f = new PivotViewer.Models.Facet(category.name);
             if (category.isNumber() || category.isOrdinal()) {
@@ -169,18 +184,16 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                 f.addValue(new PivotViewer.Models.FacetValue(value, raw));
                 if (value != Math.floor(value)) integer = false;
                 if (category.isOrdinal()) category.labels[value] = raw;
-            }
-            else if (category.isDateTime()) f.addValue(new PivotViewer.Models.FacetValue(moment(raw, moment.parseFormat(raw))._d.toString(), raw));
+            } else if (category.isDateTime()) f.addValue(new PivotViewer.Models.FacetValue(moment(raw, moment.parseFormat(raw))._d.toString(), raw));
             else if (category.isString()) {
                 //f.AddFacetValue(new PivotViewer.Models.FacetValue(raw));
                 if (category.isMultipleItems == true) {
                     var split = raw.split('|');
                     //if (split.length < 2) split = raw.split(',');
-                    for (var sp = 0 ; sp < split.length; sp++) {
+                    for (var sp = 0; sp < split.length; sp++) {
                         f.addValue(new PivotViewer.Models.FacetValue(split[sp].trim()));
                     }
-                }
-                else {
+                } else {
                     f.addValue(new PivotViewer.Models.FacetValue(raw));
                 }
 
@@ -195,10 +208,14 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
 
         if (category.isNumber() || category.isOrdinal()) category.integer = integer;
     },
-    getRow: function (id) {
-        var row = this.data[id], facets = [], dIndex;
+    getRow: function(id) {
+        var row = this.data[id],
+            facets = [],
+            dIndex;
         for (var i = 0; i < Settings.visibleCategories.length; i++) {
-            var index = Settings.visibleCategories[i], category = this.collection.categories[index], raw = row[category.column];
+            var index = Settings.visibleCategories[i],
+                category = this.collection.categories[index],
+                raw = row[category.column];
             if (raw.trim() == "") continue;
             var f = new PivotViewer.Models.Facet(category.name);
             if (category.isString()) {
@@ -206,11 +223,10 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                 if (category.isMultipleItems == true) {
                     var split = raw.split('|');
                     if (split.length < 2) split = raw.split(',');
-                    for (var sp = 0 ; sp < split.length; sp++) {
+                    for (var sp = 0; sp < split.length; sp++) {
                         f.addValue(new PivotViewer.Models.FacetValue(split[sp].trim()));
                     }
-                }
-                else {
+                } else {
                     f.addValue(new PivotViewer.Models.FacetValue(raw));
                 }
 
@@ -223,8 +239,7 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
                 value.value = raw;
                 value.href = raw;
                 f.addValue(value);
-            }
-            else f.addValue(new PivotViewer.Models.FacetValue(raw));
+            } else f.addValue(new PivotViewer.Models.FacetValue(raw));
             facets.push(f);
         }
         return facets;

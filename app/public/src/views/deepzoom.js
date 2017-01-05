@@ -135,6 +135,8 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
                 var collection = $(xml).find("Collection");
                 that._tileSize = $(collection).attr("TileSize");
                 that._format = $(collection).attr('Format');
+                //save image format into PARA for annotation
+                _options.imageFormat = that._format;
                 that._collageMaxLevel = $(collection).attr('MaxLevel');
                 var overlap = $(collection).attr('ItemOverlap');
                 that._collageItemOverlap =

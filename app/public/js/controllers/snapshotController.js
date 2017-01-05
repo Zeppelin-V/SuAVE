@@ -276,7 +276,9 @@ function SnapshotController()
       graphPara = JSON.parse(snapshotPara.graph_para);
 
       //According to the PARA, draw charts
-  		if(graphPara.view == "bucket"){
+      if(snapshotPara.selected_id != -1) {
+        $('#chart_div').html('<p align="center"> <img alt="Item Image" src="' + snapshotPara.selected_image + '"></p>');
+      } else if(graphPara.view == "bucket"){
   			var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
   			var dat = [];
   			dat.push([graphPara.x, "Count"]);

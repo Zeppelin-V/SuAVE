@@ -2476,6 +2476,8 @@ var graphPara = {};
 
         $.subscribe("/PivotViewer/ImageController/TooltipEnable", function(event) {
             _tooltip_enable = event;
+            if (!_tooltip_enable)
+                $('div.tooltip').hide();
         });
 
         $('<div class="tooltip">test</div>').appendTo('body');
@@ -2490,8 +2492,10 @@ var graphPara = {};
 
                         var tPosX = event.pageX + 10;
                         var tPosY = event.pageY - 20;
-                        $('div.tooltip').text(_tooltip_item.item.name);
-                        $('div.tooltip').css({
+                        var tt = $('div.tooltip');
+                        tt.text(_tooltip_item.item.name);
+
+                        tt.css({
                             'position': 'absolute',
                             'color': 'white',
                             'background': 'grey',
@@ -2502,7 +2506,16 @@ var graphPara = {};
                             'left': tPosX,
                             'z-index': 999
                         });
-                        $('div.tooltip').show();
+                        tt.show();
+
+                        if (tPosX + tt[0].clientWidth >
+                            $(".pv-canvas")[0].offsetWidth) {
+
+                            tt.css({
+                                'left': tPosX - tt[0].clientWidth
+                            });
+
+                        }
 
                     }
                 }, 750);
@@ -2939,7 +2952,10 @@ var graphPara = {};
 
         var selectedItem = evt.item;
         //takes in parameter
-        if (_options.authoring == true) PARA.selected_id = evt.item.item.id;
+        if (_options.authoring == true) {
+            PARA.selected_id = evt.item.item.id;
+            PARA.selected_image = _options.imageBase + evt.item.item.img + '_files/8/0_0.' + _options.imageFormat;
+        }
         if (selectedItem != null) {
             var alternate = true;
             $('.pv-infopanel-heading').empty();

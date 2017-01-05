@@ -32,6 +32,8 @@ PivotViewer.Views.TileController = Object.subClass({
         }
         this.isZooming = false;
         this._started = false;
+        this.isFirefox = typeof InstallTrigger !== 'undefined';
+
     },
     getTileById: function(id) {
         var item = this._tilesById[id];
@@ -277,7 +279,10 @@ PivotViewer.Views.TileController = Object.subClass({
             $.publish("/PivotViewer/ImageController/TooltipEnable", [false]);
 
             context.font = text_height + "px Roboto,Helvetica,Arial,sans-serif";
-
+            var thx = this.getTextHeight(context.font);
+            text_height = thx.height;
+            text_ascent = thx.ascent;
+            text_descent = thx.descent;
             for (var i = 0; i < tiles.length; i++) {
 
                 var tile = tiles[i];
@@ -287,14 +292,14 @@ PivotViewer.Views.TileController = Object.subClass({
 
                     var dims = candidates[i][l];
 
-                    if ((dims != undefined) && (dims[0] != 0)) {
+                    if ((dims != undefined) && (dims.width != 0)) {
 
                         location = locations[l];
 
-                        var scaled_width = dims[0];
-                        var scaled_height = dims[1];
-                        var xmargin = dims[2];
-                        var ymargin = dims[3];
+                        var scaled_width = dims.width;
+                        var scaled_height = dims.height;
+                        var xmargin = dims.xmargin;
+                        var ymargin = dims.ymargin;
 
                         var text = tile.item.name;
 
@@ -336,18 +341,17 @@ PivotViewer.Views.TileController = Object.subClass({
                         } else
                             lines.push(text);
 
-                        var ths = text_height + 4; // Text height plus space.
                         var tw = 0;
-                        var th = lines.length * ths;
                         for (var ln = 0; ln < lines.length; ln++) {
 
                             var m = context.measureText(lines[ln]);
 
                             if (tw < m.width)
                                 tw = m.width;
-
                         }
 
+                        var ths = text_height; // Text height plus space.
+                        var th = lines.length * ths;
                         var location = locations[l];
 
                         var x1 = location.x + xmargin;
@@ -358,24 +362,27 @@ PivotViewer.Views.TileController = Object.subClass({
                         context.fillStyle = "rgba( 64, 64, 64, .5 )";
 
                         var rectw = tw + 8;
-                        var recth = th + 4;
+                        var recth = th;
+                        hshift = this.isFirefox ? 4 : 8;
 
                         this.roundRect(context,
                             x1 + ((scaled_width - rectw) / 2),
-                            y1 + scaled_height - (recth + 4),
+                            y1 + scaled_height - (recth + hshift),
                             rectw, recth,
-                            5,
+                            4,
                             true, false);
                         context.restore()
 
                         context.save();
+                        context.textBaseline = "alphabetic";
                         context.textAlign = "center";
-                        context.fillStyle = "rgba( 255, 255, 255, 1 )";
+                        context.fillStyle = "white";
                         for (var ln = 0; ln < lines.length; ln++)
                             context.fillText(lines[ln],
                                 x1 + (scaled_width / 2),
                                 y1 - th + scaled_height +
-                                (ln * ths) + 6);
+                                text_ascent +
+                                (ln * ths) - hshift - 1);
                         context.restore();
 
                     }
@@ -402,7 +409,41 @@ PivotViewer.Views.TileController = Object.subClass({
         }
 
     },
+    getTextHeight: function(font) {
 
+        var text = $('<span>Hg</span>').css({
+            "font": font
+        });
+        var block = $('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
+
+        var div = $('<div></div>');
+        div.append(text, block);
+
+        var body = $('body');
+        body.append(div);
+
+        try {
+
+            var result = {};
+
+            block.css({
+                verticalAlign: 'baseline'
+            });
+            result.ascent = block.offset().top - text.offset().top;
+
+            block.css({
+                verticalAlign: 'bottom'
+            });
+            result.height = block.offset().top - text.offset().top;
+
+            result.descent = result.height - result.ascent;
+
+        } finally {
+            div.remove();
+        }
+
+        return result;
+    },
     /**
      * Pinched from answer #2 from
      * http://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
@@ -735,7 +776,12 @@ PivotViewer.Views.Tile = Object.subClass({
 
         } else
             this.drawEmpty(loc);
-        return [scaled_width, scaled_height, xmargin, ymargin];
+        var result = {};
+        result.width = scaled_width;
+        result.height = scaled_height;
+        result.xmargin = xmargin;
+        result.ymargin = ymargin;
+        return result;
 
     },
     //http://simonsarris.com/blog/510-making-html5-canvas-useful

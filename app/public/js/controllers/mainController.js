@@ -229,7 +229,9 @@ function MainController()
 		getComments(PARA);
 
 		//According to the PARA, draw charts
-		if(graphPara.view == "bucket"){
+		if(PARA.selected_id != -1) {
+			$('#chart_div').html('<p align="center"> <img alt="Item Image" src="' + PARA.selected_image + '"></p>');
+		} else if(graphPara.view == "bucket"){
 			chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
 			var dat = [];
 			dat.push([graphPara.x, "Count"]);

@@ -130,7 +130,7 @@ function CommentsController()
       data: {"id" : para_id},
       success: function(data){
         snapshotId = data._id;
-        that.getGraph(data.graph_para, row);
+        that.getGraph(data, row);
       },
       error: function(jqXHR){
         console.log(jqXHR.responseText+' :: '+jqXHR.statusText);
@@ -140,12 +140,15 @@ function CommentsController()
 
   //show the google chart
   this.getGraph = function(data, row){
-    var graphPara = JSON.parse(data);
+    var graphPara = JSON.parse(data.graph_para);
     var _width = $('.chart_container').width()*0.7;
     var _height = _width*2/3;
 
+    console.log(data.selected_image);
     //According to the PARA, draw charts
-    if(graphPara.view == "bucket"){
+    if(data.selected_id != -1) {
+      $('#chart_div_'+row.comment_id).html('<p style="margin-top: 20%;" align="center"> <img alt="Item Image" src="' + data.selected_image + '"></p>');
+    } else if(graphPara.view == "bucket"){
       var chart = new google.visualization.ColumnChart(document.getElementById("chart_div_"+row.comment_id));
       var dat = [];
       dat.push([graphPara.x, "Count"]);
