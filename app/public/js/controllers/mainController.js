@@ -147,14 +147,20 @@ function MainController()
 
 	$(document).on('click', '#comment-on-item', function(){
 		var button = $('#comment-on-item');
+		var icon = $('#toggle-icon');
 		$("#comments-body").html("");
+
 		if (button.hasClass('btn-raised')) {
 			var tempPara = JSON.parse(JSON.stringify(PARA));
 			tempPara.selected_id = -1;
 			button.removeClass('btn-raised');
+			icon.addClass('fa-square-o');
+			icon.removeClass('fa-check-square-o');
 			getComments(tempPara);
 		} else {
 			button.addClass('btn-raised');
+			icon.addClass('fa-check-square-o');
+			icon.removeClass('fa-square-o');
 			getComments(PARA);
 		}
 	});
@@ -220,7 +226,7 @@ function MainController()
 		if (PARA.selected_id != -1) {
 			$('.operation-btn').append(
 				'<div class="col-xs-12">'+
-					'<button id="comment-on-item" class="btn btn-warning btn-raised">Comment on selected item</button>' +
+					'<button id="comment-on-item" class="btn btn-warning btn-raised"><i id="toggle-icon" class="fa fa-check-square-o" aria-hidden="true">  Comment on selected item</i></button>' +
 					//'<ul class="nav nav-pills"><li class="active"><a href="javascript:void(0)">Home</a></li></ul>' +
 				'</div>'
 			);

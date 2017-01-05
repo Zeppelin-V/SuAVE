@@ -17,7 +17,6 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
         this.csvUriNoProxy = csvUri;
         if (proxy) this.csvUri = proxy + csvUri;
         else this.csvUri = csvUri;
-        console.log(this.csvUri);
     },
     loadCollection: function(collection) {
         this.collection = collection;
@@ -30,7 +29,6 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
         var project = filename.substring(filename.lastIndexOf("/") + 1, filename.lastIndexOf("."));
         collection.name = project;
 
-        console.log(collection.imageBase);
         if (_options.authoring == false) {
             collection.imageBase = project + "/" + project + ".dzc";
 
