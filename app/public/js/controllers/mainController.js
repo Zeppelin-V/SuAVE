@@ -152,7 +152,8 @@ function MainController()
 	$(document).on('click', '#comment-on-item', function(){
 		var button = $('#comment-on-item');
 		var icon = $('#toggle-icon');
-		$("#comments-body").html("");
+		$("#comments-body").html('');
+		$('#chart_div').html('');
 
 		if (button.hasClass('btn-raised')) {
 			var tempPara = JSON.parse(JSON.stringify(PARA));
@@ -161,11 +162,13 @@ function MainController()
 			icon.addClass('fa-square-o');
 			icon.removeClass('fa-check-square-o');
 			getComments(tempPara);
+			drawGraph();
 		} else {
 			button.addClass('btn-raised');
 			icon.addClass('fa-check-square-o');
 			icon.removeClass('fa-square-o');
 			getComments(PARA);
+			$('#chart_div').html('<p align="center"> <img alt="Item Image" src="' + PARA.selected_image + '"></p>');
 		}
 	});
 
@@ -241,7 +244,13 @@ function MainController()
 		//According to the PARA, draw charts
 		if(PARA.selected_id != -1) {
 			$('#chart_div').html('<p align="center"> <img alt="Item Image" src="' + PARA.selected_image + '"></p>');
-		} else if(graphPara.view == "bucket"){
+		} else {
+			drawGraph();
+		}
+  });
+
+	var drawGraph = function() {
+		if(graphPara.view == "bucket"){
 			chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
 			var dat = [];
 			dat.push([graphPara.x, "Count"]);
@@ -406,5 +415,5 @@ function MainController()
 			}
 			google.charts.setOnLoadCallback(drawChart);
 		}
-  });
+	}
 }
