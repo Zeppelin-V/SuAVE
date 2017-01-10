@@ -535,8 +535,10 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
                 if (newEp < epsilon) epsilon = newEp;
             }
             epsilon = Math.pow(10, Math.floor(Math.log(epsilon) / Math.log(10))); bucketSize = bucketSize - (epsilon > 1 ? 1 : epsilon);
-            for (var b = 0; b < bkts.length; b++) bkts[b].endLabel = (bkts[b].startRange + bucketSize).toString();
-
+            for (var b = 0; b < bkts.length; b++) {
+                // round to 2 decimal point to avoid random JS rounding errors
+                bkts[b].endLabel = (bkts[b].startRange + bucketSize).toFixed(2).toString();
+            }
 
             var empty = 0;
             for (var b = 0; b < bkts.length; b++) {
