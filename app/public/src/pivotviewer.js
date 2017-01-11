@@ -989,6 +989,7 @@ var graphPara = {};
                     }
                 }
             }
+            //console.log(numericFilters);
         } else {
             filterList = [];
             stringFilters = _stringFilters;
@@ -1232,8 +1233,12 @@ var graphPara = {};
         _datetimeFilters = datetimeFilters;
         _selectedFilters = selectedFilters
 
-        if (_longstringFilters != null || _numericFilters.length != 0 || _stringFilters.length != 0 || _datetimeFilters.length != 0) $('.pv-filterpanel-clearall').css('visibility', 'visible');
-        else $('.pv-filterpanel-clearall').css('visibility', 'hidden');
+        if (_longstringFilters != null || _numericFilters.length != 0 || _stringFilters.length != 0 || _datetimeFilters.length != 0) {
+            $('.pv-filterpanel-clearall').css('visibility', 'visible');
+        }
+        else {
+            $('.pv-filterpanel-clearall').css('visibility', 'hidden');
+        }
 
         var activeCat = PivotCollection.getCategoryByName(_nameMapping[$(".pv-facet").eq($(".pv-filterpanel-accordion").accordion("option", "active")).attr("facet")]);
         if (filterChange && filterChange.category == activeCat) {
@@ -1850,6 +1855,7 @@ var graphPara = {};
 
         //Init Tile Controller and start animation loop
         TileController = new PivotViewer.Views.TileController(_imageController);
+        console.log(PivotCollection.items);
         _tiles = TileController.initTiles(PivotCollection.items, baseCollectionPath, canvasContext);
         //Init image controller
         _imageController.setup(baseCollectionPath.replace("\\", "/"));
@@ -2289,6 +2295,8 @@ var graphPara = {};
         });
 
         $(".pv-filterpanel-clearall").click(function(e) {
+            //clear search bar
+            $(".pv-filterpanel-search").val("");
             //deselect all String Facets
             var checked = $(".pv-facet-value:checked");
             checked.prop("checked", false);

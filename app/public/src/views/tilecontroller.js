@@ -234,7 +234,6 @@ PivotViewer.Views.TileController = Object.subClass({
                     width_sum += m.width;
                     if (m.width > max_width)
                         max_width = m.width;
-
                     length_sum += tile.item.name.length;
                     if (tile.item.name.length > max_chars)
                         max_chars = tile.item.name.length;
