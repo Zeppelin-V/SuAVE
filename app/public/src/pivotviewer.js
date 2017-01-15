@@ -2698,22 +2698,6 @@ var graphPara = {};
 
             PV.filterCollection();
 
-            if (_options.parameter) {
-                var para = _options.parameter;
-
-                if (para.string_filters) {
-                    for (var i = 0; i < para.string_filters.length; i++) {
-                        PV.presetStrFilters(para, i);
-                    }
-                }
-
-                if (para.num_filters) {
-                    for (var i = 0; i < para.num_filters.length; i++) {
-                        PV.presetNumFilters(para, i);
-                    }
-                }
-            }
-
             if (Settings.visibleCategories.length < PivotCollection.categories.length)
                 $.publish("/PivotViewer/Settings/Changed", [Settings]);
             else $(".pv-facet").attr("visible", "visible");
@@ -2772,6 +2756,22 @@ var graphPara = {};
                                 });
                             }, waitTime);
                         });
+                    }
+                }
+            }
+
+            if (_options.parameter) {
+                var para = _options.parameter;
+
+                if (para.string_filters) {
+                    for (var i = 0; i < para.string_filters.length; i++) {
+                        PV.presetStrFilters(para, i);
+                    }
+                }
+
+                if (para.num_filters) {
+                    for (var i = 0; i < para.num_filters.length; i++) {
+                        PV.presetNumFilters(para, i);
                     }
                 }
             }
@@ -2859,8 +2859,7 @@ var graphPara = {};
     PV.presetStrFilters = function(para, i) {
         setTimeout(function() {
             $(".pv-facet[aria-controls='pv-cat-" + PV.cleanName(para.string_filters[i]["facet"]) + "']").trigger('click');
-
-            var listPage = _listObj[para.string_filters[i]["facet"]];
+            var listPage = _listObj[PV.cleanName(para.string_filters[i]["facet"])];
             var size = listPage.size();
             listPage.page = size;
             listPage.update();
@@ -2871,8 +2870,7 @@ var graphPara = {};
 
             listPage.page = 10;
             listPage.update();
-
-        }, 10);
+        }, 500);
     }
 
     PV.setStrFilterValues = function(para, v, i) {
