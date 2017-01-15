@@ -97,7 +97,7 @@ PivotViewer.Models.Loaders.CSVLoader = PivotViewer.Models.Loaders.ICollectionLoa
     },
     loadData: function() {
         var categories = this.data[0];
-        // fix dynamic text problem temporarily
+        // fix dynamic text problem temp
         var name_column = 0,
             img_column = -1,
             href_column = -1,

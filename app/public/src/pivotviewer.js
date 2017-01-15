@@ -1855,7 +1855,7 @@ var graphPara = {};
 
         //Init Tile Controller and start animation loop
         TileController = new PivotViewer.Views.TileController(_imageController);
-        console.log(PivotCollection.items);
+
         _tiles = TileController.initTiles(PivotCollection.items, baseCollectionPath, canvasContext);
         //Init image controller
         _imageController.setup(baseCollectionPath.replace("\\", "/"));

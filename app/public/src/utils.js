@@ -384,7 +384,8 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
 
           if (temp.indexOf(value) != -1){
             if (category1.isDateTime()) {
-              label = moment(temp, moment.parseFormat(temp)).format("MM/DD/YYYY").toString();
+              var date = new Date(temp);
+              label = date.toLocaleDateString();
             } else {
               label = facet.values[va].label;
             }
@@ -434,7 +435,8 @@ PivotViewer.Utils.getBuckets = function (filterList, category, valueFn, labelFn)
 
                   if (temp.indexOf(value) != -1){
                     if (category1.isDateTime()) {
-                      label = moment(temp, moment.parseFormat(temp)).format("MM/DD/YYYY").toString();
+                      var date = new Date(temp);
+                      label = date.toLocaleDateString();
                     } else {
                       label = facet.values[va].label;
                     }
