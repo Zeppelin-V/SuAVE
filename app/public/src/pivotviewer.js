@@ -258,7 +258,6 @@ var graphPara = {};
         var p = $("#pv-filterpanel-category-numberitem-" + name);
         var create = p.attr("created") == undefined;
         if (create) p.append("<span class='pv-facet-numericslider-range-val'>&nbsp;</span><br>");
-
         p.find("svg").remove();
         var histogram = histogramFn(values);
         var chart = "<svg class='pv-filterpanel-accordion-facet-chart' width='" + 165 + "' height='" + 80 + "'>";
@@ -279,6 +278,7 @@ var graphPara = {};
             p.append("<div id='pv-facet-numericslider-" + name + "' class='pv-facet-numericslider'></div><table width=100%><tr><td class='pv-facet-numericslider-range-min'>" + label1 + "</td><td align=right class='pv-facet-numericslider-range-max'>" + label2 + "</td></tr></table>");
             p.attr("created", 1);
         }
+
         var s = $("#pv-facet-numericslider-" + name);
         var range = histogram.max - histogram.min;
         if (create) {
@@ -286,6 +286,7 @@ var graphPara = {};
                 values: [histogram.min, histogram.max]
             });
         }
+
         s.modSlider("option", "min", histogram.min);
         s.modSlider("option", "max", histogram.max);
         s.modSlider("option", "step", (range < 10 && !category.integer ? range / histogram.histogram.length : 1));
@@ -304,6 +305,11 @@ var graphPara = {};
                 PV._stopSlider($('#pv-facet-numericslider-' + name), category, event, ui);
             });
         }
+
+        // refresh slide label
+        $(".pv-facet-numericslider-range-min").html(category.getValueLabel(histogram.min));
+        $(".pv-facet-numericslider-range-max").html(category.getValueLabel(histogram.max));
+        s.modSlider('changeValues', [Math.min.apply(null, values), Math.max.apply(null, values)]);
     }
 
     PV._refreshNumberWidget = function(category, values) {
@@ -972,9 +978,10 @@ var graphPara = {};
                     var s = $('#pv-filterpanel-category-numberitem-' + PV.cleanName(name)).find('.pv-facet-numericslider');
 
                     if (s.length > 0) {
-                        var values = s.modSlider("values");
-                        var max = s.modSlider('option', 'max'),
-                            min = s.modSlider('option', 'min');
+                        var values = s.modSlider('getValues');
+                        var option = s.modSlider('getOptions');
+                        var max = option.max;
+                            min = option.min;
                         if (values[0] != min || values[values.length - 1] != max) {
                             numericFilters.push({
                                 facet: name,
@@ -989,7 +996,6 @@ var graphPara = {};
                     }
                 }
             }
-            //console.log(numericFilters);
         } else {
             filterList = [];
             stringFilters = _stringFilters;
@@ -1714,9 +1720,9 @@ var graphPara = {};
                 }
             } else if (category.isNumber()) {
                 if (!_selectedFilters[category.name]) {
-                    if (_filterList.length == _tiles.length)
+                    if (_filterList.length == _tiles.length) {
                         PV._refreshNumberWidget(category, _numericItemTotals[category.name].values);
-                    else {
+                    } else {
                         var values = [];
                         for (var i = 0; i < _filterList.length; i++) {
                             var facet = _filterList[i].item.getFacetByName(category.name);
@@ -1727,6 +1733,7 @@ var graphPara = {};
                         }
                         PV._refreshNumberWidget(category, values);
                     }
+
                 }
             } else if (category.isOrdinal()) {
                 if (!_selectedFilters[category.name]) {

@@ -186,6 +186,10 @@ PivotViewer.Views.TileController = Object.subClass({
         var max_chars = 0;
         var tile_width = 0;
 
+        var cwidth = context.canvas.width;
+        var cheight = context.canvas.height;
+
+
         for (var i = 0; i < tiles.length; i++) {
 
             var tile = tiles[i];
@@ -198,35 +202,17 @@ PivotViewer.Views.TileController = Object.subClass({
             for (var l = 0; l < locations.length; l++) {
 
                 var location = locations[l];
-                var x1 = location.x + tile.width;
-                var y1 = location.y + tile.height;
+
+                var left = location.x;
+                var top = location.y;
+                var right = left + tile.width;
+                var bottom = top + tile.height;
+
                 var drawit =
-                    ((0 <= location.x) &&
-                        (location.x < context.canvas.width) &&
-                        (0 <= location.y) &&
-                        (location.y < context.canvas.height)) ||
-                    ((0 <= location.x) &&
-                        (location.x < context.canvas.width) &&
-                        (0 <= y1) &&
-                        (y1 < context.canvas.height)) ||
-                    ((0 <= x1) &&
-                        (x1 < context.canvas.width) &&
-                        (0 <= location.y) &&
-                        (location.y < context.canvas.height)) ||
-                    ((0 <= x1) &&
-                        (x1 < context.canvas.width) &&
-                        (0 <= y1) &&
-                        (y1 < context.canvas.height)) ||
-                    ((0 <= location.x) &&
-                        (location.x < context.canvas.width) &&
-                        (location.y < context.canvas.height)) ||
-                    ((0 <= location.y) &&
-                        (location.y < context.canvas.height) &&
-                        (location.x < context.canvas.width)) ||
-                    ((location.x <= 0) &&
-                        (0 <= x1) &&
-                        (location.y <= 0) &&
-                        (0 <= y1));
+                    this.inBox(left, right, top, bottom,
+                        0, cwidth, 0, cheight) ||
+                    this.inBox(0, cwidth, 0, cheight,
+                        left, right, top, bottom);
 
                 if (drawit) {
 
@@ -406,6 +392,20 @@ PivotViewer.Views.TileController = Object.subClass({
 
             this._started = false;
         }
+
+    },
+    inBox: function(left, right, top, bottom,
+        bound_x0, bound_x1, bound_y0, bound_y1) {
+
+        var left_inside = (bound_x0 <= left) && (left < bound_x1);
+        var right_inside = (bound_x0 <= right) && (right < bound_x1);
+        var top_inside = (bound_y0 <= top) && (top < bound_y1);
+        var bottom_inside = (bound_y0 <= bottom) && (bottom < bound_y1);
+
+        return (left_inside && top_inside) ||
+            (left_inside && bottom_inside) ||
+            (right_inside && top_inside) ||
+            (right_inside && bottom_inside);
 
     },
     getTextHeight: function(font) {

@@ -89,6 +89,12 @@ PivotViewer.Utils.getHistogram = function (values) {
 //http://stackoverflow.com/questions/19348528/jquery-ui-slider-how-to-add-values
 (function ($) {
     $.widget("suave.modSlider", $.ui.slider, {
+        getValues: function() {
+            return this.options.values;
+        },
+        getOptions: function() {
+            return {"min": this.options.min, "max": this.options.max};
+        },
         clearValues: function() {
             this.options.values = [this.options.min, this.options.max];
             this._refresh();
