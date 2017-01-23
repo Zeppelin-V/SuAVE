@@ -99,6 +99,11 @@ PivotViewer.Utils.getHistogram = function (values) {
             this.options.values = [this.options.min, this.options.max];
             this._refresh();
         },
+        updateValues: function(values) {
+            // used to update slider when clicked
+            this.options.values = values;
+            this._refresh();
+        },
         changeValues: function(values) {
             for (var i = 0; i < values.length; i++) values[i] = Math.floor(values[i] / this.options.step) * this.options.step;
             this.options.values = values;

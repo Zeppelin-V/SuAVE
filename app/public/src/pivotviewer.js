@@ -309,7 +309,7 @@ var graphPara = {};
         // refresh slide label
         $(".pv-facet-numericslider-range-min").html(category.getValueLabel(histogram.min));
         $(".pv-facet-numericslider-range-max").html(category.getValueLabel(histogram.max));
-        s.modSlider('changeValues', [Math.min.apply(null, values), Math.max.apply(null, values)]);
+        s.modSlider('updateValues', [Math.min.apply(null, values), Math.max.apply(null, values)]);
     }
 
     PV._refreshNumberWidget = function(category, values) {
