@@ -310,7 +310,7 @@ PivotViewer.Views.MapView = PivotViewer.Views.IPivotViewerView.subClass({
         else this._super();
         $('.pv-toolbarpanel-info').fadeIn();
         $('.pv-altinfopanel').fadeIn();
-        $('.pv-toolbarpanel-zoomcontrols').hide();
+        //$('.pv-toolbarpanel-zoomcontrols').hide();
         $('.pv-toolbarpanel-zoomcontrols').css('border-width', '0');
         $('#MAIN_BODY').css('overflow', 'auto');
         $('.pv-mapview-canvas').fadeIn();
