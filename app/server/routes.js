@@ -674,6 +674,26 @@ app.post('/changeTagsForSurvey', function(req, res){
 		}
 	});
 
+	app.post('/sendMessage', function(req, res){
+		AM.getAccountByUsername(req.body.username, function(o){
+				if (!o) {
+					res.status(400).send('unable to send the message');
+				} else {
+					var data = req.body;
+					data.user_email = o.email;
+					EM.sendMessage(req.body, function(e, m){
+						if (!e){
+							res.status(200).send('ok');
+						}	else{
+							for (k in e) console.log('ERROR : ', k, e[k]);
+							res.status(400).send('unable to send the message');
+						}
+					});
+				}
+		});
+
+	});
+
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
 
 };

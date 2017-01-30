@@ -11,24 +11,24 @@
               use(xlink:href='#stroked-email')
             |  Contact
           .panel-body
-            form.form-horizontal(action='', method='post')
+            form.form-horizontal#contact-form(action='', method='post')
               fieldset
                 // Name input
                 .form-group
                   label.col-md-3.control-label(for='name') Name
                   .col-md-9
-                    input#name.form-control(name='name', type='text', placeholder='Your name')
+                    input#name.form-control(name='name', type='text', placeholder='Your name', required='')
                 // Email input
                 .form-group
                   label.col-md-3.control-label(for='email') Your E-mail
                   .col-md-9
-                    input#email.form-control(name='email', type='text', placeholder='Your email')
+                    input#email.form-control(name='email', type='text', placeholder='Your email', required='')
                 // Message body
                 .form-group
                   label.col-md-3.control-label(for='message') Your message
                   .col-md-9
-                    textarea#message.form-control(name='message', placeholder='Please enter your message here...', rows='5')
+                    textarea#message.form-control(name='message', placeholder='Please enter your message here...', rows='5', required='')
                 // Form actions
                 .form-group
                   .col-md-12.widget-right
-                    button.btn.btn-primary.btn-md.pull-right(type='submit') Submit
+                    button#submit-contact.btn.btn-primary.btn-md.pull-right(type='submit') Submit

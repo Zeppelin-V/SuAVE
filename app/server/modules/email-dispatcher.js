@@ -32,3 +32,21 @@ EM.composeEmail = function(o)
 		html += "</body></html>";
 	return  [{data:html, alternative:true}];
 }
+
+EM.sendMessage = function(data, callback)
+{
+	var html = "<html><body>";
+		html += "Hi,<br><br>";
+		html += "<b>" + data.name + " (" + data.email +") says: </b><br><br>";
+		html += "<p>" + data.message + "</p><br><br>";
+		html += "Cheers<br><br>";
+		html += "</body></html>";
+
+		EM.server.send({
+			from         : process.env.EMAIL_FROM || 'SuAVE <do-not-reply@gmail.com>',
+			to           : data.user_email,
+			subject      : 'Message from ' + data.name,
+			text         : 'something went wrong... :(',
+			attachment   : [{data:html, alternative:true}]
+		}, callback );
+}
