@@ -41,6 +41,7 @@ PivotViewer.Views.TileController = Object.subClass({
         return item;
     },
     initTiles: function(pivotCollectionItems, baseCollectionPath, canvasContext) {
+
         for (var i = 0; i < pivotCollectionItems.length; i++) {
 
             var tile = new PivotViewer.Views.Tile(this._imageController);
@@ -147,14 +148,14 @@ PivotViewer.Views.TileController = Object.subClass({
 
                     }
 
-                    //check if the destination will be in the visible area
-                    if ((location.destinationx + tile.destinationwidth < 0) ||
-                        (location.destinationx > cwidth) ||
-                        (location.destinationy + tile.destinationheight < 0) ||
-                        (location.destinationy > cheight))
-                        tile.destinationVisible = false;
-                    else
-                        tile.destinationVisible = true;
+                    // //check if the destination will be in the visible area
+                    // if ((location.destinationx + tile.destinationwidth < 0) ||
+                    //     (location.destinationx > cwidth) ||
+                    //     (location.destinationy + tile.destinationheight < 0) ||
+                    //     (location.destinationy > cheight))
+                    //     tile.destinationVisible = false;
+                    // else
+                    //     tile.destinationVisible = true;
 
                 }
             }
@@ -189,7 +190,6 @@ PivotViewer.Views.TileController = Object.subClass({
         var cwidth = context.canvas.width;
         var cheight = context.canvas.height;
 
-
         for (var i = 0; i < tiles.length; i++) {
 
             var tile = tiles[i];
@@ -212,7 +212,15 @@ PivotViewer.Views.TileController = Object.subClass({
                     this.inBox(left, right, top, bottom,
                         0, cwidth, 0, cheight) ||
                     this.inBox(0, cwidth, 0, cheight,
-                        left, right, top, bottom);
+                        left, right, top, bottom) ||
+                    this.crossBox([left, right], [bottom, bottom], [0, 0], [0, cheight]) ||
+                    this.crossBox([left, right], [top, top], [0, 0], [0, cheight]) ||
+                    this.crossBox([left, right], [bottom, bottom], [cwidth, cwidth], [0, cheight]) ||
+                    this.crossBox([left, right], [top, top], [cwidth, cwidth], [0, cheight]) ||
+                    this.crossBox([0, cwidth], [0, 0], [left, left], [bottom, top]) ||
+                    this.crossBox([0, cwidth], [cheight, cheight], [left, left], [bottom, top]) ||
+                    this.crossBox([0, cwidth], [0, 0], [right, right], [bottom, top]) ||
+                    this.crossBox([0, cwidth], [cheight, cheight], [right, right], [bottom, top]);
 
                 if (drawit) {
 
@@ -394,13 +402,42 @@ PivotViewer.Views.TileController = Object.subClass({
         }
 
     },
+    crossBox: function(x1, y1, x2, y2) {
+
+        var a = x1[1] - x1[0];
+        var b = -(x2[1] - x2[0]);
+        var c = y1[1] - y1[0];
+        var d = -(y2[1] - y2[0]);
+        var det = (a * d) - (b * c);
+
+        var ret = false;
+        if (det != 0) {
+
+            var m00 = d / det;
+            var m01 = -b / det;
+            var m10 = -c / det;
+            var m11 = a / det;
+
+            var b1 = x2[0] - x1[0];
+            var b2 = y2[0] - y1[0];
+
+            var t1 = (m00 * b1) + (m01 * b2);
+            var t2 = (m10 * b1) + (m11 * b2);
+
+            ret = ((0 <= t1) && (t1 <= 1)) &&
+                ((0 <= t2) && (t2 <= 1));
+
+        }
+        return ret;
+
+    },
     inBox: function(left, right, top, bottom,
         bound_x0, bound_x1, bound_y0, bound_y1) {
 
-        var left_inside = (bound_x0 <= left) && (left < bound_x1);
-        var right_inside = (bound_x0 <= right) && (right < bound_x1);
-        var top_inside = (bound_y0 <= top) && (top < bound_y1);
-        var bottom_inside = (bound_y0 <= bottom) && (bottom < bound_y1);
+        var left_inside = (bound_x0 <= left) && (left <= bound_x1);
+        var right_inside = (bound_x0 <= right) && (right <= bound_x1);
+        var top_inside = (bound_y0 <= top) && (top <= bound_y1);
+        var bottom_inside = (bound_y0 <= bottom) && (bottom <= bound_y1);
 
         return (left_inside && top_inside) ||
             (left_inside && bottom_inside) ||
@@ -573,11 +610,9 @@ PivotViewer.Views.Tile = Object.subClass({
         var scaled_width = 0;
         var scaled_height = 0;
 
-        //Is the tile destination in visible area?
-        if (this.destinationVisible)
-            this._images = ctrlr.getImages(this.item.img,
-                this.width,
-                this.height);
+        this._images = ctrlr.getImages(this.item.img,
+            this.width,
+            this.height);
 
         if (this._images != null) {
 
