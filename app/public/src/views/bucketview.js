@@ -577,8 +577,12 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
             epsilon = Math.pow(10, Math.floor(Math.log(epsilon) / Math.log(10)));
             bucketSize = bucketSize - (epsilon > 1 ? 1 : epsilon);
             for (var b = 0; b < bkts.length; b++) {
-                // round to 2 decimal point to avoid random JS rounding errors
-                bkts[b].endLabel = (bkts[b].startRange + bucketSize).toFixed(2).toString();
+                var data = bkts[b].startRange + bucketSize;
+                // check if input data is integer. If it's not integer, fix it to 2 decimal points
+                if (! typeof data === 'number') {
+                  // round to 2 decimal point to avoid random JS rounding errors
+                  bkts[b].endLabel = (bkts[b].startRange + bucketSize).toFixed(2).toString();
+                }
             }
 
             var empty = 0;

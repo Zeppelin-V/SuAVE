@@ -2972,7 +2972,14 @@ var graphPara = {};
         if (selectedItem != null) {
             var alternate = true;
             $('.pv-infopanel-heading').empty();
-            $('.pv-infopanel-heading').append("<a href=\"" + selectedItem.item.href + "\" target=\"_blank\">" + selectedItem.item.name + "</a></div>");
+            
+            // suppress href if the item doesn't have href
+            if (selectedItem.item.href == '') {
+                $('.pv-infopanel-heading').append("<a target=\"_blank\">" + selectedItem.item.name + "</a></div>");
+            } else {
+                $('.pv-infopanel-heading').append("<a href=\"" + selectedItem.item.href + "\" target=\"_blank\">" + selectedItem.item.name + "</a></div>");
+            }
+
             var infopanelDetails = $('.pv-infopanel-details');
             infopanelDetails.empty();
             if (selectedItem.item.description != undefined && selectedItem.item.description.length > 0) {
