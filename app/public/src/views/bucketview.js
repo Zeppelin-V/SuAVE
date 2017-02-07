@@ -178,16 +178,16 @@ $(document).on("click", "#pv-rule-info", function() {
     }
     $("#accum_explain").html("");
     if (ruleFilters[2] != undefined) {
-        $("#accum_explain").append("Accuracy of explanatory rule â€œif A and B then Xâ€ is N(ABX)/N(AB) = " +
+        $("#accum_explain").append("Accuracy of explanatory rule “if A and B then X” is N(ABX)/N(AB) = " +
             Math.round(ABCs[cIndex].length / AB.length * 100) + "% (" + ABCs[cIndex].length + " out of " + AB.length + ")");
-        $("#accum_explain").append("<br>Accuracy of explanatory rule â€œif B and C then Xâ€ is N(BCX)/N(BC) = " +
+        $("#accum_explain").append("<br>Accuracy of explanatory rule “if B and C then X” is N(BCX)/N(BC) = " +
             Math.round(BDCs[cIndex].length / BD.length * 100) + "% (" + BDCs[cIndex].length + " out of " + BD.length + ")");
-        $("#accum_explain").append("<br>Accuracy of explanatory rule â€œif A and C then Xâ€ is N(ACX)/N(AC) = " +
+        $("#accum_explain").append("<br>Accuracy of explanatory rule “if A and C then X” is N(ACX)/N(AC) = " +
             Math.round(BDCs[cIndex].length / AD.length * 100) + "% (" + ADCs[cIndex].length + " out of " + AD.length + ")");
     } else if (ruleFilters[1] != undefined) {
-        $("#accum_explain").append("Accuracy of explanatory rule â€œif A then Xâ€ is N(AX)/N(A) = " +
+        $("#accum_explain").append("Accuracy of explanatory rule “if A then X” is N(AX)/N(A) = " +
             Math.round(ACs[cIndex].length / A.length * 100) + "% (" + ACs[cIndex].length + " out of " + A.length + ")");
-        $("#accum_explain").append("<br>Accuracy of explanatory rule â€œif B then Xâ€ is N(BX)/N(B) = " +
+        $("#accum_explain").append("<br>Accuracy of explanatory rule “if B then X” is N(BX)/N(B) = " +
             Math.round(BCs[cIndex].length / B.length * 100) + "% (" + BCs[cIndex].length + " out of " + B.length + ")");
     }
 
@@ -579,9 +579,9 @@ PivotViewer.Views.BucketView = PivotViewer.Views.TileBasedView.subClass({
             for (var b = 0; b < bkts.length; b++) {
                 var data = bkts[b].startRange + bucketSize;
                 // check if input data is integer. If it's not integer, fix it to 2 decimal points
-                if (! typeof data === 'number') {
-                  // round to 2 decimal point to avoid random JS rounding errors
-                  bkts[b].endLabel = (bkts[b].startRange + bucketSize).toFixed(2).toString();
+                if (!typeof data === 'number') {
+                    // round to 2 decimal point to avoid random JS rounding errors
+                    bkts[b].endLabel = (bkts[b].startRange + bucketSize).toFixed(2).toString();
                 }
             }
 
