@@ -140,7 +140,13 @@ module.exports = function(app) {
 			if (e){
 				res.status(400).send(e);
 			}	else{
-				res.status(200).send('ok');
+				EM.sendWelcomeMessage({'name': req.body['name'], 'email': req.body['email']}, function(e){
+					if (e) {
+						res.status(400).send(e);
+					} else {
+						res.status(200).send('ok');
+					}
+				});
 			}
 		});
 	});
