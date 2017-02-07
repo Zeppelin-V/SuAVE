@@ -74,7 +74,7 @@ EM.sendWelcomeMessage = function(data, callback) {
 
     EM.server.send({
         from: process.env.EMAIL_FROM || 'SuAVE <do-not-reply@gmail.com>',
-        to: 'lisided@gmail.com',
+        to: '	izaslavsky@ucsd.edu',
         subject: 'A new account has been created',
         text: 'something went wrong... :(',
         attachment: [{
