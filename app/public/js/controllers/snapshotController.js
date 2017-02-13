@@ -197,7 +197,7 @@ function SnapshotController()
         $("#panel-para").append("</tr>");
       }
 
-      var text = snapshotPara.selected != -1 ? 'selected item' : 'view';
+      var text = (snapshotPara.selected != -1 && snapshotPara.selected)? 'selected item' : 'view';
       $("#panel-para").append("<tr><td><h4>Type: </h4>"+ text +"</td></tr>");
 
       if(snapshotPara.string_filters != "None" && !filter){
@@ -247,7 +247,7 @@ function SnapshotController()
         data: {"id" : id},
         success: function(data){
           snapshotPara = data;
-
+          console.log(data);
           that.displayPara();
           that.getViews();
           that.getComments(id);
