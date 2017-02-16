@@ -183,7 +183,7 @@ $(document).on("click", "#pv-rule-info", function() {
         $("#accum_explain").append("<br>Accuracy of explanatory rule “if B and C then X” is N(BCX)/N(BC) = " +
             Math.round(BDCs[cIndex].length / BD.length * 100) + "% (" + BDCs[cIndex].length + " out of " + BD.length + ")");
         $("#accum_explain").append("<br>Accuracy of explanatory rule “if A and C then X” is N(ACX)/N(AC) = " +
-            Math.round(BDCs[cIndex].length / AD.length * 100) + "% (" + ADCs[cIndex].length + " out of " + AD.length + ")");
+            Math.round(ADCs[cIndex].length / AD.length * 100) + "% (" + ADCs[cIndex].length + " out of " + AD.length + ")");
     } else if (ruleFilters[1] != undefined) {
         $("#accum_explain").append("Accuracy of explanatory rule “if A then X” is N(AX)/N(A) = " +
             Math.round(ACs[cIndex].length / A.length * 100) + "% (" + ACs[cIndex].length + " out of " + A.length + ")");
