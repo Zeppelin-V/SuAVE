@@ -8,24 +8,26 @@ var logit = "binomial";
 var probit;
 var domain = "132.249.238.130";
 
-ocpu.seturl("//" + domain + "/ocpu/library/stats/R")
-{
-  var req = ocpu.call("poisson", {
-    "link": "log"
-  }, function(session){
-    loglinear= session;
-  });
-}
 
-{
-  var req = ocpu.call("binomial", {
-    "link": "probit"
-  }, function(session){
-    probit = session;
-  });
-}
 
 function initRSession(file) {
+  ocpu.seturl("//" + domain + "/ocpu/library/stats/R")
+  {
+    var req = ocpu.call("poisson", {
+      "link": "log"
+    }, function(session){
+      loglinear= session;
+    });
+  }
+
+  {
+    var req = ocpu.call("binomial", {
+      "link": "probit"
+    }, function(session){
+      probit = session;
+    });
+  }
+  
   myheader = 1!=1;
   myfile = file;
   getData();

@@ -910,7 +910,7 @@ $(document).on('click', '#select-tags-submit',  function(){
 				if(data.length > 50){
 					$('.modal-warning').modal('toggle');
 					$('.modal-warning .modal-header h3').text('Warning!');
-					$('.modal-warning p').append("Too many entries. Are you sure to proceed?");
+					$('.modal-warning p').html("Too many entries. Are you sure to proceed?");
 				}else{
 					that.confirmColVal();
 				}
