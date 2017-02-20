@@ -80,7 +80,7 @@
             var file = query.file;
             if(query.file.endsWith(".zip") && query.type == "csv")
                 file = (query.file).replace('.zip', '.csv');
-            if(query.views[5] == 1) initRSession("http://suave.sdsc.edu:3001/surveys/"+file);
+            if(query.views[5] == 1) initRSession("http://" + window.location.host + "/surveys/"+file);
         }
         //initialize view with para
         if(parent.PARA) options.parameter = parent.PARA;

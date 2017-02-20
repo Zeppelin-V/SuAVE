@@ -6,9 +6,9 @@ var myfile;
 var loglinear;
 var logit = "binomial";
 var probit;
+var domain = "132.249.238.130";
 
-
-ocpu.seturl("//suave.sdsc.edu/ocpu/library/stats/R")
+ocpu.seturl("//" + domain + "/ocpu/library/stats/R")
 {
   var req = ocpu.call("poisson", {
     "link": "log"
@@ -33,8 +33,7 @@ function initRSession(file) {
 
 //actual handler
 function getData(){
-  ocpu.seturl("//suave.sdsc.edu/ocpu/library/utils/R")
-
+  ocpu.seturl("//" + domain + "/ocpu/library/utils/R")
   //perform the request
   var req = ocpu.call("read.csv", {
     file : myfile,
@@ -57,7 +56,7 @@ function getData(){
 }
 
 function getModel(model, formulaStr){
-  ocpu.seturl("//suave.sdsc.edu/ocpu/library/stats/R")
+  ocpu.seturl("//" + domain + "/ocpu/library/stats/R")
   var modelFamily;
   if(model == "Log Linear"){
     modelFamily = loglinear;
@@ -76,7 +75,7 @@ function getModel(model, formulaStr){
     var request;
 
     if(model == "Log Linear"){
-      ocpu.seturl("//suave.sdsc.edu/ocpu/library/MASS/R")
+      ocpu.seturl("//" + domain + "/ocpu/library/MASS/R")
       request = ocpu.call("loglm",{
         "formula": session,
         "data": mySession
@@ -94,7 +93,7 @@ function getModel(model, formulaStr){
         "family": modelFamily,
         "data": mySession
         },function(result){
-          ocpu.seturl("//suave.sdsc.edu/ocpu/library/base/R")
+          ocpu.seturl("//" + domain + "/ocpu/library/base/R")
           result.getConsole(function(outtext){
             var div = document.getElementById('pv-model-result');
             div.innerHTML = outtext;
