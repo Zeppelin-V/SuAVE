@@ -307,8 +307,9 @@ var graphPara = {};
         }
 
         // refresh slide label
-        $(".pv-facet-numericslider-range-min").html(category.getValueLabel(histogram.min));
-        $(".pv-facet-numericslider-range-max").html(category.getValueLabel(histogram.max));
+        var id = '#pv-facet-numericslider-' + name;
+        $(id).next("table").find(".pv-facet-numericslider-range-min").html(category.getValueLabel(histogram.min));
+        $(id).next("table").find(".pv-facet-numericslider-range-max").html(category.getValueLabel(histogram.max));
         s.modSlider('updateValues', [Math.min.apply(null, values), Math.max.apply(null, values)]);
     }
 
@@ -2972,7 +2973,7 @@ var graphPara = {};
         if (selectedItem != null) {
             var alternate = true;
             $('.pv-infopanel-heading').empty();
-            
+
             // suppress href if the item doesn't have href
             if (selectedItem.item.href == '') {
                 $('.pv-infopanel-heading').append("<a target=\"_blank\">" + selectedItem.item.name + "</a></div>");
