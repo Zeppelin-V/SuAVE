@@ -194,7 +194,11 @@ var graphPara = {};
                 facetControls[index] += "<span class='pv-facet-value-count'>0</span>"
                 facetControls[index] += "</li>";
             }
+        } else {
+            // fixed the bug that causes error in displaying dates
+            array2 = [];
         }
+
         facetControls[array1.length + array2.length + 4] = "<li class='pv-filterpanel-accordion-facet-list-item'  id='pv-facet-value-LineBreak2' style='border-bottom:thin solid #E2E2E2;'></li>";
         facetControls[array1.length + array2.length + 5] = "</ul>";
         return facetControls.join('');
