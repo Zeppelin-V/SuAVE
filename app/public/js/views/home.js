@@ -7,7 +7,9 @@ $(document).ready(function(){
 	$('#new-survey').ajaxForm({
 		beforeSubmit : function(formData, jqForm, options){
 			// check if uploaded file is of type text/csv
-			if (formData[0].value.type != 'text/csv') {
+			// console.log(formData[0].value)
+			if (formData[0].value.name.split('.').pop() != 'csv') {
+			// if (formData[0].value.type != 'text/csv') {
 				$('.modal-alert').modal('toggle');
 				// $('.modal-alert .modal-header h3').text('Warning!');
 				$('.modal-alert p').html("Please upload a csv file!");
@@ -22,7 +24,7 @@ $(document).ready(function(){
 
 		},
 		success	: function(responseText, status, xhr, $form){
-			setTimeout(function(){window.location.href = '/';}, 300);
+			// setTimeout(function(){window.location.href = '/';}, 300);
 		},
 		error : function(e){
 			$('.modal-loading').modal('hide');
