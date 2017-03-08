@@ -364,7 +364,7 @@ exports.setCSViName = function(filePath, iName, callback){
           }
       }
 
-      src_column = parseInt(iName.href) + 1;
+      src_column = parseInt(iName.href);
       if(href_column == -1){
         data[0].push("#href");
         for(var i = 1; i < data.length; i++){

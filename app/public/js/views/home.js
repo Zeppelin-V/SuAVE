@@ -24,7 +24,7 @@ $(document).ready(function(){
 
 		},
 		success	: function(responseText, status, xhr, $form){
-			// setTimeout(function(){window.location.href = '/';}, 300);
+			setTimeout(function(){window.location.href = '/';}, 300);
 		},
 		error : function(e){
 			$('.modal-loading').modal('hide');
