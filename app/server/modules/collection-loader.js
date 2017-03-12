@@ -8,8 +8,12 @@ var spawn = require('child_process').spawn;
 var GL = require('../global');
 //var sharp = require('sharp');
 
-
-//load csv file by path
+/**
+* Load csv file by path
+* @param {String} filePath
+* @param {String} filename
+* @param {Function} callback: 1. err 2.output
+*/
 exports.loadCSV = function(filePath, callback){
   fs.readFile(filePath, 'utf-8', function (err, data) {
     if (err) {
@@ -27,6 +31,14 @@ exports.loadCSV = function(filePath, callback){
   });
 };
 
+/**
+* Change about file for the survey
+* @param {String} user
+* @param {String} name
+* @param {String} fullname: for display purpose
+* @param {HTML} data
+* @param {Function} callback: 1. err 2.output
+*/
 exports.changeAboutFileByID = function(user, name, fullname, data, callback){
   var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+"about.html";
   var newData = GL.getAbout(1) + fullname + GL.getAbout(2) + GL.getAbout(3) + data +GL.getAbout(5);
@@ -41,6 +53,12 @@ exports.changeAboutFileByID = function(user, name, fullname, data, callback){
   });
 }
 
+/**
+* Get about file by id
+* @param {String} user
+* @param {String} name: filename
+* @param {Function} callback: 1. err 2.output
+*/
 exports.getAboutFileByID = function(user, name, callback){
   var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+"about.html";
   fs.readFile(filePath, 'utf-8', function (err, data) {
@@ -54,6 +72,12 @@ exports.getAboutFileByID = function(user, name, callback){
   });
 }
 
+/**
+* Get a survey's image collection info
+* @param {String} name
+* @param {String} user
+* @param {Function} callback: 1. err 2.output
+*/
 exports.getSurveyColumnAndCollect = function(name, user, callback){
   var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+".csv";
   fs.readFile(filePath, 'utf-8', function (err, data) {
@@ -78,6 +102,13 @@ exports.getSurveyColumnAndCollect = function(name, user, callback){
   });
 };
 
+/**
+* Get a survey's columns options
+* @param {String} name
+* @param {String} user
+* @param {String} column
+* @param {Function} callback: 1. err 2.output
+*/
 exports.getColumnsOptions = function(name, user, column, callback){
   var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+".csv";
   fs.readFile(filePath, 'utf-8', function (err, data) {
@@ -167,7 +198,12 @@ exports.generateDeepZoom = function(dir, collection, destination, callback){
   });
 };*/
 
-//set #img column for csv files
+/**
+* set #img column for csv files
+* @param {JSON} data
+* @param {JSON} collection
+* @param {Function} callback: 1. err 2.output
+*/
 exports.setImgProperty = function(data, collection, callback){
   var that = this;
   var categories = data[0];
@@ -260,7 +296,12 @@ exports.setImgProperty = function(data, collection, callback){
   }
 };
 
-//set csv files
+/**
+* Set csv files
+* @param {String} filePath
+* @param {JSON} collection
+* @param {Function} callback: 1. err 2.output
+*/
 exports.setCSV = function(filePath, collection, callback){
   var that = this;
   that.loadCSV(filePath, function(o, message){
@@ -275,7 +316,12 @@ exports.setCSV = function(filePath, collection, callback){
   });
 };
 
-//copy deepzoom images to the survey folder
+/**
+* copy deepzoom images to the survey folder
+* @param {String} imgPath
+* @param {JSON} images
+* @param {Function} callback: 1. err 2.output
+*/
 exports.copyImages = function(imgPath, images, callback){
   var that = this;
   var src = __dirname + "/../../public/img/collection/";
@@ -322,7 +368,12 @@ exports.copyImages = function(imgPath, images, callback){
   }
 };
 
-//set csv files
+/**
+* Set csv files
+* @param {String} filePath
+* @param {String} iName: the column that will be #name
+* @param {Function} callback: 1. err 2.output
+*/
 exports.setCSViName = function(filePath, iName, callback){
   var that = this;
   that.loadCSV(filePath, function(o){
@@ -383,7 +434,12 @@ exports.setCSViName = function(filePath, iName, callback){
   });
 };
 
-//set the changed csv files
+/**
+* Set the changed csv files
+* @param {String} filePath
+* @param {JSON} data
+* @param {Function} callback: 1. err 2.output
+*/
 exports.saveCSV = function(filePath, data, callback){
   var csv = [];
   var fields = data[0];
@@ -410,7 +466,12 @@ exports.saveCSV = function(filePath, data, callback){
   });
 };
 
-
+/**
+* Get a survey's columns and tags info
+* @param {String} user
+* @param {String} name
+* @param {Function} callback: 1. err 2.output
+*/
 exports.getColumnsAndTags = function(user, name, callback){
   var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+".csv";
   fs.readFile(filePath, 'utf-8', function (err, data) {
@@ -485,12 +546,17 @@ exports.getColumnsAndTags = function(user, name, callback){
           callback(null, result);
         }
       });
-
-
     }
   });
 };
 
+/**
+* Change a survey's tags
+* @param {String} user
+* @param {String} name
+* @param {JSON} columns
+* @param {Function} callback: 1. err 2.output
+*/
 exports.changeTagsForSurvey = function(user, name, columns, callback){
   var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+".csv";
   var that = this;
@@ -511,6 +577,13 @@ exports.changeTagsForSurvey = function(user, name, columns, callback){
   });
 };
 
+/**
+* Replace a survey content
+* @param {String} user
+* @param {String} name
+* @param {JSON} data
+* @param {Function} callback: 1. err 2.output
+*/
 exports.changeSurveyByFilename = function(user, name, data, callback){
   var filePath = __dirname + "/../../public/surveys/"+user+"_"+name+".csv";
   this.saveCSV(filePath, data, function(e){

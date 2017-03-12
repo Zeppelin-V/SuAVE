@@ -1,6 +1,9 @@
 var EM = {};
 module.exports = EM;
 
+/*
+Set up gmail connection
+*/
 EM.server = require("emailjs/email").server.connect({
     host: process.env.EMAIL_HOST || 'smtp.gmail.com',
     user: process.env.EMAIL_USER || 'spatialsuave@gmail.com',
@@ -8,6 +11,12 @@ EM.server = require("emailjs/email").server.connect({
     ssl: true
 });
 
+
+/**
+* Reset password
+* @param {String} account
+* @param {Function} callback: 1. err 2.output
+*/
 EM.dispatchResetPasswordLink = function(account, callback) {
     EM.server.send({
         from: process.env.EMAIL_FROM || 'SuAVE <do-not-reply@gmail.com>',
@@ -18,6 +27,10 @@ EM.dispatchResetPasswordLink = function(account, callback) {
     }, callback);
 }
 
+/**
+* Compose email content with html
+* @param {JSON} o: email info
+*/
 EM.composeEmail = function(o) {
     var link = 'http://suave.sdsc.edu:3000/reset-password?e=' + o.email + '&p=' + o.pass;
     var html = "<html><body>";
@@ -32,6 +45,11 @@ EM.composeEmail = function(o) {
     }];
 }
 
+/**
+* Send email with data in template
+* @param {JSON} data: user info, etc
+* @param {Function} callback: 1. err 2.output
+*/
 EM.sendMessage = function(data, callback) {
     var html = "<html><body>";
     html += "Hi,<br><br>";
@@ -52,6 +70,11 @@ EM.sendMessage = function(data, callback) {
     }, callback);
 }
 
+/**
+* Send welcome email with data in template
+* @param {JSON} data: user info, etc
+* @param {Function} callback: 1. err 2.output
+*/
 EM.sendWelcomeMessage = function(data, callback) {
     var message =
         '<html><body>' +

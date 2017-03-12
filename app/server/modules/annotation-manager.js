@@ -28,7 +28,11 @@ var surveys = db.collection('surveys_test');
 var snapshots = db.collection('snapshots_test');
 var comments = db.collection('comments_test');
 
-
+/**
+* Get a snapshot by id
+* @param {String} id
+* @param {Function} callback: 1. err 2.output
+*/
 exports.getSnapshotById = function(id, callback){
 	var newId = new ObjectId(id);
 	snapshots.findOne({_id: newId}, function(e, o){
@@ -40,7 +44,15 @@ exports.getSnapshotById = function(id, callback){
 	});
 };
 
-
+/**
+* Get a snapshot's paraid by querying with parameters,
+* if queried item doesn't exist, insert a new one
+* @param {String} file
+* @param {String} user
+* @param {JSON} para
+* @param {JSON} graphPara: used to render chart
+* @param {Function} callback: 1. err 2.output
+*/
 exports.getParaIdByParamters = function(file, user, para, graphPara, callback){
 	para.file = file;
 	snapshots.findOne(para, function(e, o){
@@ -66,6 +78,16 @@ exports.getParaIdByParamters = function(file, user, para, graphPara, callback){
 	});
 };
 
+/**
+* Add a comment to snapshot by parameters
+* @param {String} file
+* @param {String} user
+* @param {JSON} para
+* @param {JSON} graphPara: used to render chart
+* @param {String} comment
+* @param {String} replyUser: who commented
+* @param {Function} callback: 1. err 2.output
+*/
 exports.addCommentByParameters = function(file, user, para, graphPara, comment, replyUser, callback){
   snapshots.findOne(para, function(e, o){
 		var date = new Date();
@@ -97,6 +119,11 @@ exports.addCommentByParameters = function(file, user, para, graphPara, comment, 
 	});
 };
 
+/**
+* Query the databse to get comments by parameters
+* @param {JSON} para
+* @param {Function} callback: 1. err 2.output
+*/
 exports.getCommentsByParameters = function(para, callback){
   snapshots.findOne(para, function(e, o){
 		if(e){
@@ -122,6 +149,11 @@ exports.getCommentsByParameters = function(para, callback){
 	});
 };
 
+/**
+* Query the databse to get comments by parameters without using filters
+* @param {JSON} para
+* @param {Function} callback: 1. err 2.output
+*/
 exports.getCommentsByParametersWithoutFilters = function(para, callback){
   snapshots.find(para, {_id:1}).toArray(function(e, o){
 		if(e){
@@ -148,6 +180,11 @@ exports.getCommentsByParametersWithoutFilters = function(para, callback){
 	});
 };
 
+/**
+* Get comments by parameter id
+* @param {String} id
+* @param {Function} callback: 1. err 2.output
+*/
 exports.getCommentsById = function(id, callback){
 	var newId = new ObjectId(id);
 	comments.find({para_id: newId}).toArray(function(error, result){
@@ -160,6 +197,14 @@ exports.getCommentsById = function(id, callback){
   });
 };
 
+/**
+* Add a comment by parameter id
+* @param {String} id
+* @param {String} user: who commented
+* @param {String} owner: who owns the survey
+* @param {String} comment: content
+* @param {Function} callback: 1. err 2.output
+*/
 exports.addCommentById = function(id, user, owner, comment, callback){
 	var newId = new ObjectId(id);
 	var date = new Date();
@@ -180,6 +225,11 @@ exports.addCommentById = function(id, user, owner, comment, callback){
 	});
 };
 
+/**
+* Delete a comment by parameter id
+* @param {String} id
+* @param {Function} callback: 1. err 2.output
+*/
 exports.deleteCommentsById = function(id, callback){
 	var ids = [];
 	for(var i = 0; i < id.length; i++){
@@ -194,6 +244,12 @@ exports.deleteCommentsById = function(id, callback){
 	});
 };
 
+/**
+* Delete all comments on a survey
+* @param {String} filename
+* @param {String} user: who owns the survey
+* @param {Function} callback: 1. err 2.output
+*/
 exports.deleteSnapshotsBySurvey = function(filename, user, callback){
 
 	snapshots.find({"file": filename, "user": user}, {_id: 1}).toArray(function(error, ids){
@@ -219,6 +275,11 @@ exports.deleteSnapshotsBySurvey = function(filename, user, callback){
 
 };
 
+/**
+* Get a user's comments, used in admin home
+* @param {String} user
+* @param {Function} callback: 1. err 2.output
+*/
 exports.getCommentsByUser = function(user, callback){
 
 	comments.aggregate([

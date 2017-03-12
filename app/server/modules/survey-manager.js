@@ -25,10 +25,11 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 
 var surveys = db.collection('surveys_test');
 
-/*Create a new survey
-para: 1. files: req parameter
-			2. user: user name
-			3. callback: callback function with an error parameter
+/**
+* Create a new survey
+* @param {JSON} files
+* @param {String} user
+* @param {Function} callback
 */
 exports.createNewSurvey = function(files, user, callback){
 	//find the survey in database
@@ -74,10 +75,11 @@ exports.createNewSurvey = function(files, user, callback){
 	});
 }
 
-/*Replace a survey with a new csv
-para: 1. files: req parameter
-			2. user: user name
-			3. callback: callback function with 1) error 2) output
+/**
+* Replace a survey with a new csv
+* @param {JSON} files: req param
+* @param {String} user
+* @param {Function} callback
 */
 exports.replaceSurvey = function(files, user, callback){
 	//find the survey in the database
@@ -122,11 +124,12 @@ exports.replaceSurvey = function(files, user, callback){
 	});
 }
 
-/*Change the image collection for a survey
-para: 1. files: req parameter
-			2. user: user name
-			3. collection: collection json
-			4. callback: callback function with an error parameter
+/**
+* Change the image collection for a survey
+* @param {JSON} files: req param
+* @param {String} user
+* @param {String} collection
+* @param {Function} callback
 */
 exports.changeCollection = function(files, user, collection, callback){
 	var imgPath = __dirname + "/../../public/surveys/"+user+"_"
@@ -174,11 +177,13 @@ exports.changeCollection = function(files, user, collection, callback){
 	});
 }
 
-/*Change the image definition for a survey
-para: 1. files: req parameter
-			2. user: user name
-			3. collection: dzc url
-			4. callback: callback function with an error parameter
+
+/**
+* Change the image definition for a survey
+* @param {JSON} files: req param
+* @param {String} user
+* @param {String} collection
+* @param {Function} callback
 */
 exports.changeImageDefinition = function(files, user, dzc, callback){
 	//modify the paras in database
@@ -189,10 +194,11 @@ exports.changeImageDefinition = function(files, user, dzc, callback){
 	});
 }
 
-/*Change #name tag for the csv file
-para: 1. files: req parameter
-			2. user: user name
-			3. callback: callback function with an error parameter
+/**
+* Change #name tag for the csv file
+* @param {JSON} files: req param
+* @param {String} user
+* @param {Function} callback
 */
 exports.changeCollectionItemName = function(files, user, callback){
 	var filePath = __dirname + "/../../public/surveys/"+user+"_"
@@ -221,9 +227,10 @@ exports.changeCollectionItemName = function(files, user, callback){
 	});
 }
 
-/*Get surveys for a user
-para: 1. username
-			2. callback: callback function with 1) error 2) output
+/**
+* Get surveys for a user
+* @param {String} username
+* @param {Function} callback: 1.err 2. output
 */
 exports.getSurveyByUsername = function(username, callback)
 {
@@ -232,9 +239,10 @@ exports.getSurveyByUsername = function(username, callback)
 	});
 }
 
-/*Get surveys for users
-para: 1. usernames
-			2. callback: callback function with 1) error 2) output
+/**
+* Get surveys for users
+* @param {String} username
+* @param {Function} callback: 1.err 2. output
 */
 exports.getSurveysByUserList = function(usernames, callback)
 {
@@ -252,9 +260,10 @@ exports.getSurveysByUserList = function(usernames, callback)
 	});
 }
 
-/*Get unhidden surveys for public purpose
-para: 1. username
-			2. callback: callback function with 1) error 2) output
+/**
+* Get unhidden surveys for public purpose
+* @param {String} username
+* @param {Function} callback: 1.err 2. output
 */
 exports.getPublicSurveyByUsername = function(username, callback)
 {
@@ -263,8 +272,9 @@ exports.getPublicSurveyByUsername = function(username, callback)
 	});
 }
 
-/*Delete all surveys
-para: 1. callback: callback function with 1) error
+/**
+* Delete all surveys
+* @param {Function} callback: 1.err
 */
 exports.delAllRecords = function(callback)
 {
@@ -279,9 +289,10 @@ exports.delAllRecords = function(callback)
 	surveys.remove({}, callback);
 }
 
-/*Delete surveys for a user
-para: 1. user: username
-			2. callback: callback function with 1) error 2) output
+/**
+* Delete surveys for a user
+* @param {String} username
+* @param {Function} callback: 1.err 2. output
 */
 exports.deleteSurvey = function(user, callback)
 {
@@ -304,10 +315,11 @@ exports.deleteSurvey = function(user, callback)
 	});
 }
 
-/*Delete a survey
-para: 1. filename
-			2. user: username
-			2. callback: callback function with 1) error
+/**
+* Delete a survey
+* @param {String} filename
+* @param {String} user
+* @param {Function} callback: 1. err
 */
 exports.deleteSurveyByName = function(filename, user, callback)
 {
@@ -326,10 +338,11 @@ exports.deleteSurveyByName = function(filename, user, callback)
 	});
 }
 
-/*Hide a survey by filename and user
-para: 1. filename
-			2. user: username
-			3. callback: callback function with 1) error 2) output
+/**
+* Hide a survey by filename and user
+* @param {String} filename
+* @param {String} user
+* @param {Function} callback: 1. err 2.output
 */
 exports.hideSurveyByNameID = function(filename, user, callback)
 {
@@ -344,11 +357,12 @@ exports.hideSurveyByNameID = function(filename, user, callback)
 	});
 }
 
-/*Change a survey's default view
-para: 1. filename
-			2. user: username
-			3. view: default view to be updated
-			4. callback: callback function with 1) error 2) output
+/**
+* Change a survey's default view
+* @param {String} filename
+* @param {String} user
+* @param {String} view: default view to be updated
+* @param {Function} callback: 1. err 2.output
 */
 exports.changeViewByNameID = function(filename, user, view, callback)
 {
@@ -362,11 +376,12 @@ exports.changeViewByNameID = function(filename, user, view, callback)
 	});
 }
 
-/*Change a survey's view options
-para: 1. filename
-			2. user: username
-			3. view: view options to be updated
-			4. callback: callback function with 1) error 2) output
+/**
+* Change a survey's view options
+* @param {String} filename
+* @param {String} user
+* @param {String} views: view options to be updated
+* @param {Function} callback: 1. err 2.output
 */
 exports.changeViewOptionsByNameID = function(filename, user, views, callback)
 {
@@ -380,10 +395,11 @@ exports.changeViewOptionsByNameID = function(filename, user, views, callback)
 	});
 }
 
-/*Get a survey's view options
-para: 1. filename
-			2. user: username
-			3. callback: callback function with 1) error 2) output
+/**
+* Get a survey's view options
+* @param {String} filename
+* @param {String} user
+* @param {Function} callback: 1. err 2.output
 */
 exports.getViewOptionsByName = function(filename, user, callback)
 {
@@ -396,6 +412,12 @@ exports.getViewOptionsByName = function(filename, user, callback)
 	});
 }
 
+/**
+* Get a survey's dzc url
+* @param {String} user
+* @param {String} filename
+* @param {Function} callback: 1. err 2.output
+*/
 exports.getSurveyDzc= function(user, filename, callback)
 {
 	surveys.findOne({"name":filename, "user": user}, function(e, o){
@@ -407,6 +429,13 @@ exports.getSurveyDzc= function(user, filename, callback)
 	});
 }
 
+/**
+* Change a survey's dzc url
+* @param {String} user
+* @param {String} filename
+* @param {String} dzc: dzc url
+* @param {Function} callback: 1. err 2.output
+*/
 exports.changeSurveyDzc = function(filename, user, dzc, callback)
 {
 	surveys.findOne({"name":filename, "user": user}, function(e, o){
