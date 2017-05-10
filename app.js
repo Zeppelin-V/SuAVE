@@ -19,7 +19,9 @@ app.use(session({
 	proxy: true,
 	resave: true,
 	saveUninitialized: true,
-	store: new MongoStore({ host: 'localhost', port: 27017, db: 'suave'})
+	store: new MongoStore({ host: process.env.STOREHOST || 'localhost',
+		port: process.env.STOREPORT || 27017,
+		db: process.env.STOREDB || 'suave'})
 	})
 );
 
