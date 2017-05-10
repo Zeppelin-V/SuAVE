@@ -9,9 +9,9 @@ var loader = require('./collection-loader');
 var GL = require('../global');
 var AN = require('./annotation-manager');
 
-var dbPort 		= 27017;
-var dbHost 		= 'localhost';
-var dbName 		= 'suave';
+var dbPort 		= process.env.STOREPORT || 27017;
+var dbHost 		= process.env.STOREHOST || 'localhost';
+var dbName 		= process.env.STOREDB || 'suave';
 
 
 /* establish the database connection */
