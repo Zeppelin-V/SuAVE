@@ -78,6 +78,13 @@ module.exports = function(app) {
 		}
 	});
 
+	
+	app.get('/src/rloader.js', function(req, res) {
+		res.render('rloader', {
+			RHOST : process.env.RHOST || '132.249.238.130'
+		});
+	})
+
 	//info to update the account
 	app.get('/update', function(req, res) {
 		if (req.session.user == null){
@@ -252,7 +259,10 @@ module.exports = function(app) {
 	});
 
 	app.get('/main/:para', function(req, res){
-		res.render('main', {querys: req.params.para});
+		res.render('main', {
+			querys: req.params.para,
+			logoRedirect: '/home'
+		});
 	});
 
 //replace survey csv file

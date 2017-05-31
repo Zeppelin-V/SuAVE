@@ -6,7 +6,7 @@ var myfile;
 var loglinear;
 var logit = "binomial";
 var probit;
-var domain = "132.249.238.130";
+var domain = RHOST;//"132.249.238.130";
 
 
 
