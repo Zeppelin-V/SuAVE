@@ -2259,6 +2259,11 @@ var graphPara = {};
             $('#pv-variables-search-clear').css("visibility", "hidden");
         });
 
+        //enable closing of jupyter modal
+        $("#pv-j-model-cancel").click(function(e) {
+            window.open("pv-modal-dialog-close", "_self");
+        });
+
         $("#pv-column-search").on("keyup", function(e) {
             var input = this.value.toLowerCase();
             if (input != "") {
