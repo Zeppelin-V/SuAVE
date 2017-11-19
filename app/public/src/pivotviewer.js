@@ -75,7 +75,7 @@ var graphPara = {};
         _enabledView = [],
         _options = {},
         _rEnable = false,
-        _jupyterEnable = false;
+        _jupyterEnable = true,
         _listObj = {};
 
     if (_options.authoring == true) {
@@ -2106,6 +2106,26 @@ var graphPara = {};
             "class='pv-search-clear' id='pv-variables-search-clear'>&nbsp;</div><p><button id='pv-model-submit'>Submit</button></p><p><button " +
             "id='pv-model-cancel'>Cancel</button></td></table>";
         $("#pv-model-text").html(modelHtml);
+
+        //Jupyter modal text
+        var j_modelHTML = "<p><h3>Presse crtl (Windows)/command(Mac) to select first variables</h3><p>";
+        j_modelHTML += "<table><tr><th>First Variable:</th><th> Second Variable:</th><tr><td><select id = 'pv-all-variables1' style='width:250px' size=20>";
+        for (var i = 0; i < PivotCollection.categories.length; i++) {
+            var category = PivotCollection.categories[i];
+            j_modelHTML += "<option value=" + i + "search='" + PV.cleanName(category.name.toLowerCase()) + "'>" + category.name + "</option>";
+        }
+        j_modelHTML += "</select></td><td><select id='pv-all-variables2' multiple style='width:250px' size=20>";
+        for (var i = 0; i < PivotCollection.categories.length; i++) {
+            var category = PivotCollection.categories[i];
+            j_modelHTML += "<option value=" + i + "search='" + PV.cleanName(category.name.toLowerCase()) + "'>" + category.name + "</option>";
+        }
+        j_modelHTML += "</select></td><td width=200><p><select id='pv-select-model'><option>Select Model</option><option>Logit</option><option>Probit</option><option>Log Linear</option></select><p>" +
+            "<input id='pv-variables-search' placeholder='Search For Variable...' type='text' size=20><div " +
+            "class='pv-search-clear' id='pv-variables-search-clear'>&nbsp;</div><p><button id='pv-model-submit'>Submit</button></p><p><button " +
+            "id='pv-j-model-cancel'>Cancel</button></td></table>";
+
+        $("#pv-j-model-text").html(j_modelHTML);
+
 
 
         $("#pv-all-columns").dblclick(function(e) {
