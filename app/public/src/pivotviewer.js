@@ -2119,8 +2119,8 @@ var graphPara = {};
             j_modelHTML += "<option value=" + i + "search='" + PV.cleanName(category.name.toLowerCase()) + "'>" + category.name + "</option>";
         }
         j_modelHTML += "</select></td><td width=200><p><select id='pv-select-model'><option>Select Model</option><option>Logit</option><option>Probit</option><option>Log Linear</option></select><p>" +
-            "<input id='pv-variables-search' placeholder='Search For Variable...' type='text' size=20><div " +
-            "class='pv-search-clear' id='pv-variables-search-clear'>&nbsp;</div><p><button id='pv-model-submit'>Submit</button></p><p><button " +
+            "<input id='pv-j-variables-search' placeholder='Search For Variable...' type='text' size=20><div " +
+            "class='pv-j-search-clear' id='pv-j-variables-search-clear'>&nbsp;</div><p><button id='pv-model-submit'>Submit</button></p><p><button " +
             "id='pv-j-model-cancel'>Cancel</button></td></table>";
 
         $("#pv-j-model-text").html(j_modelHTML);
@@ -2247,6 +2247,11 @@ var graphPara = {};
             }
         });
 
+        $("#pv-j-model-submit").click(function(e) {
+
+        });
+
+
         $("#pv-model-cancel").click(function(e) {
             window.open("#pv-modal-dialog-close", "_self");
             //$("#show-missing").prop("checked", settings.showMissing);
@@ -2261,6 +2266,12 @@ var graphPara = {};
         //enable closing of jupyter modal
         $("#pv-j-model-cancel").click(function(e) {
             window.open("pv-modal-dialog-close", "_self");
+            if ($("#pv-all-variables1 option").eq(0).val() == -1) $("#pv-all-variables1 option").remove();
+            PV._initAllSelect("#pv-all-variables1");
+            if ($("#pv-all-variables2 option").eq(0).val() == -1) $("#pv-all-variables2 option").remove();
+            PV._initAllSelect("#pv-all-variables2");
+            $("#pv-j-variables-search").val("");
+            $('#pv-j-variables-search-clear').css("visibility", "hidden");
         });
 
         $("#pv-column-search").on("keyup", function(e) {
@@ -2313,6 +2324,37 @@ var graphPara = {};
             if ($("#pv-all-variables2 option").eq(0).val() == -1) $("#pv-all-variables2 option").remove();
             PV._initAllSelect("#pv-all-variables2");
         });
+
+        //jupyter modal search
+        $("#pv-j-variables-search").on("keyup", function(e) {
+            //var input = this.value.toLowerCase();
+            var input = e.target.value.toLowerCase();
+            if (input != "") {
+                if ($("#pv-all-variables1 option").eq(0).val() == -1) $("#pv-all-variables1 option").remove();
+                PV._initAllSelect("#pv-all-variables1", input);
+                if ($("#pv-all-variables2 option").eq(0).val() == -1) $("#pv-all-variables2 option").remove();
+                PV._initAllSelect("#pv-all-variables2", input);
+                $("#pv-j-variables-search-clear").css("visibility", "visible");
+                if ($("#pv-all-variables1 option").length == 0)
+                    $("#pv-all-variables1").append("<option value='-1' css:'display: block'>No matching variables.</option>");
+                if ($("#pv-all-variables2 option").length == 0)
+                    $("#pv-all-variables2").append("<option value='-1' css:'display: block'>No matching variables.</option>");
+            } else {
+                $("#pv-j-variables-search-clear").css("visibility", "hidden");
+                PV._initAllSelect("#pv-all-variables1");
+                PV._initAllSelect("#pv-all-variables2");
+            }
+        });
+
+        $('#pv-j-variables-search-clear').click(function(e) {
+            $("#pv-j-variables-search").val("");
+            $('#pv-j-variables-search-clear').css("visibility", "hidden");
+            if ($("#pv-all-variables1 option").eq(0).val() == -1) $("#pv-all-variables1 option").remove();
+            PV._initAllSelect("#pv-all-variables1");
+            if ($("#pv-all-variables2 option").eq(0).val() == -1) $("#pv-all-variables2 option").remove();
+            PV._initAllSelect("#pv-all-variables2");
+        });
+
 
 
         $('.pv-toolbarpanel-view').click(function(e) {
