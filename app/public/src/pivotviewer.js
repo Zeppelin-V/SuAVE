@@ -2045,16 +2045,11 @@ var graphPara = {};
         }
 
         //enable button and modal for Jupyter
-        if (_jupyterEnable == true) {
+        if (_jupyterEnable === true) {
 
             //add model view
             $('.pv-toolbarpanel-viewcontrols').append("<div class='pv-toolbarpanel-view'id='pv-toolbarpanel-view-11' title='Jupyter'><a href='#pv-open-j-Model'> <img id='pv-toolbarpanel-view-11-image' src='images/jupyter_v2.png'></a></div>");
-            $('.pv-toolbarpanel-viewcontrols').append(
-                '<div class="modal fade" id="jupyterModal" role="dialog" style="z-index:100000;"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">' +
-                '<h4 class="modal-title">R result</h4></div>' +
-                '<div class="modal-body" ><code><pre id="pv-model-result" style="position: relative; \
-            "></pre></code></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div></div></div></div>');
-            //loading completed
+            //loading complete
             $('.pv-toolbarpanel-viewcontrols').append("<div id='pv-open-j-Model' class='pv-modal-dialog modal-xl'><div><h2>Machine Learning Model</h2><div id='pv-j-model-text'>&nbsp;</div></div></div>");
         }
 
@@ -2318,7 +2313,7 @@ var graphPara = {};
 
         $('.pv-toolbarpanel-view').click(function(e) {
             var viewId = this.id.substring(this.id.lastIndexOf('-') + 1, this.id.length);
-            if (viewId != null && viewId != 10)
+            if (viewId != null && viewId != 10 && viewId != 11)
                 PV.selectView(parseInt(viewId));
         });
 
