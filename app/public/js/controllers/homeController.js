@@ -395,7 +395,10 @@ $(document).on('click', '#select-tags-submit',  function(){
 			'<div class="col-xs-4"> <input id="pv-map" class="checkbox-custom" type="checkbox">'+
 			'<label for="pv-map" class="checkbox-custom-label">Map</label> </div>'+
 			'<div class="col-xs-4"><input id="pv-r" class="checkbox-custom" type="checkbox">'+
-			'<label for="pv-r" class="checkbox-custom-label">R</label></div></div>'
+			'<label for="pv-r" class="checkbox-custom-label">R</label></div></div>' +
+        	'<div class="row">' +
+        	'<div class="col-xs-4"><input id="pv-jupyter" class="checkbox-custom" type="checkbox">' +
+        	'<label for="pv-jupyter" class="checkbox-custom-label">Jupyter</label></div></div>'
 		);
 		var views = survey.views.toString();
 		if(views[0] == '1') $("#pv-grid").prop("checked", true);
@@ -404,6 +407,7 @@ $(document).on('click', '#select-tags-submit',  function(){
     if(views[3] == '1') $("#pv-qca").prop("checked", true);
     if(views[4] == '1') $("#pv-map").prop("checked", true);
 		if(views[5] == '1') $("#pv-r").prop("checked", true);
+
 
 		if(!survey.dzc){
 			$('#column-select-1').empty();
