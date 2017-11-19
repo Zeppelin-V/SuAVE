@@ -407,7 +407,7 @@ $(document).on('click', '#select-tags-submit',  function(){
     if(views[3] == '1') $("#pv-qca").prop("checked", true);
     if(views[4] == '1') $("#pv-map").prop("checked", true);
 		if(views[5] == '1') $("#pv-r").prop("checked", true);
-
+        if(views[6] == '1') $("#pv-jupyter").prop("checked", true);
 
 		if(!survey.dzc){
 			$('#column-select-1').empty();
@@ -567,39 +567,44 @@ $(document).on('click', '#select-tags-submit',  function(){
 
 	});
 
-	var changeViewOptions = function(iName){
-		var views = "";
-		//change view options
-		if($("#pv-grid").is(':checked')){
-			views += 1;
-		}else{
-			views += 0;
-		}
-		if($("#pv-bucket").is(':checked')){
-			views += 1;
-		}else{
-			views += 0;
-		}
-		if($("#pv-crosstab").is(':checked')){
-			views += 1;
-		}else{
-			views += 0;
-		}
-		if($("#pv-qca").is(':checked')){
-			views += 1;
-		}else{
-			views += 0;
-		}
-		if($("#pv-map").is(':checked')){
-			views += 1;
-		}else{
-			views += 0;
-		}
-		if($("#pv-r").is(':checked')){
-			views += 1;
-		}else{
-			views += 0;
-		}
+	var changeViewOptions = function(iName) {
+        var views = "";
+        //change view options
+        if ($("#pv-grid").is(':checked')) {
+            views += 1;
+        } else {
+            views += 0;
+        }
+        if ($("#pv-bucket").is(':checked')) {
+            views += 1;
+        } else {
+            views += 0;
+        }
+        if ($("#pv-crosstab").is(':checked')) {
+            views += 1;
+        } else {
+            views += 0;
+        }
+        if ($("#pv-qca").is(':checked')) {
+            views += 1;
+        } else {
+            views += 0;
+        }
+        if ($("#pv-map").is(':checked')) {
+            views += 1;
+        } else {
+            views += 0;
+        }
+        if ($("#pv-r").is(':checked')) {
+            views += 1;
+        } else {
+            views += 0;
+        }
+        if ($("#pv-jupyter").is(':checked')) {
+          views += 1;
+        }else{
+         views +=0;
+    	}
 
 		$.ajax({
 			url: "/changeViewOptions",

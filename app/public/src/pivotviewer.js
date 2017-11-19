@@ -2015,6 +2015,10 @@ var graphPara = {};
                 _rEnable = true;
                 continue;
             }
+            if (PivotCollection.config.views[i] == "jupyter"){
+                _jupyterEnable = true;
+                continue;
+            }
             var viewName = PivotCollection.config.views[i];
             PivotViewer.Utils.loadScript("src/views/" + viewName.toLowerCase() + "view.min.js");
             eval("var view = new PivotViewer.Views." + viewName.charAt(0).toUpperCase() + viewName.substring(1) + "View()");
