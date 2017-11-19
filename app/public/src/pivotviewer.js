@@ -75,6 +75,7 @@ var graphPara = {};
         _enabledView = [],
         _options = {},
         _rEnable = false,
+        _jupyerEnable = false;
         _listObj = {};
 
     if (_options.authoring == true) {
