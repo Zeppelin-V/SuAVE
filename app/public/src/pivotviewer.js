@@ -2115,7 +2115,7 @@ var graphPara = {};
         }
 
         j_modelHTML += "</select></td><td width=200><p><select id='pv-select-model'><option>Select Operation</option></select></p><p><button" +
-            " id='pv-model-submit'>Submit</button></p><p><button id='pv-j-model-cancel'>Cancel</button></td>";
+            " id='pv-j-model-submit'>Submit</button></p><p><button id='pv-j-model-cancel'>Cancel</button></td>";
 
         j_modelHTML += "<td><select id='pv-all-variables2' multiple style='width:250px' size=20>";
         for (var i = 0; i < PivotCollection.categories.length; i++) {
@@ -2249,7 +2249,6 @@ var graphPara = {};
         });
 
         $("#pv-j-model-submit").click(function(e) {
-
         });
 
 
@@ -2266,13 +2265,7 @@ var graphPara = {};
 
         //enable closing of jupyter modal
         $("#pv-j-model-cancel").click(function(e) {
-            window.open("pv-modal-dialog-close", "_self");
-            if ($("#pv-all-variables1 option").eq(0).val() == -1) $("#pv-all-variables1 option").remove();
-            PV._initAllSelect("#pv-all-variables1");
-            if ($("#pv-all-variables2 option").eq(0).val() == -1) $("#pv-all-variables2 option").remove();
-            PV._initAllSelect("#pv-all-variables2");
-            $("#pv-j-variables-search").val("");
-            $('#pv-j-variables-search-clear').css("visibility", "hidden");
+            window.open("#pv-modal-dialog-close", "_self");
         });
 
         $("#pv-column-search").on("keyup", function(e) {
