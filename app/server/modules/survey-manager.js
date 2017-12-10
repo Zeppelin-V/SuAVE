@@ -1,6 +1,7 @@
 var crypto 		= require('crypto');
 var MongoDB 	= require('mongodb').Db;
 var Server 		= require('mongodb').Server;
+var ObjectID    = require('mongodb').ObjectID;
 var moment 		= require('moment');
 var fsx = require('fs-extra');
 var fs = require('fs'); //file system
@@ -40,7 +41,7 @@ exports.createNewSurvey = function(files, user, callback){
 		}
     else{
 			//read the raw file
-      fs.readFile(files.file.path, function(err, data){
+      fs.readFile(files.file.path, function(err, data) {
 				if (!fs.existsSync(__dirname + "/../../public/surveys")){
 			    fs.mkdirSync(__dirname + "/../../public/surveys");
 			  }
@@ -124,6 +125,90 @@ exports.replaceSurvey = function(files, user, callback){
 	});
 }
 
+/**
+ * Gets one survey matching fileName and
+ * returns it as a csv
+ * @param old_name Name of survey user wishes to clone
+ * @param new_name Name of cloned survey
+ * @param author User of original survey
+ * @param user User cloning the survey
+ * @param callback function to transmit errors
+ */
+
+exports.cloneSurvey = function(old_name, new_name, author, user, callback){
+	//find the survey in the database
+    console.log(old_name);
+    console.log(new_name);
+    console.log(author);
+    console.log(user);
+
+    //check if user has made a survey with this name before
+    surveys.findOne({"name": new_name, "user": user}, function(e, o) {
+        if (o) {
+            callback("Name is taken.");
+        }
+        else {
+            //check if survey user wishes to clone exists
+            surveys.findOne({"name": old_name, "user": author}, function(e,doc){
+                if (!doc) {
+                    callback("Survey does not exist.");
+                }
+                else {
+                    //find old location of survey
+                    var old_path = __dirname + "/../../public/surveys/"+ author +"_"
+                    + old_name + ".csv";
+
+                    //copy that survey data
+                    fs.readFile(old_path, function(err, survey_data){
+
+                        //create path for cloned survey
+                        var new_path = __dirname + "/../../public/surveys/" + user + "_"
+                        + old_name + ".csv";
+
+                        //write cloned survey to file system
+                        fs.writeFile(new_path, survey_data, function(err) {
+                            if (err){
+                                callback(err);
+                            }
+                            else {
+
+                                var date = new Date();
+
+                                //add to database
+                                surveys.insert({"fullname":doc.fullname ,"name": new_name, "user": user,
+                                    "csv": new_path, "view": "grid", "views": 111000, "collection": "default",
+                                    "hidden": 0, "date":date.toString(), "originalname": doc.originalname}, callback);
+                            }
+
+                        });
+
+                        //copy about survey page from original for the cloned survey
+                        var old_about_path = __dirname + "/../../public/surveys/"+author+"_"
+                            + old_name +"about.html";
+
+                        var new_about_path = __dirname + "/../../public/surveys/" + user + "_"
+                            + new_name + "about.html";
+
+                        fs.readFile(old_about_path, function(err, about_data) {
+
+                            if (err) {
+                                callback(err, null);
+                            }
+
+                            else {
+                                fs.writeFile(new_about_path, about_data, function (err) {
+                                    if (err) {
+                                        callback(err, null);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+            })
+        }
+    });
+}
 /**
 * Change the image collection for a survey
 * @param {JSON} files: req param

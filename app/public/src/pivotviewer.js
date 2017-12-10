@@ -2052,7 +2052,14 @@ var graphPara = {};
         if (_jupyterEnable === true) {
 
             //add model view
-            $('.pv-toolbarpanel-viewcontrols').append("<div class='pv-toolbarpanel-view'id='pv-toolbarpanel-view-11' title='Jupyter'><a href='#pv-open-j-Model'> <img id='pv-toolbarpanel-view-11-image' src='images/jupyter_v2.png'></a></div>");
+            $('.pv-toolbarpanel-viewcontrols').append("<div class='pv-toolbarpanel-view'id='pv-toolbarpanel-view-11' title='Jupyter'><a href='#pv-clone-survey'> <img id='pv-toolbarpanel-view-11-image' src='images/jupyter_v2.png'></a></div>");
+            //if (survey_author !=
+            //modal to clone SuAVE survey
+            $('.pv-toolbarpanel-viewcontrols').append("<div id= 'pv-clone-survey' class='pv-modal-dialog modal-xl'><div><h2>Clone Survey</h2><div id='pv-clone-survey-text'>&nbsp;</div></div></div>");
+
+            //modal for creating new SuAVE survey
+            $('.pv-toolbarpanel-viewcontrols').append("<div id= 'pv-new-survey' class='pv-modal-dialog modal-xl'><div><h2>New Survey</h2><div id='pv-new-survey-text'>&nbsp;</div></div></div>");
+
             //loading complete
             $('.pv-toolbarpanel-viewcontrols').append("<div id='pv-open-j-Model' class='pv-modal-dialog modal-xl'><div><h2>Machine Learning Model</h2><div id='pv-j-model-text'>&nbsp;</div></div></div>");
         }
@@ -2106,7 +2113,28 @@ var graphPara = {};
             "id='pv-model-cancel'>Cancel</button></td></table>";
         $("#pv-model-text").html(modelHtml);
 
-        //Jupyter modal text
+        //clone survey modal
+        var clone_survey_html = "<p><h3>Running Jupyter requires cloning the survey. Would you like to clone it?</h3></p>";
+        clone_survey_html += "<p><button id= 'clone-survey'>Clone</button></p><p><button id= 'clone-survey-cancel'>Cancel</button></p>";
+        $("#pv-clone-survey-text").html(clone_survey_html);
+
+        var survey_name = PivotCollection.name;
+        var author = PivotCollection.name.substr(0, PivotCollection.name.indexOf("_"));
+        var username = parent.user;
+        //modal for creating new survey
+        var new_survey_html = "<p><h3>Choose the name of your new survey:</h3><form id='new-survey' action='/cloneCSV' method='POST'>";
+        new_survey_html += "<fieldset><input type='hidden' name='author' id='author' value=" + author + ">";
+        new_survey_html += "<input type = 'hidden' name='old_name' id='old_name' value=" + survey_name + ">";
+        new_survey_html += "<input type= 'hidden' name='user' id='user' value="+ username + ">";
+        new_survey_html += "<hr/><div style='width: 100%;' class='container'><div class='row'><div class='col-xs-6'>";
+        new_survey_html += "<p class='subheading'>Name the survey:</p><div class='control-group'><input type='text' name='new_name' id = 'filename' required='required'/>";
+        new_survey_html += "<p id='error-text' style='color:red;'></p></div></div></div></div><hr/><div class='form-buttons'><button id='new-survey-submit'";
+        new_survey_html += "type='submit' class='btn btn-primary'>Submit</button></div></fieldset></form></p>";
+        new_survey_html += "<div><button data-dismiss=\"modal\" class=\"close\">x</button></div>";
+        $("#pv-new-survey-text").html(new_survey_html);
+
+
+        //main jupyter modal
         var j_modelHTML = "<p><h3>Presse crtl (Windows)/command(Mac) to select first variables</h3><p>";
         j_modelHTML += "<table><tr><th>First Variable:</th><th></th></th><th> Second Variable:</th><tr><td><select id = 'pv-all-variables1' style='width:250px' size=20>";
         for (var i = 0; i < PivotCollection.categories.length; i++) {
@@ -2248,6 +2276,20 @@ var graphPara = {};
             }
         });
 
+
+        $("#pv-clone-survey").click(function(e) {
+            window.open("#pv-modal-dialog-close", "_self");
+
+            window.open("#pv-new-survey", "_self");
+        });
+
+        $("#pv-new-survey").on("load",function() {
+            var author = PivotCollection.name.substr(0, PivotCollection.name.indexOf("_"));
+            console.log("Author in form is:" + author);
+            document.getElementById("author").val = PivotCollection.name.substr(0, PivotCollection.name.indexOf("_"));
+        });
+
+
         $("#pv-j-model-submit").click(function(e) {
         });
 
@@ -2261,6 +2303,11 @@ var graphPara = {};
             PV._initAllSelect("#pv-all-variables2");
             $("#pv-variables-search").val("");
             $('#pv-variables-search-clear').css("visibility", "hidden");
+        });
+
+
+        $("#pv-clone-survey-cancel").click(function(e) {
+            window.open("#pv-modal-dialog-close", "_self");
         });
 
         //enable closing of jupyter modal

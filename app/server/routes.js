@@ -290,9 +290,20 @@ module.exports = function(app) {
 	});
 
 
+	//clone survey
+	app.post('/cloneCSV', function(req, res) {
+		SM.cloneSurvey(req.body.old_name, req.body.new_name, req.body.author, req.body.user, function(e) {
+			if (e) {
+				res.status(400).send(e);
+			} else {
+                res.status(200).send('ok');
+            }
+		});
+	});
+
 	//new survey
 	app.post('/uploadCSV', uploading.single('file'), function(req, res){
-		SM.createNewSurvey(req, req.cookies.user, function(e){
+	    SM.createNewSurvey(req, req.cookies.user, function(e){
 			if (e){
 				res.status(400).send(e);
 			}	else{
