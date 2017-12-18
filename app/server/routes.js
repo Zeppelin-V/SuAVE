@@ -295,7 +295,9 @@ module.exports = function(app) {
 		SM.cloneSurvey(req.body.old_name, req.body.new_name, req.body.author, req.body.user, function(e) {
 			if (e) {
 				res.status(400).send(e);
-			} else {
+			}
+
+			else {
                 res.status(200).send('ok');
             }
 		});

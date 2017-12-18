@@ -415,6 +415,8 @@ $(document).on('click', '#select-tags-submit',  function(){
 			$('#column-select-3').empty();
 			$('#collect-select').prop("selected", false);
 			$('#column-collect-shape').empty();
+
+
 			//get Columns
 			$.ajax({
 				url: "/getSurveyColumnsNCollection",

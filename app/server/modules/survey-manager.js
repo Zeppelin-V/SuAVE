@@ -126,8 +126,7 @@ exports.replaceSurvey = function(files, user, callback){
 }
 
 /**
- * Gets one survey matching fileName and
- * returns it as a csv
+ * Finds survey matching filename and clones it under new user
  * @param old_name Name of survey user wishes to clone
  * @param new_name Name of cloned survey
  * @param author User of original survey
@@ -158,12 +157,17 @@ exports.cloneSurvey = function(old_name, new_name, author, user, callback){
                     var old_path = __dirname + "/../../public/surveys/"+ author +"_"
                     + old_name + ".csv";
 
+                    var fullname = new_name;
+                    new_name = new_name.replace(/[^\w]/gi, '_');
+
                     //copy that survey data
                     fs.readFile(old_path, function(err, survey_data){
 
                         //create path for cloned survey
                         var new_path = __dirname + "/../../public/surveys/" + user + "_"
-                        + old_name + ".csv";
+                        + new_name + ".csv";
+                        console.log(new_path);
+
 
                         //write cloned survey to file system
                         fs.writeFile(new_path, survey_data, function(err) {
@@ -175,7 +179,7 @@ exports.cloneSurvey = function(old_name, new_name, author, user, callback){
                                 var date = new Date();
 
                                 //add to database
-                                surveys.insert({"fullname":doc.fullname ,"name": new_name, "user": user,
+                                surveys.insert({"fullname":fullname ,"name": new_name, "user": user,
                                     "csv": new_path, "view": "grid", "views": 111000, "collection": "default",
                                     "hidden": 0, "date":date.toString(), "originalname": doc.originalname}, callback);
                             }
@@ -183,8 +187,8 @@ exports.cloneSurvey = function(old_name, new_name, author, user, callback){
                         });
 
                         //copy about survey page from original for the cloned survey
-                        var old_about_path = __dirname + "/../../public/surveys/"+author+"_"
-                            + old_name +"about.html";
+                        var old_about_path = __dirname + "/../../public/surveys/" + author +"_"
+                            + old_name + "about.html";
 
                         var new_about_path = __dirname + "/../../public/surveys/" + user + "_"
                             + new_name + "about.html";
