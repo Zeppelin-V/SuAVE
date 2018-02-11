@@ -27,53 +27,59 @@ var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}),
 var surveys = db.collection('surveys_test');
 
 /**
-* Create a new survey
-* @param {JSON} files
-* @param {String} user
-* @param {Function} callback
-*/
+ * Create a new survey
+ * @param {JSON} files
+ * @param {String} user
+ * @param {Function} callback
+ */
 exports.createNewSurvey = function(files, user, callback){
-	//find the survey in database
-	var name = files.body.name.replace(/[^\w]/gi, '_');
-  surveys.findOne({"name": name, "user": user}, function(e, o){
-		if (o){
-			callback("Name is taken");
-		}
-    else{
-			//read the raw file
-      fs.readFile(files.file.path, function(err, data) {
-				if (!fs.existsSync(__dirname + "/../../public/surveys")){
-			    fs.mkdirSync(__dirname + "/../../public/surveys");
-			  }
 
-        var newPath = __dirname + "/../../public/surveys/"+user+"_"
-          +name+".csv";
-				//save the survey
-				fs.writeFile(newPath, data, function(err){
-          if(err){
-            callback(err);
-          }else{
-						var date = new Date();
-						//save into the database
-            surveys.insert({"fullname":files.body.name ,"name": name, "user": user,
-            "csv": newPath, "view": "grid", "views": 111000, "collection": "default",
-						 "hidden": 0, "date":date.toString(), "originalname": files.file.originalname}, callback);
-          }
-        });
-
-				//initialize the about survey page
-				var aboutPath = __dirname + "/../../public/surveys/"+user+"_"
-          +name+"about.html"
-					var aboutContent = GL.getAbout(1) + files.body.name + GL.getAbout(2)
-					+ GL.getAbout(3) + GL.getAbout(4) + GL.getAbout(5);
-				fs.writeFile(aboutPath, aboutContent, function(err){
-          if(err){
-            callback(err);
-          }
-        });
-      });
+    //clean name if it contains quotes
+    if (user.indexOf('"') >= 0) {
+        user = user.replace(/\"/g, "");
     }
-	});
+
+    //find the survey in database
+    var name = files.body.name.replace(/[^\w]/gi, '_');
+    surveys.findOne({"name": name, "user": user}, function(e, o){
+        if (o){
+            callback("Name is taken");
+        }
+        else{
+            //read the raw file
+            fs.readFile(files.file.path, function(err, data) {
+                if (!fs.existsSync(__dirname + "/../../public/surveys")){
+                    fs.mkdirSync(__dirname + "/../../public/surveys");
+                }
+
+                var newPath = __dirname + "/../../public/surveys/"+user+"_"
+                    +name+".csv";
+                //save the survey
+                fs.writeFile(newPath, data, function(err){
+                    if(err){
+                        callback(err);
+                    }else{
+                        var date = new Date();
+                        //save into the database
+                        surveys.insert({"fullname":files.body.name ,"name": name, "user": user,
+                            "csv": newPath, "view": "grid", "views": 111000, "collection": "default",
+                            "hidden": 0, "date":date.toString(), "originalname": files.file.originalname}, callback);
+                    }
+                });
+
+                //initialize the about survey page
+                var aboutPath = __dirname + "/../../public/surveys/"+user+"_"
+                    +name+"about.html"
+                var aboutContent = GL.getAbout(1) + files.body.name + GL.getAbout(2)
+                    + GL.getAbout(3) + GL.getAbout(4) + GL.getAbout(5);
+                fs.writeFile(aboutPath, aboutContent, function(err){
+                    if(err){
+                        callback(err);
+                    }
+                });
+            });
+        }
+    });
 }
 
 /**
@@ -83,16 +89,22 @@ exports.createNewSurvey = function(files, user, callback){
 * @param {Function} callback
 */
 exports.replaceSurvey = function(files, user, callback){
+	//console.log(files.body.survey_name);
 	//find the survey in the database
   surveys.findOne({"name": files.body.name, "user": user}, function(e, o){
 		if (e){
 			callback("Survey does not exist!");
 		}
     else{
-			var survey = o;
-			//reset the survey's paramters in database
+
+            var name = files.file.originalname.replace(/[^\w]/gi, '_');
+            var newPath = __dirname + "/../../public/surveys/"+user+"_"
+                +name+".csv";
+
+            var survey = o;
+			//reset the survey's parameters in database
 			surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
-			{$set: {collection: {name: "default"}, iName: "", "originalname": files.file.originalname}},
+			{$set: {collection: {name: "default"}, iName: "", csv: newPath, originalname: files.file.originalname}},
 			{new:true}, function(e, o){
 				if(e) callback(e);
 			});
@@ -109,7 +121,7 @@ exports.replaceSurvey = function(files, user, callback){
 			    fs.mkdirSync(__dirname + "/../../public/surveys");
 			  }
 
-				var name = files.body.name.replace(/ /g,"-");
+				var name = files.file.originalname.replace(/ /g,"-");
         var newPath = __dirname + "/../../public/surveys/"+user+"_"
           +name+".csv";
 				//save the file
@@ -135,14 +147,14 @@ exports.replaceSurvey = function(files, user, callback){
  */
 
 exports.cloneSurvey = function(old_name, new_name, author, user, callback){
-	//find the survey in the database
-    console.log(old_name);
-    console.log(new_name);
-    console.log(author);
-    console.log(user);
 
-    //check if user has made a survey with this name before
-    surveys.findOne({"name": new_name, "user": user}, function(e, o) {
+	//clean name if it contains quotes
+    if (user.indexOf('"')) {
+        user.replace(/"/g, "");
+    }
+
+	//check if user has made a survey with this name before
+	surveys.findOne({"name": new_name, "user": user}, function(e, o) {
         if (o) {
             callback("Name is taken.");
         }
@@ -166,8 +178,6 @@ exports.cloneSurvey = function(old_name, new_name, author, user, callback){
                         //create path for cloned survey
                         var new_path = __dirname + "/../../public/surveys/" + user + "_"
                         + new_name + ".csv";
-                        console.log(new_path);
-
 
                         //write cloned survey to file system
                         fs.writeFile(new_path, survey_data, function(err) {
@@ -178,31 +188,31 @@ exports.cloneSurvey = function(old_name, new_name, author, user, callback){
 
                                 var date = new Date();
 
-                                //add to database
-                                surveys.insert({"fullname":fullname ,"name": new_name, "user": user,
-                                    "csv": new_path, "view": "grid", "views": 111000, "collection": "default",
-                                    "hidden": 0, "date":date.toString(), "originalname": doc.originalname}, callback);
-                            }
+                                //copy about survey page from original for the cloned survey
+                                var old_about_path = __dirname + "/../../public/surveys/" + author +"_"
+                                    + old_name + "about.html";
 
-                        });
+                                var new_about_path = __dirname + "/../../public/surveys/" + user + "_"
+                                    + new_name + "about.html";
 
-                        //copy about survey page from original for the cloned survey
-                        var old_about_path = __dirname + "/../../public/surveys/" + author +"_"
-                            + old_name + "about.html";
+                                fs.readFile(old_about_path, function(err, about_data) {
 
-                        var new_about_path = __dirname + "/../../public/surveys/" + user + "_"
-                            + new_name + "about.html";
-
-                        fs.readFile(old_about_path, function(err, about_data) {
-
-                            if (err) {
-                                callback(err, null);
-                            }
-
-                            else {
-                                fs.writeFile(new_about_path, about_data, function (err) {
                                     if (err) {
-                                        callback(err, null);
+                                        callback(err);
+                                    }
+
+                                    else {
+                                        fs.writeFile(new_about_path, about_data, function (err) {
+                                            if (err) {
+                                                callback(err);
+                                            }
+                                            else {
+                                                //add to database
+                                                surveys.insert({"fullname": fullname, "name": new_name, "user": user, "csv": new_path, "view": "grid", "views": doc.views,
+                                                    "collection": doc.collection, "hidden": 0, "date": date.toString(), "originalname": doc.originalname, "dzc": doc.dzc}, callback(null, doc));
+
+											}
+                                        });
                                     }
                                 });
                             }
@@ -221,6 +231,12 @@ exports.cloneSurvey = function(old_name, new_name, author, user, callback){
 * @param {Function} callback
 */
 exports.changeCollection = function(files, user, collection, callback){
+
+	//clean name if it contains quotes
+	if (user.indexOf('"') >= 0) {
+		user = user.replace(/\"/g, "");
+	}
+
 	var imgPath = __dirname + "/../../public/surveys/"+user+"_"
 		+files.body.name;
 	if (!fs.existsSync(imgPath)){
@@ -232,7 +248,7 @@ exports.changeCollection = function(files, user, collection, callback){
 	//modify the paras in database
 	surveys.findAndModify({"name":files.body.name, "user": user}, [["name", '1']],
 	{$set: {collection: collection}}, {new:true}, function(e, o){
-		if(e) callback(e);
+		if(e) callback("Error in db call");
 	});
 
 	//modify and save the csv file
@@ -271,7 +287,7 @@ exports.changeCollection = function(files, user, collection, callback){
 * Change the image definition for a survey
 * @param {JSON} files: req param
 * @param {String} user
-* @param {String} collection
+* @param {String} dzc
 * @param {Function} callback
 */
 exports.changeImageDefinition = function(files, user, dzc, callback){
@@ -533,6 +549,6 @@ exports.changeSurveyDzc = function(filename, user, dzc, callback)
 		}	else{
 			o.dzc = dzc;
 			surveys.save(o, callback);
-		}
+    }
 	});
 }

@@ -95,6 +95,7 @@ var graphPara = {};
             })
 
             _options = options;
+            console.log(options.dzc);
 
             $.getJSON("defaults.json").always(function(defaultOptions) {
 
@@ -160,6 +161,7 @@ var graphPara = {};
         if (Loader == undefined) throw "Collection loader is undefined.";
         if (Loader instanceof PivotViewer.Models.Loaders.ICollectionLoader) {
             if (options.dzc) PivotCollection.imageBase = options.dzc;
+            console.log(options.dzc);
             Loader.loadCollection(PivotCollection);
         } else {
             throw "Collection loader does not inherit from PivotViewer.Models.Loaders.ICollectionLoader.";
@@ -1862,6 +1864,8 @@ var graphPara = {};
 
         //init DZ Controller
         var baseCollectionPath = PivotCollection.imageBase;
+        console.log(PivotCollection.imageBase);
+        console.log(PivotCollection.base);
         if (!(baseCollectionPath.indexOf('http', 0) >= 0 || baseCollectionPath.indexOf('www.', 0) >= 0))
             baseCollectionPath = PivotCollection.base.substring(0, PivotCollection.base.lastIndexOf('/') + 1) + baseCollectionPath;
         var canvasContext = $('.pv-canvas')[0].getContext("2d");
@@ -1871,6 +1875,7 @@ var graphPara = {};
 
         _tiles = TileController.initTiles(PivotCollection.items, baseCollectionPath, canvasContext);
         //Init image controller
+        console.log(baseCollectionPath);
         _imageController.setup(baseCollectionPath.replace("\\", "/"));
     });
 
@@ -2141,7 +2146,7 @@ var graphPara = {};
         var survey_name = PivotCollection.name.substr(PivotCollection.name.indexOf("_") + 1, PivotCollection.name.length);
         var author = PivotCollection.name.substr(0, PivotCollection.name.indexOf("_"));
         var username = parent.user;
-        var defualt_survey_name = survey_name.concat("(clone)");
+        var default_survey_name = survey_name.concat("(clone)");
 
         //modal for cloning survey
         //var pv_clone_survey = "<div id='pv-clone-survey' class='pv-modal-dialog modal-xl'><div><h2>Clone Survey</h2><div id='pv-clone-survey-text'>&nbsp;</div></div></div>";
@@ -2153,10 +2158,10 @@ var graphPara = {};
         clone_survey_text += "<input type = 'hidden' name='old_name' id='old_name' value=" + survey_name + ">";
         clone_survey_text += "<input type= 'hidden' name='user' id='user' value="+ username + ">";
         clone_survey_text += "<hr/><div style='width: 100%;' class='container'><div class='row'><div class='col-xs-6'>";
-        clone_survey_text += "<p class='subheading'>Name the survey:</p><div class='control-group'><input type='text' name='new_name' id = 'filename' value=" + defualt_survey_name;
+        clone_survey_text += "<p class='subheading'>Name the survey:</p><div class='control-group'><input type='text' name='new_name' id = 'filename' value=" + default_survey_name;
         clone_survey_text += " required='required'><p id='error-text' style='color:red;'></p></div></div></div></div><hr/><div class='form-buttons'><button id='new-survey-submit'";
         clone_survey_text += "type='submit' class='btn btn-primary'>Submit</button></div></fieldset></form></p>";
-        clone_survey_text += "<div><button data-dismiss=\"modal\" class=\"close\">x</button></div>";
+        clone_survey_text += "<div><button id='pv-clone-modal-cancel'>x</button></div>";
         $("#pv-clone-survey-text").html(clone_survey_text);
 
 
@@ -2307,7 +2312,23 @@ var graphPara = {};
         });
 
 
+        var window_url = parent.window.location.href;
+        var params = "none";
+        var dzc_file = options.dzc;
+        var active_object = "none";
+
+        var jupyter_url = "http://localhost:8000/user/zep/notebooks/SDSC/suave_notebooks/SuaveDispatch.ipynb";
+        jupyter_url = jupyter_url + "?" + "surveyurl=" + window_url;
+        jupyter_url = jupyter_url + "&" + "user=" + username;
+        jupyter_url = jupyter_url + "&" + "csv=" + file;
+        jupyter_url = jupyter_url + "&" + "params=" + params;
+        jupyter_url = jupyter_url + "&" + "dzc=" + dzc_file;
+        jupyter_url = jupyter_url + "&" + "activeobject=" + active_object;
+
+
         $("#pv-j-model-submit").click(function(e) {
+            var jupyter_window = window.open(jupyter_url);
+            jupyter_window.survey_name = survey_name;
         });
 
 
@@ -2323,9 +2344,8 @@ var graphPara = {};
         });
 
 
-        $("#pv-clone-survey-cancel").click(function(e) {
-            $('#pv-open-j-Model').modal('hide');
-
+        $("#pv-clone-modal-cancel").click(function(e) {
+            window.open("#pv-modal-dialog-close", "_self");
         });
 
         //enable closing of jupyter modal

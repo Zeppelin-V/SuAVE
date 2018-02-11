@@ -53,6 +53,7 @@ PivotViewer.Views.TileController = Object.subClass({
             this._tiles.push(tile);
 
         }
+        console.log(pivotCollectionItems.length);
         return this._tiles;
     },
 

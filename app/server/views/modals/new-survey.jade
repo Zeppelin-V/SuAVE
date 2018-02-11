@@ -18,6 +18,8 @@
                   .control-group
                     input(type='text', id='new-file-name', name='name', required='required')
                     p#error-text(style='color:red;')
+                    .control-group
+                      input(type='hidden', id='user', name='user', value = "#{udata}")
                 .col-xs-6
                   p.subheading Image definition(optional):
                   .control-group

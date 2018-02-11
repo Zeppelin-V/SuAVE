@@ -186,7 +186,7 @@ $(document).on('click', '.list-group-item-heading', function(){
 
 
 $(document).on('click', '#tag-item-select li', function(){
-	var text = $('a', this).html();
+	var text = $('a', this).html();console.log(o);
 	$('#tag-list').prepend(
 		'<a class="list-group-item">'+
 			'<button class="close close-tag">x</button>'+
@@ -255,6 +255,8 @@ $(document).on('click', '#select-tags-submit',  function(){
 
 
 	$(document).on('click', '#select-reupload', function(){
+		var username = user;
+
 		$('.modal-select-collection').modal('show');
 		//$('.modal-select-collection').css("width", "560px");
 		$('.modal-select-collection').empty();
@@ -269,12 +271,17 @@ $(document).on('click', '#select-tags-submit',  function(){
 			'<button id="select-about"  class="btn btn btn-default col-md-3 col-xs-6">Describe Survey</button>  '+
 			'<button id="select-reupload"  class="btn btn btn-default col-md-3 col-xs-6">Reupload Data</button>'+
 			'</div></div> </div> </div> <div class="modal-body"> <h3>Select a new csv file to upload:</h3> '+
-		'<form id="replace-survey" action="/replaceCSV" method="POST" enctype="multipart/form-data"> '+
-		'<hr/> <fieldset> <div class="control-group"> <input type="file" name="file" required="required"/> </div>'+
-		'<div class="form-buttons"> <hr><button id="replace-survey-submit" type="submit" class="btn btn-primary">'+
+		'<form id="replace-survey" action="/replaceCSV" method="POST" enctype="multipart/form-data">'+
+		"<hr/> <fieldset><input type= 'hidden' name='user' id='user' value="+ user + ">" +
+			"<input type= 'hidden' name='survey_name' id='surve_name' + value=" + surveys[SID] + ">" +
+		'<div class="control-group"> <input type="file" name="file" required="required"/></div>'+
+		'<div class="form-buttons"><hr><button id="replace-survey-submit" type="submit" class="btn btn-primary">'+
 		'submit</button> </div> </fieldset> </form> </div></div></div>');
+		console.log(surveys[SID]);
 
 		$('#select-reupload').button('toggle');
+
+		var replace_form = $("#replace-survey");
 
 		$('#replace-survey').ajaxForm({
 			data: surveys[SID],
@@ -308,6 +315,7 @@ $(document).on('click', '#select-tags-submit',  function(){
 	}
 
 	var prepSetting = function(survey){
+		console.log(survey.collection);
 		var c = JSON.parse(survey.collection);
 		if( c.sColumn != undefined && c.sColumn != '|^'){
 			sMemory = true;
@@ -434,6 +442,8 @@ $(document).on('click', '#select-tags-submit',  function(){
 						if(column[i] != "#name") $("#column-select-3").append($("<option></option>").val(i).html(column[i]));
 						if(column[i] != "#href") $("#column-select-4").append($("<option></option>").val(i).html(column[i]));
 					}
+					console.log(survey.collection);
+					console.log(survey.collection.name);
 					if (survey.collection.name != 'default') {
 						prepSetting(survey);
 					}
@@ -549,6 +559,7 @@ $(document).on('click', '#select-tags-submit',  function(){
 				type: "POST",
 				data: {"name" : surveys[SID].name, "user": user, "collection": JSON.stringify(collection)},
 				success: function(data){
+
 					if(iName.name != '' || iName.href != ''){
 						changeIname();
 					}
@@ -644,7 +655,8 @@ $(document).on('click', '#select-tags-submit',  function(){
 	$(document).on('click', '.toggle', function() {
 		var id = $(this).attr("id");
 		var index = id.split('-').pop();
-    var survey = surveys[index];
+    var survey = surveys
+[index];
 		$.ajax({
 			url: "/hideSurveyByNameID",
 			type: "POST",
@@ -989,7 +1001,8 @@ $(document).on('click', '#select-tags-submit',  function(){
 			'<a href="#tab1-'+i+'" data-toggle="tab">Info</a></li> '+
 			'<li><a href="#tab2-'+i+'" data-toggle="tab">Views</a></li> '+
 			'<li><a href="#tab3-'+i+'" data-toggle="tab">Edit</a></li> '+
-			'</ul></div> </div><!--/.panel--> </div>');
+				'<p hidden id="survey_name">' + surveys[i].fullname + '</p>' +
+				'</ul></div> </div><!--/.panel--> </div>');
 
 			var date = new Date(surveys[i].date);
 

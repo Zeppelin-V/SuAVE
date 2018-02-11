@@ -10,7 +10,6 @@ function GalleryController() {
         var index = id.split('-').pop();
         var survey = surveys[index];
         var file = survey.name;
-        var view;
 
         if (survey.view.slice(-1) == "-") {
             view = survey.view.substring(0, survey.view.length - 1);

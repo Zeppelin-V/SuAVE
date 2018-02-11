@@ -37,7 +37,7 @@ def processCSV( file_name ):
         
     if ( img_index == -1 ):         # Oh, noes!  No "#img" element.  Die.
             
-        print "No '#img' item in '" + file_name + "'"
+        print("No '#img' item in '" + file_name + "'")
         sys.exit()
             
     # Now grab the image object names from the CSV
@@ -165,12 +165,12 @@ def worker( level,
 
         if ( len( files ) > 1 ):
 
-            print "Can't process multitiled images."
+            print("Can't process multitiled images.")
             sys.exit()
 
         elif ( len( files ) == 0 ):
 
-            print "No such file or directory:", objpath
+            print("No such file or directory:", objpath)
             sys.exit()
             
         image_file = files[0]
@@ -254,14 +254,14 @@ file_name = options.file_name[0]
 
 if ( not os.path.exists( file_name ) ):
 
-    print "No such file or directory:", file_name
+    print("No such file or directory:", file_name)
     sys.exit()
 
 if ( maxdepth != -1 ) and ( math.pow( 2, maxdepth ) > 128 ):
 
-    print "maxdepth is too large."
-    print "You don't want to create sprite sheets with cells greater than"
-    print "128 x 128"
+    print("maxdepth is too large.")
+    print("You don't want to create sprite sheets with cells greater than")
+    print("128 x 128")
     sys.exit()
 
 if ( options.microsoft_mode ):
@@ -312,7 +312,7 @@ nimages = float( len( images ) )
 images_wide = int( math.floor( math.sqrt( nimages ) ) )
 images_high = int( math.ceil( nimages / images_wide ) )
 
-print "Sprite sheet will be", images_wide, "images x", images_high, "images"
+print("Sprite sheet will be", images_wide, "images x", images_high, "images")
 
 # Insert the image position indices into the XML.
 
@@ -373,7 +373,7 @@ for thread in threads:
 # enjoy it, too.
 
 sprite_idx = outpath + ps + "sprite.idx"
-print "Writing", sprite_idx
+print("Writing", sprite_idx)
 
 # This is a rather hideous hack, since it emits and reparses the XML,
 # which can take a fair amount of memory in a large XML tree.  We may
@@ -393,7 +393,7 @@ try:
 
 except IOError:
 
-    print "Couldn't open sprite index file", sprite_idx, "or write failed."
+    print("Couldn't open sprite index file", sprite_idx, "or write failed.")
     sys.exit()
 
 sys.exit()

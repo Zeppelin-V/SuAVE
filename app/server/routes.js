@@ -267,13 +267,14 @@ module.exports = function(app) {
 
 //replace survey csv file
 	app.post('/replaceCSV', uploading.single('file'), function(req, res){
-		SM.replaceSurvey(req, req.cookies.user, function(e, o){
+		SM.replaceSurvey(req, req.body.user[0], function(e, o){
 			if (e){
 				res.status(400).send(e);
 			}	else{
 				req.body.name = req.body.name.replace(/ /g,"-");
 				if (o.dzc == null) {
-					SM.changeCollection(req, req.cookies.user, {"name": "default"},
+					req.body.name = req.file.originalname;
+					SM.changeCollection(req, req.body.user, {"name": "default"},
 						function(e){
 						if(e){
 							res.status(400).send(e);
@@ -292,50 +293,68 @@ module.exports = function(app) {
 
 	//clone survey
 	app.post('/cloneCSV', function(req, res) {
-		SM.cloneSurvey(req.body.old_name, req.body.new_name, req.body.author, req.body.user, function(e) {
+		SM.cloneSurvey(req.body.old_name, req.body.new_name, req.body.author, req.body.user, function(e, o) {
 			if (e) {
-				res.status(400).send(e);
-			}
-
-			else {
-                res.status(200).send('ok');
+				res.status(600).send(e);
+			} else {
+				req.body.name = req.body.new_name.replace(/[^\w]/gi, '_');
+                if (o.dzc == null) {
+                    SM.changeCollection(req, req.body.user, {"name": "default"},
+                        function(e){
+                            if(e){
+                                res.status(500).send(e);
+                            }else{
+                                res.status(200).send('ok');
+                            }
+                        });
+                } else {
+                    SM.changeImageDefinition(req, req.body.user, o.dzc,
+                        function(e){
+                            if(e){
+                                res.status(400).send(e);
+                            }else{
+                                res.status(200).send('ok');
+                            }
+                        });
+                }
             }
 		});
 	});
 
-	//new survey
-	app.post('/uploadCSV', uploading.single('file'), function(req, res){
-	    SM.createNewSurvey(req, req.cookies.user, function(e){
-			if (e){
-				res.status(400).send(e);
-			}	else{
-				//Set the default collection for new survey
-				var defaultCol = 1;
-				req.body.name = req.body.name.replace(/[^\w]/gi, '_');
-				if(req.body.dzc != ''){
-					SM.changeImageDefinition(req, req.cookies.user, req.body.dzc,
-						function(e){
-						if(e){
-							res.status(400).send(e);
-						}else{
-							res.status(200).send('ok');
-						}
-					});
-				}else{
-					SM.changeCollection(req, req.cookies.user, {"name": "default"},
-						function(e){
-						if(e){
-							res.status(400).send(e);
-						}else{
-							res.status(200).send('ok');
-						}
-					});
-				}
-			}
-		});
-	});
+    //new survey
+    app.post('/uploadCSV', uploading.single('file'), function(req, res){
+    	console.log(req.body.user);
+        SM.createNewSurvey(req, req.body.user, function(e){
+            if (e){
+                res.status(400).send(e);
+            }	else{
+                //Set the default collection for new survey
+                var defaultCol = 1;
+                req.body.name = req.body.name.replace(/[^\w]/gi, '_');
+                if(req.body.dzc != ''){
+                    SM.changeImageDefinition(req, req.body.user, req.body.dzc,
+                        function(e){
+                            if(e){
+                                res.status(400).send(e);
+                            }else{
+                                res.status(200).send('ok');
+                            }
+                        });
+                }else{
+                    SM.changeCollection(req, req.body.user, {"name": "default"},
+                        function(e){
+                            if(e){
+                                res.status(400).send(e);
+                            }else{
+                                res.status(200).send('ok');
+                            }
+                        });
+                }
+            }
+        });
+    });
 
-	app.get('/getSurveyDzc', function(req, res){
+    app.get('/getSurveyDzc', function(req, res){
 		SM.getSurveyDzc(req.query.user, req.query.file,
 			function(e, o){
 				if(e){

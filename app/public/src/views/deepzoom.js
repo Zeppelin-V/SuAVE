@@ -107,7 +107,6 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
 
                     var img = new Image();
                     img.src = that._sprite_sheet_url[level];
-
                 }
                 that._cb(that._dzc);
 
@@ -124,6 +123,7 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
 
         });
     },
+
     getDeepzoom: function(deepzoomCollection) {
         var that = this;
         //load dzi and start creating array of id's and DeepZoomLevels
@@ -277,6 +277,8 @@ PivotViewer.Views.DeepZoomImageController = PivotViewer.Views.IImageController.s
                     item.BasePath +
                     item.DZId + "_files/" +
                     level + "/", level);
+
+            console.log(imageList);
 
             item.Levels[level] = new PivotViewer.Views.ImageLevel(imageList);
 
