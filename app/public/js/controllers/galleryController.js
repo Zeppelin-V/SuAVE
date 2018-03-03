@@ -17,7 +17,7 @@ function GalleryController() {
             view = survey.view
         }
 
-        //Grid, bucket, crosstab, QGA, map
+        //Grid, bucket, crosstab, QGA, map, jupyter
         window.open(window.location + '/../../main/file=' + user + "_" + file + '.csv' +
             "&views=" + survey.views + "&view=" + view);
     });

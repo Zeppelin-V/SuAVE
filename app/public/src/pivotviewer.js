@@ -2053,6 +2053,8 @@ var graphPara = {};
 
         }
 
+        /*Written by Zeppelin Vanbarriger (3/2/18) */
+
         //enable button and modal for Jupyter
         if (_jupyterEnable === true) {
 
@@ -2115,14 +2117,11 @@ var graphPara = {};
             "id='pv-model-cancel'>Cancel</button></td></table>";
         $("#pv-model-text").html(modelHtml);
 
-        /**
-        //clone survey modal
-        var clone_survey_html = "<p><h3>Running Jupyter requires cloning the survey. Would you like to clone it?</h3></p>";
-        clone_survey_html += "<p><button id= 'clone-survey'>Clone</button></p><p><button id= 'clone-survey-cancel'>Cancel</button></p>";
-        $("#pv-clone-survey-text").html(clone_survey_html);
-         */
 
-        //main jupyter modal
+        /* Code for extending SuAVE with jupyter
+        Written by Zeppelin Vanbarriger (3/2/18) */
+
+        //html code for jupyter modal
         var j_modelHTML = "<p><h3>Presse crtl (Windows)/command(Mac) to select first variables</h3><p>";
         j_modelHTML += "<table><tr><th>First Variable:</th><th></th></th><th> Second Variable:</th><tr><td><select id = 'pv-all-variables1' style='width:250px' size=20>";
         for (var i = 0; i < PivotCollection.categories.length; i++) {
@@ -2148,11 +2147,9 @@ var graphPara = {};
         var username = parent.user;
         var default_survey_name = survey_name.concat("(clone)");
 
-        //modal for cloning survey
-        //var pv_clone_survey = "<div id='pv-clone-survey' class='pv-modal-dialog modal-xl'><div><h2>Clone Survey</h2><div id='pv-clone-survey-text'>&nbsp;</div></div></div>";
-        //$("#pv-clone-survey").html(pv_clone_survey);
 
-        //clone survey form
+        //build survey cloning form
+        //Added by Zeppelin Vanbarriger
         var clone_survey_text = "<p><h3>Choose the name of your new survey:</h3><form id='clone_survey_form' action='/cloneCSV' method='POST'>";
         clone_survey_text += "<fieldset><input type='hidden' name='author' id='author' value=" + author + ">";
         clone_survey_text += "<input type = 'hidden' name='old_name' id='old_name' value=" + survey_name + ">";
@@ -2165,6 +2162,8 @@ var graphPara = {};
         $("#pv-clone-survey-text").html(clone_survey_text);
 
 
+        //form submit for clone_survey_form
+        //Added by Zeppelin Vanbarriger
         var clone_form = $('#clone_survey_form');
         clone_form.submit(function(e){
 
@@ -2306,12 +2305,13 @@ var graphPara = {};
         });
 
 
+        //click function for opening cloning survey modal
         $("#pv-clone-survey-open").click(function(e) {
             window.open("#pv-modal-dialog-close", "_self");
             window.open("#pv-clone-survey", "_self");
         });
 
-
+        /*
         var window_url = parent.window.location.href;
         var params = "none";
         var dzc_file = options.dzc;
@@ -2324,9 +2324,27 @@ var graphPara = {};
         jupyter_url = jupyter_url + "&" + "params=" + params;
         jupyter_url = jupyter_url + "&" + "dzc=" + dzc_file;
         jupyter_url = jupyter_url + "&" + "activeobject=" + active_object;
+        */
 
 
+        //click function for opening jupyter notebooks
         $("#pv-j-model-submit").click(function(e) {
+
+            //uri variables to send to juypter notebooks
+            var window_url = parent.window.location.href;
+            var params = "none";
+            var dzc_file = options.dzc;
+            var active_object = "none";
+
+            //build jupyter url
+            var jupyter_url = "http://localhost:8000/user/zep/notebooks/SDSC/suave_notebooks/SuaveDispatch.ipynb";
+            jupyter_url = jupyter_url + "?" + "surveyurl=" + window_url;
+            jupyter_url = jupyter_url + "&" + "user=" + username;
+            jupyter_url = jupyter_url + "&" + "csv=" + file;
+            jupyter_url = jupyter_url + "&" + "params=" + params;
+            jupyter_url = jupyter_url + "&" + "dzc=" + dzc_file;
+            jupyter_url = jupyter_url + "&" + "activeobject=" + active_object;
+
             var jupyter_window = window.open(jupyter_url);
             jupyter_window.survey_name = survey_name;
         });

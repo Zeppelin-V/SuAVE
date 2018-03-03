@@ -65,7 +65,7 @@
             }
             options.View = query.view;
             //Grid, bucket, crosstab, QCA, map, r
-            //if all exists, views=111111
+            //if all exists, views=1111111
             if(query.views != undefined){
                 options.Views = [];
                 if(query.views[0] == 1) options.Views.push("grid");
@@ -74,7 +74,7 @@
                 if(query.views[3] == 1) options.Views.push("qca");
                 if(query.views[4] == 1) options.Views.push("map");
                 if(query.views[5] == 1) options.Views.push("r");
-                if(query.views[6] == 1) options.Views.push("jupyter");
+                if(query.views[6] == 1) options.Views.push("jupyter"); //Added by Zeppelin Vanbarriger
             }
         }
 

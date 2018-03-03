@@ -291,6 +291,8 @@ module.exports = function(app) {
 	});
 
 
+	/*Written by Zeppelin Vanbarriger (3/2/18) */
+
 	//clone survey
 	app.post('/cloneCSV', function(req, res) {
 		SM.cloneSurvey(req.body.old_name, req.body.new_name, req.body.author, req.body.user, function(e, o) {
@@ -323,7 +325,6 @@ module.exports = function(app) {
 
     //new survey
     app.post('/uploadCSV', uploading.single('file'), function(req, res){
-    	console.log(req.body.user);
         SM.createNewSurvey(req, req.body.user, function(e){
             if (e){
                 res.status(400).send(e);

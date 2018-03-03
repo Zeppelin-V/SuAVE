@@ -613,7 +613,7 @@ $(document).on('click', '#select-tags-submit',  function(){
         } else {
             views += 0;
         }
-        if ($("#pv-jupyter").is(':checked')) {
+        if ($("#pv-jupyter").is(':checked')) { //Added by Zeppelin Vanbarriger
           views += 1;
         }else{
          views +=0;

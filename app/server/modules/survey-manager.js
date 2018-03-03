@@ -137,10 +137,12 @@ exports.replaceSurvey = function(files, user, callback){
 	});
 }
 
+	/*Written by Zeppelin Vanbarriger (3/2/18) */
+
 /**
  * Finds survey matching filename and clones it under new user
  * @param old_name Name of survey user wishes to clone
- * @param new_name Name of cloned survey
+ * @param new_name Name of (new) cloned survey
  * @param author User of original survey
  * @param user User cloning the survey
  * @param callback function to transmit errors
