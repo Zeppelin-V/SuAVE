@@ -76,6 +76,7 @@ var graphPara = {};
         _options = {},
         _rEnable = false,
         _jupyterEnable = false,
+        _active_object = null,
         _listObj = {};
 
     if (_options.authoring == true) {
@@ -1288,7 +1289,7 @@ var graphPara = {};
                     bcItems += "Over " + numericFilters[i].selectedMin;
                 else if (numericFilters[i].selectedMin == numericFilters[i].selectedMax) bcItems += numericFilters[i].selectedMin;
                 else bcItems += numericFilters[i].selectedMin + " - " + numericFilters[i].selectedMax;
-                bcItems += "</span><span class='pv-toolbarpanel-breadcrumb-separator'>&gt;</span>";
+                bcItems += "</span><span classelectedItem.item.imgs='pv-toolbarpanel-breadcrumb-separator'>&gt;</span>";
             }
 
             for (var i = 0; i < datetimeFilters.length; i++) {
@@ -2065,7 +2066,7 @@ var graphPara = {};
             $('.pv-toolbarpanel-viewcontrols').append("<div id='pv-clone-survey' class='pv-modal-dialog modal-xl'><div><h2>Clone Survey</h2><div id='pv-clone-survey-text'>&nbsp;</div></div></div>");
 
             //loading complete
-            $('.pv-toolbarpanel-viewcontrols').append("<div id='pv-open-j-Model' class='pv-modal-dialog modal-xl'><div><h2>Machine Learning Model</h2><div id='pv-j-model-text'>&nbsp;</div></div></div>");
+            $('.pv-toolbarpanel-viewcontrols').append("<div id='pv-open-j-Model' class='pv-modal-dialog modal-xl'><div><h2>Jupyter</h2><div id='pv-j-model-text'>&nbsp;</div></div></div>");
         }
 
         $('.pv-loading').remove();
@@ -2122,22 +2123,8 @@ var graphPara = {};
         Written by Zeppelin Vanbarriger (3/2/18) */
 
         //html code for jupyter modal
-        var j_modelHTML = "<p><h3>Presse crtl (Windows)/command(Mac) to select first variables</h3><p>";
-        j_modelHTML += "<table><tr><th>First Variable:</th><th></th></th><th> Second Variable:</th><tr><td><select id = 'pv-all-variables1' style='width:250px' size=20>";
-        for (var i = 0; i < PivotCollection.categories.length; i++) {
-            var category = PivotCollection.categories[i];
-            j_modelHTML += "<option value=" + i + "search='" + PV.cleanName(category.name.toLowerCase()) + "'>" + category.name + "</option>";
-        }
+        var j_modelHTML = "<hr><p><button id='pv-j-model-submit'>Open Jupyter Notebook</button></p><p><button id='pv-clone-survey-open'>Clone Survey</button></p><p><button id='pv-j-model-cancel'>Cancel</button></p>";
 
-        j_modelHTML += "</select></td><td width=200><p><select id='pv-select-model'><option>Select Operation</option></select></p><p><button" +
-            " id='pv-j-model-submit'>Submit</button></p><p><button id='pv-clone-survey-open'>Clone</button></p><p><button id='pv-j-model-cancel'>Cancel</button></td>";
-
-        j_modelHTML += "<td><select id='pv-all-variables2' multiple style='width:250px' size=20>";
-        for (var i = 0; i < PivotCollection.categories.length; i++) {
-            var category = PivotCollection.categories[i];
-            j_modelHTML += "<option value=" + i + "search='" + PV.cleanName(category.name.toLowerCase()) + "'>" + category.name + "</option>";
-        }
-        j_modelHTML += "</td></table>";
 
         $("#pv-j-model-text").html(j_modelHTML);
 
@@ -2158,7 +2145,7 @@ var graphPara = {};
         clone_survey_text += "<p class='subheading'>Name the survey:</p><div class='control-group'><input type='text' name='new_name' id = 'filename' value=" + default_survey_name;
         clone_survey_text += " required='required'><p id='error-text' style='color:red;'></p></div></div></div></div><hr/><div class='form-buttons'><button id='new-survey-submit'";
         clone_survey_text += "type='submit' class='btn btn-primary'>Submit</button></div></fieldset></form></p>";
-        clone_survey_text += "<div><button id='pv-clone-modal-cancel'>x</button></div>";
+        clone_survey_text += "<div><button id='pv-clone-modal-cancel'>Cancel</button></div>";
         $("#pv-clone-survey-text").html(clone_survey_text);
 
 
@@ -2334,10 +2321,11 @@ var graphPara = {};
             var window_url = parent.window.location.href;
             var params = "none";
             var dzc_file = options.dzc;
-            var active_object = "none";
+            var active_object = _active_object;
 
             //build jupyter url
-            var jupyter_url = "http://localhost:8000/user/zep/notebooks/SDSC/suave_notebooks/SuaveDispatch.ipynb";
+            //var jupyter_url = "http://ieng6-201.ucsd.edu:15063/notebooks/SuaveDispatch.ipynb";
+            var jupyter_url = "http://suave-jupyterhub.com/user/zeppelin-v/notebooks132.249.238.37/SuaveDispatch.ipynb";
             jupyter_url = jupyter_url + "?" + "surveyurl=" + window_url;
             jupyter_url = jupyter_url + "&" + "user=" + username;
             jupyter_url = jupyter_url + "&" + "csv=" + file;
@@ -2552,6 +2540,7 @@ var graphPara = {};
         });
         $('.pv-infopanel-details').on("click", '.pv-infopanel-detail-description-more', function(e) {
             var that = $(this);
+            console.log(that);
             var details = that.prev();
             if (that.text() == "More") {
                 details.css('height', '');
@@ -3147,6 +3136,8 @@ var graphPara = {};
         }
 
         var selectedItem = evt.item;
+        _active_object = selectedItem.item.img;
+        console.log(_active_object);
         //takes in parameter
         if (_options.authoring == true) {
             PARA.selected_id = evt.item.item.id;
