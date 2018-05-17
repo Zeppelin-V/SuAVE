@@ -2325,7 +2325,7 @@ var graphPara = {};
 
             //build jupyter url
             //var jupyter_url = "http://ieng6-201.ucsd.edu:15063/notebooks/SuaveDispatch.ipynb";
-            var jupyter_url = "http://suave-jupyterhub.com/user/zeppelin-v/notebooks132.249.238.37/SuaveDispatch.ipynb";
+            var jupyter_url = "http://suave-jupyterhub.com/user/zeppelin-v/notebooks/SuaveDispatch.ipynb";
             jupyter_url = jupyter_url + "?" + "surveyurl=" + window_url;
             jupyter_url = jupyter_url + "&" + "user=" + username;
             jupyter_url = jupyter_url + "&" + "csv=" + file;
