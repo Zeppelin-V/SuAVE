@@ -516,6 +516,7 @@ module.exports = function(app) {
 		})
 	});
 
+
 	app.get('/getSurveys/:survey', function(req, res){
 		console.log(__dirname + '/surveys/');
 		res.sendFile(req.params.survey, {root: __dirname + '/../public/surveys/'});
